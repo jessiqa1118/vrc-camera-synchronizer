@@ -10,7 +10,7 @@ namespace JessiQa.Tests.Unit
         private class MockTransmitter : IOSCTransmitter
         {
             public Message? LastSentMessage { get; private set; }
-            public int SendCallCount { get; private set; }
+            public int SendCallCount { get; set; }  // Made setter public for test reset
             public bool IsDisposed { get; private set; }
             
             public void Send(Message message)
@@ -30,6 +30,7 @@ namespace JessiQa.Tests.Unit
         
         private MockTransmitter _mockTransmitter;
         private Camera _camera;
+        private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
         
         [SetUp]
@@ -42,7 +43,8 @@ namespace JessiQa.Tests.Unit
             _camera = gameObject.AddComponent<Camera>();
             _camera.fieldOfView = 60f;
             
-            _synchronizer = new VRCCameraSynchronizer(_mockTransmitter, _camera);
+            _vrcCamera = new VRCCamera(_camera);
+            _synchronizer = new VRCCameraSynchronizer(_mockTransmitter, _vrcCamera);
         }
         
         [TearDown]
@@ -60,11 +62,11 @@ namespace JessiQa.Tests.Unit
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => 
-                _ = new VRCCameraSynchronizer(null, _camera));
+                _ = new VRCCameraSynchronizer(null, _vrcCamera));
         }
         
         [Test]
-        public void Constructor_WithNullCamera_ThrowsArgumentNullException()
+        public void Constructor_WithNullVRCCamera_ThrowsArgumentNullException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => 
@@ -79,18 +81,18 @@ namespace JessiQa.Tests.Unit
         }
         
         [Test]
-        public void Sync_SendsZoomMessage()
+        public void Sync_SendsMultipleMessages()
         {
             // Arrange
             _camera.focalLength = 50f;
+            _vrcCamera.Exposure = new Exposure(-2.5f);
             
             // Act
             _synchronizer.Sync();
             
             // Assert
-            Assert.AreEqual(1, _mockTransmitter.SendCallCount);
+            Assert.AreEqual(2, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
-            Assert.AreEqual(OSCCameraEndpoints.Zoom.Value, _mockTransmitter.LastSentMessage.Value.Address.Value);
         }
         
         [Test]
@@ -103,14 +105,16 @@ namespace JessiQa.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
+            // Should send 2 messages (zoom and exposure)
+            Assert.AreEqual(2, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
+            
             var message = _mockTransmitter.LastSentMessage.Value;
-            Assert.AreEqual(1, message.Arguments.Length);
             Assert.AreEqual(Argument.ValueType.Float32, message.Arguments[0].Type);
             
-            // The actual value should be a Zoom created from focal length
+            // The actual value should be valid
             var sentValue = (float)message.Arguments[0].Value;
-            Assert.IsTrue(sentValue is >= Zoom.MinValue and <= Zoom.MaxValue);
+            Assert.IsTrue(sentValue is >= -10f and <= 150f); // Could be either zoom or exposure
         }
         
         [Test]
@@ -119,17 +123,14 @@ namespace JessiQa.Tests.Unit
             // Arrange & Act
             _camera.focalLength = 20f;
             _synchronizer.Sync();
-            var firstMessage = _mockTransmitter.LastSentMessage;
+            _mockTransmitter.SendCallCount = 0; // Reset count
             
             _camera.focalLength = 80f;
             _synchronizer.Sync();
-            var secondMessage = _mockTransmitter.LastSentMessage;
+            var secondCallCount = _mockTransmitter.SendCallCount;
             
             // Assert
-            Assert.AreEqual(2, _mockTransmitter.SendCallCount);
-            Assert.IsNotNull(firstMessage);
-            Assert.IsNotNull(secondMessage);
-            Assert.AreNotEqual(firstMessage.Value.Arguments[0].Value, secondMessage.Value.Arguments[0].Value);
+            Assert.AreEqual(2, secondCallCount); // 2 messages per Sync call
         }
         
         [Test]

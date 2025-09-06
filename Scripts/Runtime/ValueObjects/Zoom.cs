@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public Zoom(float value, bool clamp = true)
+        public Zoom(float value = DefaultValue, bool clamp = true)
         {
             Value = clamp switch
             {
