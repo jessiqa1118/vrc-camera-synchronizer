@@ -38,7 +38,7 @@ A Unity package for synchronizing camera parameters to VRChat via OSC (Open Soun
    - Navigate to Options → OSC → Enabled
 
 2. The synchronizer will automatically send camera data to:
-   - `/avatar/parameters/usercamera/Zoom` - Focal length value (20-150 range)
+   - `/usercamera/Zoom` - Focal length value (20-150 range)
 
 ## OSC Endpoints
 
@@ -46,7 +46,7 @@ Based on VRChat's OSC documentation ([VRChat 2025.3.3 Open Beta - OSC Camera End
 
 | Endpoint | Type | Range | Description |
 |----------|------|-------|-------------|
-| `/avatar/parameters/usercamera/Zoom` | Float | 20-150 | Camera focal length in mm |
+| `/usercamera/Zoom` | Float | 20-150 | Camera focal length in mm |
 
 
 ## License
