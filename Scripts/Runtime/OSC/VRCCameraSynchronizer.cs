@@ -9,6 +9,7 @@ namespace JessiQa
         private readonly VRCCamera _vrcCamera;
         private readonly ZoomConverter _zoomConverter = new();
         private readonly ExposureConverter _exposureConverter = new();
+        private readonly FocalDistanceConverter _focalDistanceConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -28,6 +29,10 @@ namespace JessiQa
             // Send exposure
             var exposureMessage = _exposureConverter.ToOSCMessage(_vrcCamera.Exposure);
             _transmitter.Send(exposureMessage);
+            
+            // Send focal distance
+            var focalDistanceMessage = _focalDistanceConverter.ToOSCMessage(_vrcCamera.FocalDistance);
+            _transmitter.Send(focalDistanceMessage);
         }
 
         public void Dispose()

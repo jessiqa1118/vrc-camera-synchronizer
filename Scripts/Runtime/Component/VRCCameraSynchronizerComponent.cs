@@ -7,16 +7,10 @@ namespace JessiQa
     [RequireComponent(typeof(Camera))]
     public class VRCCameraSynchronizerComponent : MonoBehaviour
     {
-        [Header("OSC Settings")] [SerializeField]
-        private string destination = "127.0.0.1";
-
+        [SerializeField] private string destination = "127.0.0.1";
         [SerializeField] private int port = 9000;
-
-        [Header("Camera Parameters")]
-        [SerializeField]
-        [Range(-10f, 4f)]
-        [Tooltip("Camera exposure value (-10 to 4, default: 0)")]
-        private float exposure = Exposure.DefaultValue;
+        [SerializeField] private float exposure = Exposure.DefaultValue;
+        [SerializeField] private float focalDistance = FocalDistance.DefaultValue;
 
         private VRCCameraSynchronizer _synchronizer;
         private VRCCamera _vrcCamera;
@@ -59,9 +53,29 @@ namespace JessiQa
             if (_vrcCamera != null)
             {
                 _vrcCamera.Exposure = new Exposure(exposure);
+                // FocalDistance is now automatically synced from Camera.focusDistance
+                
+                // Update display value for Inspector
+                var camera = GetComponent<Camera>();
+                if (camera != null)
+                {
+                    focalDistance = camera.focusDistance;
+                }
             }
 
             _synchronizer?.Sync();
         }
+        
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            // In Editor, update display value when component changes
+            var camera = GetComponent<Camera>();
+            if (camera != null)
+            {
+                focalDistance = camera.focusDistance;
+            }
+        }
+#endif
     }
 }

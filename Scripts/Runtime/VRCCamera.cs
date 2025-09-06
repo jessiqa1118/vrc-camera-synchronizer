@@ -9,6 +9,9 @@ namespace JessiQa
         public Zoom Zoom => new(_camera.focalLength);
 
         public Exposure Exposure { get; set; }
+        
+        // Both Unity and VRChat use meters, range 0-10m
+        public FocalDistance FocalDistance => new(_camera.focusDistance);
 
         public VRCCamera(Camera camera)
         {

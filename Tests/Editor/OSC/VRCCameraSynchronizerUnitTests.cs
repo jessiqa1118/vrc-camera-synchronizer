@@ -42,6 +42,7 @@ namespace JessiQa.Tests.Unit
             var gameObject = new GameObject("TestCamera");
             _camera = gameObject.AddComponent<Camera>();
             _camera.fieldOfView = 60f;
+            _camera.focusDistance = 2.5f; // Set focus distance for testing
             
             _vrcCamera = new VRCCamera(_camera);
             _synchronizer = new VRCCameraSynchronizer(_mockTransmitter, _vrcCamera);
@@ -91,7 +92,7 @@ namespace JessiQa.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            Assert.AreEqual(2, _mockTransmitter.SendCallCount);
+            Assert.AreEqual(3, _mockTransmitter.SendCallCount); // zoom, exposure, focal distance
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
         }
         
@@ -105,8 +106,8 @@ namespace JessiQa.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Should send 2 messages (zoom and exposure)
-            Assert.AreEqual(2, _mockTransmitter.SendCallCount);
+            // Should send 3 messages (zoom, exposure, and focal distance)
+            Assert.AreEqual(3, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             
             var message = _mockTransmitter.LastSentMessage.Value;
@@ -130,7 +131,7 @@ namespace JessiQa.Tests.Unit
             var secondCallCount = _mockTransmitter.SendCallCount;
             
             // Assert
-            Assert.AreEqual(2, secondCallCount); // 2 messages per Sync call
+            Assert.AreEqual(3, secondCallCount); // 3 messages per Sync call
         }
         
         [Test]
