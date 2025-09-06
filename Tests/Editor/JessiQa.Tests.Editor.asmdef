@@ -3,6 +3,7 @@
     "rootNamespace": "JessiQa.Tests.Unit",
     "references": [
         "JessiQa.Runtime",
+        "OscJack.Runtime",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
