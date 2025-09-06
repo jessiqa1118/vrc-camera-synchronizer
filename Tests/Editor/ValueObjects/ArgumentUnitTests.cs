@@ -56,16 +56,18 @@ namespace JessiQa.Tests.Unit
         }
         
         [Test]
-        public void Constructor_WithByteArray_StoresValueAndType()
+        public void Constructor_WithByteArray_StoresDefensiveCopy()
         {
             // Arrange
             byte[] value = { 1, 2, 3, 4 };
             
             // Act
             var argument = new Argument(value);
+            value[0] = 99; // Modify original array
             
             // Assert
-            Assert.AreEqual(value, argument.Value);
+            var stored = (byte[])argument.Value;
+            Assert.AreEqual(1, stored[0]); // Should be unchanged
             Assert.AreEqual(Argument.ValueType.Blob, argument.Type);
         }
         
@@ -178,7 +180,7 @@ namespace JessiQa.Tests.Unit
         }
         
         [Test]
-        public void AsBlob_WithBlobType_ReturnsValue()
+        public void AsBlob_WithBlobType_ReturnsDefensiveCopy()
         {
             // Arrange
             byte[] data = { 1, 2, 3 };
@@ -186,9 +188,11 @@ namespace JessiQa.Tests.Unit
             
             // Act
             var result = argument.AsBlob();
+            result[0] = 99; // Modify returned array
             
             // Assert
-            Assert.AreEqual(data, result);
+            var secondResult = argument.AsBlob();
+            Assert.AreEqual(1, secondResult[0]); // Should be unchanged
         }
         
         [Test]

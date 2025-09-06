@@ -146,6 +146,36 @@ namespace JessiQa.Tests.Unit
         }
         
         [Test]
+        public void FromOSCMessage_WithWrongAddress_ReturnsMinValue()
+        {
+            // Arrange
+            var address = new Address("/different/path");
+            var arguments = new[] { new Argument(75f) };
+            var message = new Message(address, arguments);
+            
+            // Act
+            var zoom = _converter.FromOSCMessage(message);
+            
+            // Assert
+            Assert.AreEqual(Zoom.MinValue, zoom.Value);
+        }
+        
+        [Test]
+        public void FromOSCMessage_WithTooManyArguments_ReturnsMinValue()
+        {
+            // Arrange
+            var address = OSCCameraEndpoints.Zoom;
+            var arguments = new[] { new Argument(75f), new Argument(50f) };
+            var message = new Message(address, arguments);
+            
+            // Act
+            var zoom = _converter.FromOSCMessage(message);
+            
+            // Assert
+            Assert.AreEqual(Zoom.MinValue, zoom.Value);
+        }
+        
+        [Test]
         public void ImplementsIOSCMessageConverter()
         {
             // Assert

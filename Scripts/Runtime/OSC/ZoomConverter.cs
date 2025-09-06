@@ -4,18 +4,29 @@ namespace JessiQa
     {
         public Zoom FromOSCMessage(Message message)
         {
-            if (message.Arguments == null || message.Arguments.Length == 0)
+            // Validate OSC address
+            if (message.Address != OSCCameraEndpoints.Zoom)
+            {
+                return new Zoom(Zoom.MinValue);
+            }
+            
+            // Validate arguments exist and count
+            if (message.Arguments == null || message.Arguments.Length != 1)
             {
                 return new Zoom(Zoom.MinValue);
             }
 
-            var firstArg = message.Arguments[0];
+            var arg = message.Arguments[0];
             
-            return firstArg.Type switch
+            // Validate argument type
+            if (arg.Type != Argument.ValueType.Float32)
             {
-                Argument.ValueType.Float32 => new Zoom(firstArg.AsFloat32()),
-                _ => new Zoom(Zoom.MinValue)
-            };
+                return new Zoom(Zoom.MinValue);
+            }
+            
+            // Extract value with automatic clamping in Zoom constructor
+            var value = arg.AsFloat32();
+            return new Zoom(value);
         }
 
         public Message ToOSCMessage(Zoom zoom)

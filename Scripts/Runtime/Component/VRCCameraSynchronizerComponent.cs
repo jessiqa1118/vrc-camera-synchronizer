@@ -22,15 +22,17 @@ namespace JessiQa
                 return;
             }
 
+            IOSCTransmitter transmitter = null;
             try
             {
-                var transmitter = new OSCJackTransmitter(destination, port);
+                transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, cameraComponent);
             }
             catch (Exception ex)
             {
+                transmitter?.Dispose();
                 Debug.LogError(
-                    $"[{nameof(VRCCameraSynchronizer)}] Failed to initialize transmitter: {ex.Message}\n{ex.StackTrace}");
+                    $"[{nameof(VRCCameraSynchronizer)}] Failed to initialize: {ex.Message}\n{ex.StackTrace}");
                 enabled = false;
             }
         }

@@ -36,7 +36,13 @@ namespace JessiQa
 
         public Argument(byte[] value)
         {
-            Value = value ?? throw new ArgumentNullException(nameof(value));
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+            
+            // Create defensive copy to preserve immutability
+            var copy = new byte[value.Length];
+            Array.Copy(value, copy, value.Length);
+            Value = copy;
             Type = ValueType.Blob;
         }
 
@@ -77,11 +83,14 @@ namespace JessiQa
 
         public byte[] AsBlob()
         {
-            return Type switch
-            {
-                ValueType.Blob => (byte[])Value,
-                _ => throw new InvalidCastException($"Cannot convert {Type} to Blob")
-            };
+            if (Type != ValueType.Blob)
+                throw new InvalidCastException($"Cannot convert {Type} to Blob");
+            
+            // Return defensive copy to preserve immutability
+            var original = (byte[])Value;
+            var copy = new byte[original.Length];
+            Array.Copy(original, copy, original.Length);
+            return copy;
         }
 
         public bool AsBool()
