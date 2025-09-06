@@ -1,0 +1,16 @@
+{
+    "name": "JessiQa.Runtime",
+    "rootNamespace": "JessiQa",
+    "references": [
+        "OscJack.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
