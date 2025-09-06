@@ -80,6 +80,21 @@ namespace JessiQa.Tests.Unit
         }
         
         [Test]
+        public void DefaultValue_Is_FortyFive()
+        {
+            // Assert
+            Assert.AreEqual(45f, Zoom.DefaultValue);
+        }
+        
+        [Test]
+        public void MinMaxValues_AreCorrect()
+        {
+            // Assert
+            Assert.AreEqual(20f, Zoom.MinValue);
+            Assert.AreEqual(150f, Zoom.MaxValue);
+        }
+        
+        [Test]
         public void Equality_SameValues_AreEqual()
         {
             // Arrange
@@ -89,6 +104,8 @@ namespace JessiQa.Tests.Unit
             // Act & Assert
             Assert.AreEqual(zoom1, zoom2);
             Assert.IsTrue(zoom1.Equals(zoom2));
+            Assert.IsTrue(zoom1 == zoom2);
+            Assert.IsFalse(zoom1 != zoom2);
             Assert.AreEqual(zoom1.GetHashCode(), zoom2.GetHashCode());
         }
         
@@ -102,14 +119,59 @@ namespace JessiQa.Tests.Unit
             // Act & Assert
             Assert.AreNotEqual(zoom1, zoom2);
             Assert.IsFalse(zoom1.Equals(zoom2));
+            Assert.IsFalse(zoom1 == zoom2);
+            Assert.IsTrue(zoom1 != zoom2);
         }
         
         [Test]
-        public void MinMaxValues_AreCorrect()
+        public void Equality_WithSmallDifference_AreEqual()
         {
+            // Arrange
+            var zoom1 = new Zoom(45.0f);
+            var zoom2 = new Zoom(45.00001f);  // Mathf.Approximately uses Epsilon * 8
+            
+            // Act & Assert
+            Assert.AreEqual(zoom1, zoom2);
+            Assert.IsTrue(zoom1 == zoom2);
+        }
+        
+        [Test]
+        public void Equality_WithLargerDifference_AreNotEqual()
+        {
+            // Arrange
+            var zoom1 = new Zoom(45.0f);
+            var zoom2 = new Zoom(45.01f);
+            
+            // Act & Assert
+            Assert.AreNotEqual(zoom1, zoom2);
+            Assert.IsTrue(zoom1 != zoom2);
+        }
+        
+        [Test]
+        public void ImplicitFloatConversion_ReturnsValue()
+        {
+            // Arrange
+            var zoom = new Zoom(75f);
+            
+            // Act
+            float value = zoom;
+            
             // Assert
-            Assert.AreEqual(20f, Zoom.MinValue);
-            Assert.AreEqual(150f, Zoom.MaxValue);
+            Assert.AreEqual(75f, value);
+        }
+        
+        [Test]
+        public void Equality_WithBoxedObject_WorksCorrectly()
+        {
+            // Arrange
+            var zoom = new Zoom(50f);
+            object boxedZoom = new Zoom(50f);
+            object differentObject = "not a zoom";
+            
+            // Act & Assert
+            Assert.IsTrue(zoom.Equals(boxedZoom));
+            Assert.IsFalse(zoom.Equals(differentObject));
+            Assert.IsFalse(zoom.Equals(null));
         }
     }
 }
