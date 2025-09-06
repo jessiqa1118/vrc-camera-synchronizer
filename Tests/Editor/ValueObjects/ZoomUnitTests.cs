@@ -128,7 +128,7 @@ namespace JessiQa.Tests.Unit
         {
             // Arrange
             var zoom1 = new Zoom(45.0f);
-            var zoom2 = new Zoom(45.00001f);  // Mathf.Approximately uses Epsilon * 8
+            var zoom2 = new Zoom(45.0f + UnityEngine.Mathf.Epsilon);
             
             // Act & Assert
             Assert.AreEqual(zoom1, zoom2);
