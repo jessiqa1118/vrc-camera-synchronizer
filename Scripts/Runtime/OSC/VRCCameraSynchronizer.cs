@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace JessiQa
 {
@@ -27,15 +26,24 @@ namespace JessiQa
         {
             _transmitter = transmitter ?? throw new ArgumentNullException(nameof(transmitter));
             _vrcCamera = vrcCamera ?? throw new ArgumentNullException(nameof(vrcCamera));
+            
+            // Subscribe to Zoom changes
+            _vrcCamera.Zoom.OnValueChanged += OnZoomChanged;
+        }
+        
+        private void OnZoomChanged(Zoom zoom)
+        {
+            if (_disposed) return;
+            
+            var message = _zoomConverter.ToOSCMessage(zoom);
+            _transmitter.Send(message);
         }
 
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
             
-            // Send zoom
-            var zoomMessage = _zoomConverter.ToOSCMessage(_vrcCamera.Zoom);
-            _transmitter.Send(zoomMessage);
+            // Zoom is now handled reactively, no need to send here
             
             // Send exposure
             var exposureMessage = _exposureConverter.ToOSCMessage(_vrcCamera.Exposure);
@@ -93,6 +101,12 @@ namespace JessiQa
         public void Dispose()
         {
             if (_disposed) return;
+            
+            // Unsubscribe from events
+            if (_vrcCamera != null)
+            {
+                _vrcCamera.Zoom.OnValueChanged -= OnZoomChanged;
+            }
             
             _transmitter?.Dispose();
             _disposed = true;

@@ -63,6 +63,10 @@ namespace JessiQa
             // NOTE: Use FixedUpdate to reduce the frequency of updates
             if (_vrcCamera != null)
             {
+                // Update Zoom from Camera component (reactive)
+                _vrcCamera.UpdateFromCamera();
+                
+                // Update other properties (still using old method for now)
                 _vrcCamera.Exposure = new Exposure(exposure);
                 _vrcCamera.Hue = new Hue(hue);
                 _vrcCamera.Saturation = new Saturation(saturation);
