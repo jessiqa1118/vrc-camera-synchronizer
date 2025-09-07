@@ -160,23 +160,25 @@ namespace VRCCamera
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
             
-            // All parameters are now handled reactively through events.
-            // This method can be used to force send all current values if needed.
+            // Send all current values directly (used for initial sync)
+            _transmitter.Send(_zoomConverter.ToOSCMessage(_vrcCamera.Zoom.Value));
+            _transmitter.Send(_exposureConverter.ToOSCMessage(_vrcCamera.Exposure.Value));
+            _transmitter.Send(_focalDistanceConverter.ToOSCMessage(_vrcCamera.FocalDistance.Value));
+            _transmitter.Send(_apertureConverter.ToOSCMessage(_vrcCamera.Aperture.Value));
+            _transmitter.Send(_hueConverter.ToOSCMessage(_vrcCamera.Hue.Value));
+            _transmitter.Send(_saturationConverter.ToOSCMessage(_vrcCamera.Saturation.Value));
+            _transmitter.Send(_lightnessConverter.ToOSCMessage(_vrcCamera.Lightness.Value));
             
-            // Force send all current values
-            _vrcCamera.Zoom.ForceSetValue(_vrcCamera.Zoom.Value);
-            _vrcCamera.Exposure.ForceSetValue(_vrcCamera.Exposure.Value);
-            _vrcCamera.FocalDistance.ForceSetValue(_vrcCamera.FocalDistance.Value);
-            _vrcCamera.Aperture.ForceSetValue(_vrcCamera.Aperture.Value);
-            _vrcCamera.Hue.ForceSetValue(_vrcCamera.Hue.Value);
-            _vrcCamera.Saturation.ForceSetValue(_vrcCamera.Saturation.Value);
-            _vrcCamera.Lightness.ForceSetValue(_vrcCamera.Lightness.Value);
-            _vrcCamera.LookAtMeOffset.ForceSetValue(_vrcCamera.LookAtMeOffset.Value);
-            _vrcCamera.FlySpeed.ForceSetValue(_vrcCamera.FlySpeed.Value);
-            _vrcCamera.TurnSpeed.ForceSetValue(_vrcCamera.TurnSpeed.Value);
-            _vrcCamera.SmoothingStrength.ForceSetValue(_vrcCamera.SmoothingStrength.Value);
-            _vrcCamera.PhotoRate.ForceSetValue(_vrcCamera.PhotoRate.Value);
-            _vrcCamera.Duration.ForceSetValue(_vrcCamera.Duration.Value);
+            // LookAtMeOffset needs special handling
+            var lookAtMeOffset = _vrcCamera.LookAtMeOffset.Value;
+            _transmitter.Send(_lookAtMeXOffsetConverter.ToOSCMessage(lookAtMeOffset.X));
+            _transmitter.Send(_lookAtMeYOffsetConverter.ToOSCMessage(lookAtMeOffset.Y));
+            
+            _transmitter.Send(_flySpeedConverter.ToOSCMessage(_vrcCamera.FlySpeed.Value));
+            _transmitter.Send(_turnSpeedConverter.ToOSCMessage(_vrcCamera.TurnSpeed.Value));
+            _transmitter.Send(_smoothingStrengthConverter.ToOSCMessage(_vrcCamera.SmoothingStrength.Value));
+            _transmitter.Send(_photoRateConverter.ToOSCMessage(_vrcCamera.PhotoRate.Value));
+            _transmitter.Send(_durationConverter.ToOSCMessage(_vrcCamera.Duration.Value));
         }
 
         public void Dispose()

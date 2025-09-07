@@ -56,6 +56,8 @@ namespace VRCCamera
         {
             _synchronizer?.Dispose();
             _synchronizer = null;
+            _vrcCamera?.Dispose();
+            _vrcCamera = null;
         }
 
         private void FixedUpdate()

@@ -60,6 +60,7 @@ namespace VRCCamera.Tests.Unit
         public void TearDown()
         {
             _synchronizer?.Dispose();
+            _vrcCamera?.Dispose();
             if (_camera)
             {
                 UnityEngine.Object.DestroyImmediate(_camera.gameObject);
@@ -105,6 +106,7 @@ namespace VRCCamera.Tests.Unit
             
             // Cleanup
             synchronizer.Dispose();
+            vrcCamera.Dispose();
             UnityEngine.Object.DestroyImmediate(camera.gameObject);
         }
         

@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
 using Parameters;
 
 namespace VRCCamera
 {
-    public class VRCCamera
+    public class VRCCamera : IDisposable
     {
         private readonly Camera _camera;
 
@@ -132,6 +133,27 @@ namespace VRCCamera
         public void SetDuration(Duration duration)
         {
             Duration.SetValue(duration);
+        }
+        
+        /// <summary>
+        /// Disposes the VRCCamera and clears all event subscriptions
+        /// </summary>
+        public void Dispose()
+        {
+            // Clear all event subscriptions to prevent memory leaks
+            Zoom?.ClearSubscriptions();
+            Exposure?.ClearSubscriptions();
+            FocalDistance?.ClearSubscriptions();
+            Aperture?.ClearSubscriptions();
+            Hue?.ClearSubscriptions();
+            Saturation?.ClearSubscriptions();
+            Lightness?.ClearSubscriptions();
+            LookAtMeOffset?.ClearSubscriptions();
+            FlySpeed?.ClearSubscriptions();
+            TurnSpeed?.ClearSubscriptions();
+            SmoothingStrength?.ClearSubscriptions();
+            PhotoRate?.ClearSubscriptions();
+            Duration?.ClearSubscriptions();
         }
     }
 }
