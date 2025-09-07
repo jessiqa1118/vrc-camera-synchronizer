@@ -25,6 +25,8 @@ namespace JessiQa
         public LookAtMeXOffset LookAtMeXOffset { get; set; }
         
         public LookAtMeYOffset LookAtMeYOffset { get; set; }
+        
+        public FlySpeed FlySpeed { get; set; }
 
         public VRCCamera(Camera camera)
         {
@@ -35,6 +37,7 @@ namespace JessiQa
             Lightness = new Lightness();
             LookAtMeXOffset = new LookAtMeXOffset();
             LookAtMeYOffset = new LookAtMeYOffset();
+            FlySpeed = new FlySpeed();
         }
     }
 }
