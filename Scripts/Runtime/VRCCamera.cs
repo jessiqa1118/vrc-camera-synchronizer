@@ -19,6 +19,8 @@ namespace JessiQa
         public Hue Hue { get; set; }
         
         public Saturation Saturation { get; set; }
+        
+        public Lightness Lightness { get; set; }
 
         public VRCCamera(Camera camera)
         {
@@ -26,6 +28,7 @@ namespace JessiQa
             Exposure = new Exposure();
             Hue = new Hue();
             Saturation = new Saturation();
+            Lightness = new Lightness();
         }
     }
 }

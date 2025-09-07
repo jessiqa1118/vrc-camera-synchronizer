@@ -13,6 +13,7 @@ namespace JessiQa
         private readonly ApertureConverter _apertureConverter = new();
         private readonly HueConverter _hueConverter = new();
         private readonly SaturationConverter _saturationConverter = new();
+        private readonly LightnessConverter _lightnessConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -48,6 +49,10 @@ namespace JessiQa
             // Send saturation
             var saturationMessage = _saturationConverter.ToOSCMessage(_vrcCamera.Saturation);
             _transmitter.Send(saturationMessage);
+            
+            // Send lightness
+            var lightnessMessage = _lightnessConverter.ToOSCMessage(_vrcCamera.Lightness);
+            _transmitter.Send(lightnessMessage);
         }
 
         public void Dispose()
