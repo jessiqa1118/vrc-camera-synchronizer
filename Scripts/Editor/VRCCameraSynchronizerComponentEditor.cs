@@ -13,6 +13,8 @@ namespace JessiQa.Editor
         private SerializedProperty _hue;
         private SerializedProperty _saturation;
         private SerializedProperty _lightness;
+        private SerializedProperty _lookAtMeXOffset;
+        private SerializedProperty _lookAtMeYOffset;
         private SerializedProperty _focalDistance;
 
         private void OnEnable()
@@ -24,6 +26,8 @@ namespace JessiQa.Editor
             _hue = serializedObject.FindProperty("hue");
             _saturation = serializedObject.FindProperty("saturation");
             _lightness = serializedObject.FindProperty("lightness");
+            _lookAtMeXOffset = serializedObject.FindProperty("lookAtMeXOffset");
+            _lookAtMeYOffset = serializedObject.FindProperty("lookAtMeYOffset");
             _focalDistance = serializedObject.FindProperty("focalDistance");
         }
 
@@ -61,6 +65,21 @@ namespace JessiQa.Editor
                 _hue.floatValue = h * Hue.MaxValue;
                 _saturation.floatValue = s * Saturation.MaxValue;
                 _lightness.floatValue = v * Lightness.MaxValue;
+            }
+            
+            EditorGUILayout.Space();
+            
+            // LookAtMe Parameters
+            EditorGUILayout.LabelField("LookAtMe", EditorStyles.boldLabel);
+            
+            // Use Vector2Field for X/Y offset
+            Vector2 lookAtMeOffset = new Vector2(_lookAtMeXOffset.floatValue, _lookAtMeYOffset.floatValue);
+            EditorGUI.BeginChangeCheck();
+            lookAtMeOffset = EditorGUILayout.Vector2Field("Offset", lookAtMeOffset);
+            if (EditorGUI.EndChangeCheck())
+            {
+                _lookAtMeXOffset.floatValue = Mathf.Clamp(lookAtMeOffset.x, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue);
+                _lookAtMeYOffset.floatValue = Mathf.Clamp(lookAtMeOffset.y, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue);
             }
             
             EditorGUILayout.Space();
