@@ -1,10 +1,12 @@
 using System;
+using Parameters;
+using OSC;
 using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace JessiQa.Tests.Integration
+namespace VRCCamera.Tests.Integration
 {
     [TestFixture]
     public class VRCCameraSynchronizerComponentIntegrationTests
@@ -214,7 +216,7 @@ namespace JessiQa.Tests.Integration
             
             if (attributes[0] is AddComponentMenu menuAttribute)
             {
-                Assert.AreEqual("JessiQa/VRC Camera Synchronizer", menuAttribute.componentMenu);
+                Assert.AreEqual("VRCCamera/VRC Camera Synchronizer", menuAttribute.componentMenu);
             }
         }
         

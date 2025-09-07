@@ -1,34 +1,34 @@
 using System;
 using UnityEngine;
 
-namespace JessiQa
+namespace Parameters
 {
     /// <summary>
-    /// Represents camera turn speed value for VRChat OSC control
-    /// Range: 0.1-5, Default: 1
+    /// Represents duration value for VRChat OSC control
+    /// Range: 0.1-60, Default: 2
     /// </summary>
-    public readonly struct TurnSpeed : IEquatable<TurnSpeed>
+    public readonly struct Duration : IEquatable<Duration>
     {
         public const float MinValue = 0.1f;
-        public const float MaxValue = 5f;
-        public const float DefaultValue = 1f;
+        public const float MaxValue = 60f;
+        public const float DefaultValue = 2f;
 
         public readonly float Value;
 
-        public TurnSpeed(float value)
+        public Duration(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);
         }
 
-        public bool Equals(TurnSpeed other)
+        public bool Equals(Duration other)
         {
             return Mathf.Approximately(Value, other.Value);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is TurnSpeed other && Equals(other);
+            return obj is Duration other && Equals(other);
         }
 
         public override int GetHashCode()
@@ -36,19 +36,19 @@ namespace JessiQa
             return Value.GetHashCode();
         }
 
-        public static bool operator ==(TurnSpeed left, TurnSpeed right)
+        public static bool operator ==(Duration left, Duration right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(TurnSpeed left, TurnSpeed right)
+        public static bool operator !=(Duration left, Duration right)
         {
             return !left.Equals(right);
         }
 
-        public static implicit operator float(TurnSpeed turnSpeed)
+        public static implicit operator float(Duration duration)
         {
-            return turnSpeed.Value;
+            return duration.Value;
         }
     }
 }

@@ -1,7 +1,9 @@
 using System;
+using Parameters;
+using OSC;
 using NUnit.Framework;
 
-namespace JessiQa.Tests.Unit
+namespace VRCCamera.Tests.Unit
 {
     [TestFixture]
     public class MessageUnitTests

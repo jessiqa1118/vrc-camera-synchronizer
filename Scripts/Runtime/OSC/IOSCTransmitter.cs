@@ -1,6 +1,7 @@
 using System;
+using OSC;
 
-namespace JessiQa
+namespace VRCCamera
 {
     public interface IOSCTransmitter : IDisposable
     {

@@ -1,7 +1,7 @@
 using System;
-using UnityEngine;
+using Parameters;
 
-namespace JessiQa
+namespace VRCCamera
 {
     public class VRCCameraSynchronizer : IDisposable
     {
@@ -27,72 +27,181 @@ namespace JessiQa
         {
             _transmitter = transmitter ?? throw new ArgumentNullException(nameof(transmitter));
             _vrcCamera = vrcCamera ?? throw new ArgumentNullException(nameof(vrcCamera));
+            
+            // Subscribe to value changes
+            _vrcCamera.Zoom.OnValueChanged += OnZoomChanged;
+            _vrcCamera.Exposure.OnValueChanged += OnExposureChanged;
+            _vrcCamera.FocalDistance.OnValueChanged += OnFocalDistanceChanged;
+            _vrcCamera.Aperture.OnValueChanged += OnApertureChanged;
+            _vrcCamera.Hue.OnValueChanged += OnHueChanged;
+            _vrcCamera.Saturation.OnValueChanged += OnSaturationChanged;
+            _vrcCamera.Lightness.OnValueChanged += OnLightnessChanged;
+            _vrcCamera.LookAtMeOffset.OnValueChanged += OnLookAtMeOffsetChanged;
+            _vrcCamera.FlySpeed.OnValueChanged += OnFlySpeedChanged;
+            _vrcCamera.TurnSpeed.OnValueChanged += OnTurnSpeedChanged;
+            _vrcCamera.SmoothingStrength.OnValueChanged += OnSmoothingStrengthChanged;
+            _vrcCamera.PhotoRate.OnValueChanged += OnPhotoRateChanged;
+            _vrcCamera.Duration.OnValueChanged += OnDurationChanged;
+            
+            // Send initial values
+            Sync();
+        }
+        
+        private void OnZoomChanged(Zoom zoom)
+        {
+            if (_disposed) return;
+            
+            var message = _zoomConverter.ToOSCMessage(zoom);
+            _transmitter.Send(message);
+        }
+        
+        private void OnExposureChanged(Exposure exposure)
+        {
+            if (_disposed) return;
+            
+            var message = _exposureConverter.ToOSCMessage(exposure);
+            _transmitter.Send(message);
+        }
+        
+        private void OnFocalDistanceChanged(FocalDistance focalDistance)
+        {
+            if (_disposed) return;
+            
+            var message = _focalDistanceConverter.ToOSCMessage(focalDistance);
+            _transmitter.Send(message);
+        }
+        
+        private void OnApertureChanged(Aperture aperture)
+        {
+            if (_disposed) return;
+            
+            var message = _apertureConverter.ToOSCMessage(aperture);
+            _transmitter.Send(message);
+        }
+        
+        private void OnHueChanged(Hue hue)
+        {
+            if (_disposed) return;
+            
+            var message = _hueConverter.ToOSCMessage(hue);
+            _transmitter.Send(message);
+        }
+        
+        private void OnSaturationChanged(Saturation saturation)
+        {
+            if (_disposed) return;
+            
+            var message = _saturationConverter.ToOSCMessage(saturation);
+            _transmitter.Send(message);
+        }
+        
+        private void OnLightnessChanged(Lightness lightness)
+        {
+            if (_disposed) return;
+            
+            var message = _lightnessConverter.ToOSCMessage(lightness);
+            _transmitter.Send(message);
+        }
+        
+        private void OnLookAtMeOffsetChanged(LookAtMeOffset lookAtMeOffset)
+        {
+            if (_disposed) return;
+            
+            // Send X offset
+            var xMessage = _lookAtMeXOffsetConverter.ToOSCMessage(lookAtMeOffset.X);
+            _transmitter.Send(xMessage);
+            
+            // Send Y offset
+            var yMessage = _lookAtMeYOffsetConverter.ToOSCMessage(lookAtMeOffset.Y);
+            _transmitter.Send(yMessage);
+        }
+        
+        private void OnFlySpeedChanged(FlySpeed flySpeed)
+        {
+            if (_disposed) return;
+            
+            var message = _flySpeedConverter.ToOSCMessage(flySpeed);
+            _transmitter.Send(message);
+        }
+        
+        private void OnTurnSpeedChanged(TurnSpeed turnSpeed)
+        {
+            if (_disposed) return;
+            
+            var message = _turnSpeedConverter.ToOSCMessage(turnSpeed);
+            _transmitter.Send(message);
+        }
+        
+        private void OnSmoothingStrengthChanged(SmoothingStrength smoothingStrength)
+        {
+            if (_disposed) return;
+            
+            var message = _smoothingStrengthConverter.ToOSCMessage(smoothingStrength);
+            _transmitter.Send(message);
+        }
+        
+        private void OnPhotoRateChanged(PhotoRate photoRate)
+        {
+            if (_disposed) return;
+            
+            var message = _photoRateConverter.ToOSCMessage(photoRate);
+            _transmitter.Send(message);
+        }
+        
+        private void OnDurationChanged(Duration duration)
+        {
+            if (_disposed) return;
+            
+            var message = _durationConverter.ToOSCMessage(duration);
+            _transmitter.Send(message);
         }
 
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
             
-            // Send zoom
-            var zoomMessage = _zoomConverter.ToOSCMessage(_vrcCamera.Zoom);
-            _transmitter.Send(zoomMessage);
+            // Send all current values directly (used for initial sync)
+            _transmitter.Send(_zoomConverter.ToOSCMessage(_vrcCamera.Zoom.Value));
+            _transmitter.Send(_exposureConverter.ToOSCMessage(_vrcCamera.Exposure.Value));
+            _transmitter.Send(_focalDistanceConverter.ToOSCMessage(_vrcCamera.FocalDistance.Value));
+            _transmitter.Send(_apertureConverter.ToOSCMessage(_vrcCamera.Aperture.Value));
+            _transmitter.Send(_hueConverter.ToOSCMessage(_vrcCamera.Hue.Value));
+            _transmitter.Send(_saturationConverter.ToOSCMessage(_vrcCamera.Saturation.Value));
+            _transmitter.Send(_lightnessConverter.ToOSCMessage(_vrcCamera.Lightness.Value));
             
-            // Send exposure
-            var exposureMessage = _exposureConverter.ToOSCMessage(_vrcCamera.Exposure);
-            _transmitter.Send(exposureMessage);
+            // LookAtMeOffset needs special handling
+            var lookAtMeOffset = _vrcCamera.LookAtMeOffset.Value;
+            _transmitter.Send(_lookAtMeXOffsetConverter.ToOSCMessage(lookAtMeOffset.X));
+            _transmitter.Send(_lookAtMeYOffsetConverter.ToOSCMessage(lookAtMeOffset.Y));
             
-            // Send focal distance
-            var focalDistanceMessage = _focalDistanceConverter.ToOSCMessage(_vrcCamera.FocalDistance);
-            _transmitter.Send(focalDistanceMessage);
-            
-            // Send aperture
-            var apertureMessage = _apertureConverter.ToOSCMessage(_vrcCamera.Aperture);
-            _transmitter.Send(apertureMessage);
-            
-            // Send hue
-            var hueMessage = _hueConverter.ToOSCMessage(_vrcCamera.Hue);
-            _transmitter.Send(hueMessage);
-            
-            // Send saturation
-            var saturationMessage = _saturationConverter.ToOSCMessage(_vrcCamera.Saturation);
-            _transmitter.Send(saturationMessage);
-            
-            // Send lightness
-            var lightnessMessage = _lightnessConverter.ToOSCMessage(_vrcCamera.Lightness);
-            _transmitter.Send(lightnessMessage);
-            
-            // Send LookAtMe X offset
-            var lookAtMeXMessage = _lookAtMeXOffsetConverter.ToOSCMessage(_vrcCamera.LookAtMeOffset.X);
-            _transmitter.Send(lookAtMeXMessage);
-            
-            // Send LookAtMe Y offset
-            var lookAtMeYMessage = _lookAtMeYOffsetConverter.ToOSCMessage(_vrcCamera.LookAtMeOffset.Y);
-            _transmitter.Send(lookAtMeYMessage);
-            
-            // Send FlySpeed
-            var flySpeedMessage = _flySpeedConverter.ToOSCMessage(_vrcCamera.FlySpeed);
-            _transmitter.Send(flySpeedMessage);
-            
-            // Send TurnSpeed
-            var turnSpeedMessage = _turnSpeedConverter.ToOSCMessage(_vrcCamera.TurnSpeed);
-            _transmitter.Send(turnSpeedMessage);
-            
-            // Send SmoothingStrength
-            var smoothingStrengthMessage = _smoothingStrengthConverter.ToOSCMessage(_vrcCamera.SmoothingStrength);
-            _transmitter.Send(smoothingStrengthMessage);
-            
-            // Send PhotoRate
-            var photoRateMessage = _photoRateConverter.ToOSCMessage(_vrcCamera.PhotoRate);
-            _transmitter.Send(photoRateMessage);
-            
-            // Send Duration
-            var durationMessage = _durationConverter.ToOSCMessage(_vrcCamera.Duration);
-            _transmitter.Send(durationMessage);
+            _transmitter.Send(_flySpeedConverter.ToOSCMessage(_vrcCamera.FlySpeed.Value));
+            _transmitter.Send(_turnSpeedConverter.ToOSCMessage(_vrcCamera.TurnSpeed.Value));
+            _transmitter.Send(_smoothingStrengthConverter.ToOSCMessage(_vrcCamera.SmoothingStrength.Value));
+            _transmitter.Send(_photoRateConverter.ToOSCMessage(_vrcCamera.PhotoRate.Value));
+            _transmitter.Send(_durationConverter.ToOSCMessage(_vrcCamera.Duration.Value));
         }
 
         public void Dispose()
         {
             if (_disposed) return;
+            
+            // Unsubscribe from events
+            if (_vrcCamera != null)
+            {
+                _vrcCamera.Zoom.OnValueChanged -= OnZoomChanged;
+                _vrcCamera.Exposure.OnValueChanged -= OnExposureChanged;
+                _vrcCamera.FocalDistance.OnValueChanged -= OnFocalDistanceChanged;
+                _vrcCamera.Aperture.OnValueChanged -= OnApertureChanged;
+                _vrcCamera.Hue.OnValueChanged -= OnHueChanged;
+                _vrcCamera.Saturation.OnValueChanged -= OnSaturationChanged;
+                _vrcCamera.Lightness.OnValueChanged -= OnLightnessChanged;
+                _vrcCamera.LookAtMeOffset.OnValueChanged -= OnLookAtMeOffsetChanged;
+                _vrcCamera.FlySpeed.OnValueChanged -= OnFlySpeedChanged;
+                _vrcCamera.TurnSpeed.OnValueChanged -= OnTurnSpeedChanged;
+                _vrcCamera.SmoothingStrength.OnValueChanged -= OnSmoothingStrengthChanged;
+                _vrcCamera.PhotoRate.OnValueChanged -= OnPhotoRateChanged;
+                _vrcCamera.Duration.OnValueChanged -= OnDurationChanged;
+            }
             
             _transmitter?.Dispose();
             _disposed = true;

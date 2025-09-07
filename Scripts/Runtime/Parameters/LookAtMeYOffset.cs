@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace JessiQa
+namespace Parameters
 {
     /// <summary>
     /// Represents camera LookAtMe Y offset value for VRChat OSC control

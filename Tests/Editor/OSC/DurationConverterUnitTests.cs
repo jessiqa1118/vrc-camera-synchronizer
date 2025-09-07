@@ -1,6 +1,8 @@
 using NUnit.Framework;
+using Parameters;
+using OSC;
 
-namespace JessiQa.Tests.Unit
+namespace VRCCamera.Tests.Unit
 {
     [TestFixture]
     public class DurationConverterUnitTests

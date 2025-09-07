@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace JessiQa
+namespace OSC
 {
     public readonly struct Address : IEquatable<Address>
     {
