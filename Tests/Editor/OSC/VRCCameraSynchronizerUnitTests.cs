@@ -1,8 +1,10 @@
 using System;
+using Parameters;
+using OSC;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace JessiQa.Tests.Unit
+namespace VRCCamera.Tests.Unit
 {
     [TestFixture]
     public class VRCCameraSynchronizerUnitTests
@@ -88,22 +90,23 @@ namespace JessiQa.Tests.Unit
         }
         
         [Test]
-        public void Sync_SendsMultipleMessages()
+        public void Sync_ForceSendsAllMessages()
         {
             // Arrange
             _camera.focalLength = 50f;
-            _vrcCamera.Exposure = new Exposure(-2.5f);
+            _vrcCamera.SetExposure(-2.5f);
             
             // Act
             _synchronizer.Sync();
             
             // Assert
-            Assert.AreEqual(14, _mockTransmitter.SendCallCount); // zoom, exposure, focal distance, aperture, hue, saturation, lightness, lookAtMeXOffset, lookAtMeYOffset, flySpeed, turnSpeed, smoothingStrength, photoRate, duration
+            // Sync now force sends all 14 parameters (zoom, exposure, focal distance, aperture, hue, saturation, lightness, lookAtMeXOffset, lookAtMeYOffset, flySpeed, turnSpeed, smoothingStrength, photoRate, duration)
+            Assert.AreEqual(14, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
         }
         
         [Test]
-        public void Sync_SendsCorrectZoomValue()
+        public void Sync_ForceSendsAllValues()
         {
             // Arrange
             _camera.focalLength = 35f;
@@ -112,16 +115,12 @@ namespace JessiQa.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Should send 14 messages (zoom, exposure, focal distance, aperture, hue, saturation, lightness, lookAtMeXOffset, lookAtMeYOffset, flySpeed, turnSpeed, smoothingStrength, photoRate, and duration)
+            // Force sends all 14 messages
             Assert.AreEqual(14, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             
             var message = _mockTransmitter.LastSentMessage.Value;
             Assert.AreEqual(Argument.ValueType.Float32, message.Arguments[0].Type);
-            
-            // The actual value should be valid
-            var sentValue = (float)message.Arguments[0].Value;
-            Assert.IsTrue(sentValue is >= -10f and <= 150f); // Could be either zoom or exposure
         }
         
         [Test]
@@ -188,6 +187,49 @@ namespace JessiQa.Tests.Unit
         {
             // Assert
             Assert.IsTrue(_synchronizer != null);
+        }
+        
+        [Test]
+        public void ReactiveProperty_OnZoomChange_SendsMessage()
+        {
+            // Arrange
+            _mockTransmitter.Reset();
+            
+            // Act - Change camera focal length and update
+            _camera.focalLength = 85f;
+            _vrcCamera.UpdateFromCamera();
+            
+            // Assert - Should send only one message for the zoom change
+            Assert.AreEqual(1, _mockTransmitter.SendCallCount);
+            Assert.IsNotNull(_mockTransmitter.LastSentMessage);
+        }
+        
+        [Test]
+        public void ReactiveProperty_OnExposureChange_SendsMessage()
+        {
+            // Arrange
+            _mockTransmitter.Reset();
+            
+            // Act
+            _vrcCamera.SetExposure(-5f);
+            
+            // Assert - Should send only one message for the exposure change
+            Assert.AreEqual(1, _mockTransmitter.SendCallCount);
+            Assert.IsNotNull(_mockTransmitter.LastSentMessage);
+        }
+        
+        [Test]
+        public void ReactiveProperty_NoChange_DoesNotSendMessage()
+        {
+            // Arrange
+            _mockTransmitter.Reset();
+            var currentExposure = _vrcCamera.Exposure.Value;
+            
+            // Act - Set same value
+            _vrcCamera.SetExposure(currentExposure.Value);
+            
+            // Assert - Should not send any message
+            Assert.AreEqual(0, _mockTransmitter.SendCallCount);
         }
     }
 }

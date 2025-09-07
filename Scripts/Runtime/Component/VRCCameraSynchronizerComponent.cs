@@ -1,22 +1,21 @@
 using System;
 using UnityEngine;
+using Parameters;
 
-namespace JessiQa
+namespace VRCCamera
 {
-    [AddComponentMenu("JessiQa/VRC Camera Synchronizer")]
+    [AddComponentMenu("VRCCamera/VRC Camera Synchronizer")]
     [RequireComponent(typeof(Camera))]
     public class VRCCameraSynchronizerComponent : MonoBehaviour
     {
         [SerializeField] private string destination = "127.0.0.1";
         [SerializeField] private int port = 9000;
         [SerializeField] private float exposure = Exposure.DefaultValue;
-        [SerializeField] private float aperture = Aperture.DefaultValue;
         [SerializeField] private float hue = Hue.DefaultValue;
         [SerializeField] private float saturation = Saturation.DefaultValue;
         [SerializeField] private float lightness = Lightness.DefaultValue;
         [SerializeField] private float lookAtMeXOffset = LookAtMeXOffset.DefaultValue;
         [SerializeField] private float lookAtMeYOffset = LookAtMeYOffset.DefaultValue;
-        [SerializeField] private float focalDistance = FocalDistance.DefaultValue;
         [SerializeField] private float flySpeed = FlySpeed.DefaultValue;
         [SerializeField] private float turnSpeed = TurnSpeed.DefaultValue;
         [SerializeField] private float smoothingStrength = SmoothingStrength.DefaultValue;
@@ -42,6 +41,12 @@ namespace JessiQa
                 _vrcCamera = new VRCCamera(cameraComponent);
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
+                
+                // Send all initial values on play mode start
+                if (Application.isPlaying)
+                {
+                    SendInitialValues();
+                }
             }
             catch (Exception ex)
             {
@@ -61,47 +66,45 @@ namespace JessiQa
         private void FixedUpdate()
         {
             // NOTE: Use FixedUpdate to reduce the frequency of updates
-            if (_vrcCamera != null)
-            {
-                // Update Zoom from Camera component (reactive)
-                _vrcCamera.UpdateFromCamera();
-                
-                // Update other properties (still using old method for now)
-                _vrcCamera.Exposure = new Exposure(exposure);
-                _vrcCamera.Hue = new Hue(hue);
-                _vrcCamera.Saturation = new Saturation(saturation);
-                _vrcCamera.Lightness = new Lightness(lightness);
-                _vrcCamera.LookAtMeOffset = new LookAtMeOffset(lookAtMeXOffset, lookAtMeYOffset);
-                _vrcCamera.FlySpeed = new FlySpeed(flySpeed);
-                _vrcCamera.TurnSpeed = new TurnSpeed(turnSpeed);
-                _vrcCamera.SmoothingStrength = new SmoothingStrength(smoothingStrength);
-                _vrcCamera.PhotoRate = new PhotoRate(photoRate);
-                _vrcCamera.Duration = new Duration(duration);
-                // Aperture and FocalDistance are now automatically synced from Camera component
-                
-                // Update display values for Inspector
-                var camera = GetComponent<Camera>();
-                if (camera != null)
-                {
-                    aperture = camera.aperture;
-                    focalDistance = camera.focusDistance;
-                }
-            }
+            if (_vrcCamera == null) return;
 
-            _synchronizer?.Sync();
+            // Update camera-tracked values (Zoom, FocalDistance, Aperture)
+            _vrcCamera.UpdateFromCamera();
+
+            // Update other parameters via setter methods
+            _vrcCamera.SetExposure(exposure);
+            _vrcCamera.SetHue(hue);
+            _vrcCamera.SetSaturation(saturation);
+            _vrcCamera.SetLightness(lightness);
+            _vrcCamera.SetLookAtMeOffset(lookAtMeXOffset, lookAtMeYOffset);
+            _vrcCamera.SetFlySpeed(flySpeed);
+            _vrcCamera.SetTurnSpeed(turnSpeed);
+            _vrcCamera.SetSmoothingStrength(smoothingStrength);
+            _vrcCamera.SetPhotoRate(photoRate);
+            _vrcCamera.SetDuration(duration);
         }
         
-#if UNITY_EDITOR
-        private void OnValidate()
+        private void SendInitialValues()
         {
-            // In Editor, update display values when component changes
-            var camera = GetComponent<Camera>();
-            if (camera != null)
-            {
-                aperture = camera.aperture;
-                focalDistance = camera.focusDistance;
-            }
+            if (_vrcCamera == null || _synchronizer == null) return;
+            
+            // Update camera-tracked values first
+            _vrcCamera.UpdateFromCamera();
+            
+            // Set all parameter values
+            _vrcCamera.SetExposure(exposure);
+            _vrcCamera.SetHue(hue);
+            _vrcCamera.SetSaturation(saturation);
+            _vrcCamera.SetLightness(lightness);
+            _vrcCamera.SetLookAtMeOffset(lookAtMeXOffset, lookAtMeYOffset);
+            _vrcCamera.SetFlySpeed(flySpeed);
+            _vrcCamera.SetTurnSpeed(turnSpeed);
+            _vrcCamera.SetSmoothingStrength(smoothingStrength);
+            _vrcCamera.SetPhotoRate(photoRate);
+            _vrcCamera.SetDuration(duration);
+            
+            // Force send all values using Sync
+            _synchronizer.Sync();
         }
-#endif
     }
 }

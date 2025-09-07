@@ -1,7 +1,8 @@
 using System;
 using OscJack;
+using OSC;
 
-namespace JessiQa
+namespace VRCCamera
 {
     public class OSCJackTransmitter : IOSCTransmitter
     {

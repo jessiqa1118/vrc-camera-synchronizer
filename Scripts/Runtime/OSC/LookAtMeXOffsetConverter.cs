@@ -1,4 +1,7 @@
-namespace JessiQa
+using OSC;
+using Parameters;
+
+namespace VRCCamera
 {
     public class LookAtMeXOffsetConverter : IOSCMessageConverter<LookAtMeXOffset>
     {

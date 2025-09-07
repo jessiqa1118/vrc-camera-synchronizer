@@ -1,6 +1,6 @@
 using System;
 
-namespace JessiQa
+namespace OSC
 {
     public readonly struct Argument : IEquatable<Argument>
     {

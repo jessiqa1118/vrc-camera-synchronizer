@@ -1,4 +1,6 @@
-namespace JessiQa
+using OSC;
+
+namespace VRCCamera
 {
     public static class OSCCameraEndpoints
     {

@@ -1,7 +1,9 @@
 using NUnit.Framework;
+using Parameters;
+using OSC;
 using UnityEngine;
 
-namespace JessiQa.Tests.Unit
+namespace VRCCamera.Tests.Unit
 {
     [TestFixture]
     public class TurnSpeedUnitTests

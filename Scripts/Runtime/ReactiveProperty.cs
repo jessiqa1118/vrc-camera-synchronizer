@@ -1,6 +1,6 @@
 using System;
 
-namespace JessiQa
+namespace VRCCamera
 {
     /// <summary>
     /// Reactive property that notifies when value changes

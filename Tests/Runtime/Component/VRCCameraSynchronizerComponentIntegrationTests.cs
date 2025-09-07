@@ -1,10 +1,12 @@
 using System;
+using Parameters;
+using OSC;
 using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace JessiQa.Tests.Integration
+namespace VRCCamera.Tests.Integration
 {
     [TestFixture]
     public class VRCCameraSynchronizerComponentIntegrationTests

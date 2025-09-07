@@ -1,7 +1,8 @@
 using UnityEditor;
 using UnityEngine;
+using Parameters;
 
-namespace JessiQa.Editor
+namespace VRCCamera.Editor
 {
     [CustomEditor(typeof(VRCCameraSynchronizerComponent))]
     public class VRCCameraSynchronizerComponentEditor : UnityEditor.Editor
@@ -9,13 +10,11 @@ namespace JessiQa.Editor
         private SerializedProperty _destination;
         private SerializedProperty _port;
         private SerializedProperty _exposure;
-        private SerializedProperty _aperture;
         private SerializedProperty _hue;
         private SerializedProperty _saturation;
         private SerializedProperty _lightness;
         private SerializedProperty _lookAtMeXOffset;
         private SerializedProperty _lookAtMeYOffset;
-        private SerializedProperty _focalDistance;
         private SerializedProperty _flySpeed;
         private SerializedProperty _turnSpeed;
         private SerializedProperty _smoothingStrength;
@@ -27,13 +26,11 @@ namespace JessiQa.Editor
             _destination = serializedObject.FindProperty("destination");
             _port = serializedObject.FindProperty("port");
             _exposure = serializedObject.FindProperty("exposure");
-            _aperture = serializedObject.FindProperty("aperture");
             _hue = serializedObject.FindProperty("hue");
             _saturation = serializedObject.FindProperty("saturation");
             _lightness = serializedObject.FindProperty("lightness");
             _lookAtMeXOffset = serializedObject.FindProperty("lookAtMeXOffset");
             _lookAtMeYOffset = serializedObject.FindProperty("lookAtMeYOffset");
-            _focalDistance = serializedObject.FindProperty("focalDistance");
             _flySpeed = serializedObject.FindProperty("flySpeed");
             _turnSpeed = serializedObject.FindProperty("turnSpeed");
             _smoothingStrength = serializedObject.FindProperty("smoothingStrength");
@@ -112,10 +109,6 @@ namespace JessiQa.Editor
             
             if (camera != null)
             {
-                // Update the properties with current camera values (clamped)
-                _aperture.floatValue = Mathf.Clamp(camera.aperture, Aperture.MinValue, Aperture.MaxValue);
-                _focalDistance.floatValue = Mathf.Clamp(camera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
-                
                 GUI.enabled = false; // Make read-only
                 
                 // Zoom (focal length) - clamp the display value
