@@ -20,6 +20,7 @@ namespace JessiQa
         private readonly TurnSpeedConverter _turnSpeedConverter = new();
         private readonly SmoothingStrengthConverter _smoothingStrengthConverter = new();
         private readonly PhotoRateConverter _photoRateConverter = new();
+        private readonly DurationConverter _durationConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -83,6 +84,10 @@ namespace JessiQa
             // Send PhotoRate
             var photoRateMessage = _photoRateConverter.ToOSCMessage(_vrcCamera.PhotoRate);
             _transmitter.Send(photoRateMessage);
+            
+            // Send Duration
+            var durationMessage = _durationConverter.ToOSCMessage(_vrcCamera.Duration);
+            _transmitter.Send(durationMessage);
         }
 
         public void Dispose()

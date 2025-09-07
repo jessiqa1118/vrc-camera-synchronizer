@@ -20,6 +20,7 @@ namespace JessiQa.Editor
         private SerializedProperty _turnSpeed;
         private SerializedProperty _smoothingStrength;
         private SerializedProperty _photoRate;
+        private SerializedProperty _duration;
 
         private void OnEnable()
         {
@@ -37,6 +38,7 @@ namespace JessiQa.Editor
             _turnSpeed = serializedObject.FindProperty("turnSpeed");
             _smoothingStrength = serializedObject.FindProperty("smoothingStrength");
             _photoRate = serializedObject.FindProperty("photoRate");
+            _duration = serializedObject.FindProperty("duration");
         }
 
         public override void OnInspectorGUI()
@@ -103,6 +105,7 @@ namespace JessiQa.Editor
             // Photo Settings
             EditorGUILayout.LabelField("Photo", EditorStyles.boldLabel);
             EditorGUILayout.Slider(_photoRate, PhotoRate.MinValue, PhotoRate.MaxValue, "Photo Rate");
+            EditorGUILayout.Slider(_duration, Duration.MinValue, Duration.MaxValue, "Duration");
             
             EditorGUILayout.Space();
             
