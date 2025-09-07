@@ -92,7 +92,7 @@ namespace JessiQa.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            Assert.AreEqual(4, _mockTransmitter.SendCallCount); // zoom, exposure, focal distance, aperture
+            Assert.AreEqual(5, _mockTransmitter.SendCallCount); // zoom, exposure, focal distance, aperture, hue
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
         }
         
@@ -106,8 +106,8 @@ namespace JessiQa.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Should send 4 messages (zoom, exposure, focal distance, and aperture)
-            Assert.AreEqual(4, _mockTransmitter.SendCallCount);
+            // Should send 5 messages (zoom, exposure, focal distance, aperture, and hue)
+            Assert.AreEqual(5, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             
             var message = _mockTransmitter.LastSentMessage.Value;
@@ -131,7 +131,7 @@ namespace JessiQa.Tests.Unit
             var secondCallCount = _mockTransmitter.SendCallCount;
             
             // Assert
-            Assert.AreEqual(4, secondCallCount); // 4 messages per Sync call
+            Assert.AreEqual(5, secondCallCount); // 5 messages per Sync call
         }
         
         [Test]
