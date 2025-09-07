@@ -82,15 +82,9 @@ namespace JessiQa.Editor
             // LookAtMe Parameters
             EditorGUILayout.LabelField("LookAtMe", EditorStyles.boldLabel);
             
-            // Use Vector2Field for X/Y offset
-            Vector2 lookAtMeOffset = new Vector2(_lookAtMeXOffset.floatValue, _lookAtMeYOffset.floatValue);
-            EditorGUI.BeginChangeCheck();
-            lookAtMeOffset = EditorGUILayout.Vector2Field("Offset", lookAtMeOffset);
-            if (EditorGUI.EndChangeCheck())
-            {
-                _lookAtMeXOffset.floatValue = Mathf.Clamp(lookAtMeOffset.x, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue);
-                _lookAtMeYOffset.floatValue = Mathf.Clamp(lookAtMeOffset.y, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue);
-            }
+            // Use sliders for X/Y offset
+            EditorGUILayout.Slider(_lookAtMeXOffset, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue, "X Offset");
+            EditorGUILayout.Slider(_lookAtMeYOffset, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue, "Y Offset");
             
             EditorGUILayout.Space();
             

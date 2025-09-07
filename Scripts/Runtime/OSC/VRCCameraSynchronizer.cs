@@ -62,11 +62,11 @@ namespace JessiQa
             _transmitter.Send(lightnessMessage);
             
             // Send LookAtMe X offset
-            var lookAtMeXMessage = _lookAtMeXOffsetConverter.ToOSCMessage(_vrcCamera.LookAtMeXOffset);
+            var lookAtMeXMessage = _lookAtMeXOffsetConverter.ToOSCMessage(_vrcCamera.LookAtMeOffset.X);
             _transmitter.Send(lookAtMeXMessage);
             
             // Send LookAtMe Y offset
-            var lookAtMeYMessage = _lookAtMeYOffsetConverter.ToOSCMessage(_vrcCamera.LookAtMeYOffset);
+            var lookAtMeYMessage = _lookAtMeYOffsetConverter.ToOSCMessage(_vrcCamera.LookAtMeOffset.Y);
             _transmitter.Send(lookAtMeYMessage);
             
             // Send FlySpeed

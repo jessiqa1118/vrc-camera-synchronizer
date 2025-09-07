@@ -67,8 +67,7 @@ namespace JessiQa
                 _vrcCamera.Hue = new Hue(hue);
                 _vrcCamera.Saturation = new Saturation(saturation);
                 _vrcCamera.Lightness = new Lightness(lightness);
-                _vrcCamera.LookAtMeXOffset = new LookAtMeXOffset(lookAtMeXOffset);
-                _vrcCamera.LookAtMeYOffset = new LookAtMeYOffset(lookAtMeYOffset);
+                _vrcCamera.LookAtMeOffset = new LookAtMeOffset(lookAtMeXOffset, lookAtMeYOffset);
                 _vrcCamera.FlySpeed = new FlySpeed(flySpeed);
                 _vrcCamera.TurnSpeed = new TurnSpeed(turnSpeed);
                 _vrcCamera.SmoothingStrength = new SmoothingStrength(smoothingStrength);

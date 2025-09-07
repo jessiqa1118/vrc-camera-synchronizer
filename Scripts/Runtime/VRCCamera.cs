@@ -22,9 +22,7 @@ namespace JessiQa
         
         public Lightness Lightness { get; set; }
         
-        public LookAtMeXOffset LookAtMeXOffset { get; set; }
-        
-        public LookAtMeYOffset LookAtMeYOffset { get; set; }
+        public LookAtMeOffset LookAtMeOffset { get; set; }
         
         public FlySpeed FlySpeed { get; set; }
         
@@ -43,8 +41,7 @@ namespace JessiQa
             Hue = new Hue();
             Saturation = new Saturation();
             Lightness = new Lightness();
-            LookAtMeXOffset = new LookAtMeXOffset();
-            LookAtMeYOffset = new LookAtMeYOffset();
+            LookAtMeOffset = new LookAtMeOffset(new LookAtMeXOffset(), new LookAtMeYOffset());
             FlySpeed = new FlySpeed();
             TurnSpeed = new TurnSpeed();
             SmoothingStrength = new SmoothingStrength();
