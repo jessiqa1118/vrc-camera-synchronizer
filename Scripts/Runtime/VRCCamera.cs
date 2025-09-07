@@ -12,6 +12,9 @@ namespace JessiQa
         
         // Both Unity and VRChat use meters, range 0-10m
         public FocalDistance FocalDistance => new(_camera.focusDistance);
+        
+        // Sync with Unity's Camera.aperture
+        public Aperture Aperture => new(_camera.aperture);
 
         public VRCCamera(Camera camera)
         {

@@ -10,6 +10,7 @@ namespace JessiQa
         [SerializeField] private string destination = "127.0.0.1";
         [SerializeField] private int port = 9000;
         [SerializeField] private float exposure = Exposure.DefaultValue;
+        [SerializeField] private float aperture = Aperture.DefaultValue;
         [SerializeField] private float focalDistance = FocalDistance.DefaultValue;
 
         private VRCCameraSynchronizer _synchronizer;
@@ -53,12 +54,13 @@ namespace JessiQa
             if (_vrcCamera != null)
             {
                 _vrcCamera.Exposure = new Exposure(exposure);
-                // FocalDistance is now automatically synced from Camera.focusDistance
+                // Aperture and FocalDistance are now automatically synced from Camera component
                 
-                // Update display value for Inspector
+                // Update display values for Inspector
                 var camera = GetComponent<Camera>();
                 if (camera != null)
                 {
+                    aperture = camera.aperture;
                     focalDistance = camera.focusDistance;
                 }
             }
@@ -69,10 +71,11 @@ namespace JessiQa
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            // In Editor, update display value when component changes
+            // In Editor, update display values when component changes
             var camera = GetComponent<Camera>();
             if (camera != null)
             {
+                aperture = camera.aperture;
                 focalDistance = camera.focusDistance;
             }
         }

@@ -9,6 +9,7 @@ namespace JessiQa.Editor
         private SerializedProperty _destination;
         private SerializedProperty _port;
         private SerializedProperty _exposure;
+        private SerializedProperty _aperture;
         private SerializedProperty _focalDistance;
 
         private void OnEnable()
@@ -16,6 +17,7 @@ namespace JessiQa.Editor
             _destination = serializedObject.FindProperty("destination");
             _port = serializedObject.FindProperty("port");
             _exposure = serializedObject.FindProperty("exposure");
+            _aperture = serializedObject.FindProperty("aperture");
             _focalDistance = serializedObject.FindProperty("focalDistance");
         }
 
@@ -43,12 +45,8 @@ namespace JessiQa.Editor
             
             if (camera != null)
             {
-                EditorGUILayout.HelpBox(
-                    "These values are synced from the Camera component. " +
-                    "Modify Camera.focalLength and Camera.focusDistance to change them.",
-                    MessageType.Info);
-                
-                // Update the focal distance property with current camera value (clamped)
+                // Update the properties with current camera values (clamped)
+                _aperture.floatValue = Mathf.Clamp(camera.aperture, Aperture.MinValue, Aperture.MaxValue);
                 _focalDistance.floatValue = Mathf.Clamp(camera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
                 
                 GUI.enabled = false; // Make read-only
@@ -56,6 +54,10 @@ namespace JessiQa.Editor
                 // Zoom (focal length) - clamp the display value
                 float clampedZoom = Mathf.Clamp(camera.focalLength, Zoom.MinValue, Zoom.MaxValue);
                 EditorGUILayout.Slider("Zoom (Focal Length)", clampedZoom, Zoom.MinValue, Zoom.MaxValue);
+                
+                // Aperture - clamp the display value
+                float clampedAperture = Mathf.Clamp(camera.aperture, Aperture.MinValue, Aperture.MaxValue);
+                EditorGUILayout.Slider("Aperture", clampedAperture, Aperture.MinValue, Aperture.MaxValue);
                 
                 // Focal Distance - clamp the display value
                 float clampedFocalDistance = Mathf.Clamp(camera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
