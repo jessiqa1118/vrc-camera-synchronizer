@@ -17,12 +17,15 @@ namespace JessiQa
         public Aperture Aperture => new(_camera.aperture);
         
         public Hue Hue { get; set; }
+        
+        public Saturation Saturation { get; set; }
 
         public VRCCamera(Camera camera)
         {
             _camera = camera ?? throw new System.ArgumentNullException(nameof(camera));
             Exposure = new Exposure();
             Hue = new Hue();
+            Saturation = new Saturation();
         }
     }
 }

@@ -12,6 +12,7 @@ namespace JessiQa
         private readonly FocalDistanceConverter _focalDistanceConverter = new();
         private readonly ApertureConverter _apertureConverter = new();
         private readonly HueConverter _hueConverter = new();
+        private readonly SaturationConverter _saturationConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -43,6 +44,10 @@ namespace JessiQa
             // Send hue
             var hueMessage = _hueConverter.ToOSCMessage(_vrcCamera.Hue);
             _transmitter.Send(hueMessage);
+            
+            // Send saturation
+            var saturationMessage = _saturationConverter.ToOSCMessage(_vrcCamera.Saturation);
+            _transmitter.Send(saturationMessage);
         }
 
         public void Dispose()
