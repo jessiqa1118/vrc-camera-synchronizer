@@ -11,7 +11,7 @@ namespace JessiQa
             }
             
             // Validate arguments exist and count
-            if (message.Arguments == null || message.Arguments.Length != 1)
+            if (message.Arguments is not { Length: 1 })
             {
                 return new Zoom(Zoom.MinValue);
             }

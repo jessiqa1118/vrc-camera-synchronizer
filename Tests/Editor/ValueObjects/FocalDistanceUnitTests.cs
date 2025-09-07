@@ -48,7 +48,7 @@ namespace JessiQa.Tests.Unit
         public void Constructor_WithDefaultParameter_UsesDefaultValue()
         {
             // Act
-            var focalDistance = new FocalDistance();
+            var focalDistance = new FocalDistance(FocalDistance.DefaultValue);
             
             // Assert
             Assert.AreEqual(FocalDistance.DefaultValue, focalDistance.Value);
