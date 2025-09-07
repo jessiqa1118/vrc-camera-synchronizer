@@ -17,6 +17,7 @@ namespace JessiQa.Editor
         private SerializedProperty _lookAtMeYOffset;
         private SerializedProperty _focalDistance;
         private SerializedProperty _flySpeed;
+        private SerializedProperty _turnSpeed;
 
         private void OnEnable()
         {
@@ -31,6 +32,7 @@ namespace JessiQa.Editor
             _lookAtMeYOffset = serializedObject.FindProperty("lookAtMeYOffset");
             _focalDistance = serializedObject.FindProperty("focalDistance");
             _flySpeed = serializedObject.FindProperty("flySpeed");
+            _turnSpeed = serializedObject.FindProperty("turnSpeed");
         }
 
         public override void OnInspectorGUI()
@@ -86,9 +88,10 @@ namespace JessiQa.Editor
             
             EditorGUILayout.Space();
             
-            // FlySpeed
+            // Movement Parameters
             EditorGUILayout.LabelField("Movement", EditorStyles.boldLabel);
             EditorGUILayout.Slider(_flySpeed, FlySpeed.MinValue, FlySpeed.MaxValue, "Fly Speed");
+            EditorGUILayout.Slider(_turnSpeed, TurnSpeed.MinValue, TurnSpeed.MaxValue, "Turn Speed");
             
             EditorGUILayout.Space();
             
