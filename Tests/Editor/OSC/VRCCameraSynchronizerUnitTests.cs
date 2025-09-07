@@ -10,7 +10,7 @@ namespace JessiQa.Tests.Unit
         private class MockTransmitter : IOSCTransmitter
         {
             public Message? LastSentMessage { get; private set; }
-            public int SendCallCount { get; set; }  // Made setter public for test reset
+            public int SendCallCount { get; private set; }
             public bool IsDisposed { get; private set; }
             
             public void Send(Message message)
@@ -20,6 +20,12 @@ namespace JessiQa.Tests.Unit
                     
                 LastSentMessage = message;
                 SendCallCount++;
+            }
+            
+            public void Reset()
+            {
+                SendCallCount = 0;
+                LastSentMessage = null;
             }
             
             public void Dispose()
@@ -124,7 +130,7 @@ namespace JessiQa.Tests.Unit
             // Arrange & Act
             _camera.focalLength = 20f;
             _synchronizer.Sync();
-            _mockTransmitter.SendCallCount = 0; // Reset count
+            _mockTransmitter.Reset(); // Reset mock state
             
             _camera.focalLength = 80f;
             _synchronizer.Sync();
