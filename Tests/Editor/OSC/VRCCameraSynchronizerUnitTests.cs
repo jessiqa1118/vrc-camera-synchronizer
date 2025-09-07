@@ -90,18 +90,38 @@ namespace VRCCamera.Tests.Unit
         }
         
         [Test]
+        public void Constructor_SendsInitialValues()
+        {
+            // Arrange
+            var mockTransmitter = new MockTransmitter();
+            var camera = new GameObject("TestCamera").AddComponent<Camera>();
+            var vrcCamera = new VRCCamera(camera);
+            
+            // Act
+            var synchronizer = new VRCCameraSynchronizer(mockTransmitter, vrcCamera);
+            
+            // Assert - Constructor should send all 14 initial values
+            Assert.AreEqual(14, mockTransmitter.SendCallCount);
+            
+            // Cleanup
+            synchronizer.Dispose();
+            UnityEngine.Object.DestroyImmediate(camera.gameObject);
+        }
+        
+        [Test]
         public void Sync_ForceSendsAllMessages()
         {
             // Arrange
+            _mockTransmitter.Reset(); // Reset to clear initial sync messages
             _camera.focalLength = 50f;
-            _vrcCamera.SetExposure(-2.5f);
+            _vrcCamera.SetExposure(new Exposure(-2.5f));
             
             // Act
             _synchronizer.Sync();
             
             // Assert
-            // Sync now force sends all 14 parameters (zoom, exposure, focal distance, aperture, hue, saturation, lightness, lookAtMeXOffset, lookAtMeYOffset, flySpeed, turnSpeed, smoothingStrength, photoRate, duration)
-            Assert.AreEqual(14, _mockTransmitter.SendCallCount);
+            // Sync now force sends all 14 parameters + 1 from SetExposure = 15
+            Assert.AreEqual(15, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
         }
         
@@ -109,6 +129,7 @@ namespace VRCCamera.Tests.Unit
         public void Sync_ForceSendsAllValues()
         {
             // Arrange
+            _mockTransmitter.Reset(); // Reset to clear initial sync messages
             _camera.focalLength = 35f;
             
             // Act
@@ -126,7 +147,10 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void Sync_WithDifferentFocalLengths_SendsDifferentValues()
         {
-            // Arrange & Act
+            // Arrange
+            _mockTransmitter.Reset(); // Reset to clear initial sync messages
+            
+            // Act
             _camera.focalLength = 20f;
             _synchronizer.Sync();
             _mockTransmitter.Reset(); // Reset mock state
@@ -211,7 +235,7 @@ namespace VRCCamera.Tests.Unit
             _mockTransmitter.Reset();
             
             // Act
-            _vrcCamera.SetExposure(-5f);
+            _vrcCamera.SetExposure(new Exposure(-5f));
             
             // Assert - Should send only one message for the exposure change
             Assert.AreEqual(1, _mockTransmitter.SendCallCount);
@@ -226,7 +250,7 @@ namespace VRCCamera.Tests.Unit
             var currentExposure = _vrcCamera.Exposure.Value;
             
             // Act - Set same value
-            _vrcCamera.SetExposure(currentExposure.Value);
+            _vrcCamera.SetExposure(currentExposure);
             
             // Assert - Should not send any message
             Assert.AreEqual(0, _mockTransmitter.SendCallCount);

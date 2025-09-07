@@ -57,83 +57,81 @@ namespace VRCCamera
         /// <summary>
         /// Sets Exposure value reactively
         /// </summary>
-        public void SetExposure(float value)
+        public void SetExposure(Exposure exposure)
         {
-            Exposure.SetValue(new Exposure(value));
+            Exposure.SetValue(exposure);
         }
         
         /// <summary>
         /// Sets Hue value reactively
         /// </summary>
-        public void SetHue(float value)
+        public void SetHue(Hue hue)
         {
-            Hue.SetValue(new Hue(value));
+            Hue.SetValue(hue);
         }
         
         /// <summary>
         /// Sets Saturation value reactively
         /// </summary>
-        public void SetSaturation(float value)
+        public void SetSaturation(Saturation saturation)
         {
-            Saturation.SetValue(new Saturation(value));
+            Saturation.SetValue(saturation);
         }
         
         /// <summary>
         /// Sets Lightness value reactively
         /// </summary>
-        public void SetLightness(float value)
+        public void SetLightness(Lightness lightness)
         {
-            Lightness.SetValue(new Lightness(value));
+            Lightness.SetValue(lightness);
         }
         
         /// <summary>
         /// Sets LookAtMeOffset values reactively
         /// </summary>
-        public void SetLookAtMeOffset(float x, float y)
+        public void SetLookAtMeOffset(LookAtMeOffset lookAtMeOffset)
         {
-            LookAtMeOffset.SetValue(new LookAtMeOffset(
-                new LookAtMeXOffset(x),
-                new LookAtMeYOffset(y)));
+            LookAtMeOffset.SetValue(lookAtMeOffset);
         }
         
         /// <summary>
         /// Sets FlySpeed value reactively
         /// </summary>
-        public void SetFlySpeed(float value)
+        public void SetFlySpeed(FlySpeed flySpeed)
         {
-            FlySpeed.SetValue(new FlySpeed(value));
+            FlySpeed.SetValue(flySpeed);
         }
         
         /// <summary>
         /// Sets TurnSpeed value reactively
         /// </summary>
-        public void SetTurnSpeed(float value)
+        public void SetTurnSpeed(TurnSpeed turnSpeed)
         {
-            TurnSpeed.SetValue(new TurnSpeed(value));
+            TurnSpeed.SetValue(turnSpeed);
         }
         
         /// <summary>
         /// Sets SmoothingStrength value reactively
         /// </summary>
-        public void SetSmoothingStrength(float value)
+        public void SetSmoothingStrength(SmoothingStrength smoothingStrength)
         {
-            SmoothingStrength.SetValue(new SmoothingStrength(value));
+            SmoothingStrength.SetValue(smoothingStrength);
         }
         
         /// <summary>
         /// Sets PhotoRate value reactively
         /// </summary>
-        public void SetPhotoRate(float value)
+        public void SetPhotoRate(PhotoRate photoRate)
         {
-            PhotoRate.SetValue(new PhotoRate(value));
+            PhotoRate.SetValue(photoRate);
         }
         
         /// <summary>
         /// Sets Duration value reactively
         /// </summary>
-        public void SetDuration(float value)
+        public void SetDuration(Duration duration)
         {
-            Duration.SetValue(new Duration(value));
+            Duration.SetValue(duration);
         }
     }
 }

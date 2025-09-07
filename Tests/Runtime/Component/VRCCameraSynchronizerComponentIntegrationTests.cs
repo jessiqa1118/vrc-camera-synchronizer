@@ -216,7 +216,7 @@ namespace VRCCamera.Tests.Integration
             
             if (attributes[0] is AddComponentMenu menuAttribute)
             {
-                Assert.AreEqual("JessiQa/VRC Camera Synchronizer", menuAttribute.componentMenu);
+                Assert.AreEqual("VRCCamera/VRC Camera Synchronizer", menuAttribute.componentMenu);
             }
         }
         

@@ -42,6 +42,9 @@ namespace VRCCamera
             _vrcCamera.SmoothingStrength.OnValueChanged += OnSmoothingStrengthChanged;
             _vrcCamera.PhotoRate.OnValueChanged += OnPhotoRateChanged;
             _vrcCamera.Duration.OnValueChanged += OnDurationChanged;
+            
+            // Send initial values
+            Sync();
         }
         
         private void OnZoomChanged(Zoom zoom)

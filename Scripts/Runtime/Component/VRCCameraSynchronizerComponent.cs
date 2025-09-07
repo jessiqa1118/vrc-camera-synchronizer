@@ -10,6 +10,7 @@ namespace VRCCamera
     {
         [SerializeField] private string destination = "127.0.0.1";
         [SerializeField] private int port = 9000;
+        
         [SerializeField] private float exposure = Exposure.DefaultValue;
         [SerializeField] private float hue = Hue.DefaultValue;
         [SerializeField] private float saturation = Saturation.DefaultValue;
@@ -22,8 +23,8 @@ namespace VRCCamera
         [SerializeField] private float photoRate = PhotoRate.DefaultValue;
         [SerializeField] private float duration = Duration.DefaultValue;
 
-        private VRCCameraSynchronizer _synchronizer;
         private VRCCamera _vrcCamera;
+        private VRCCameraSynchronizer _synchronizer;
 
         private void OnEnable()
         {
@@ -41,12 +42,6 @@ namespace VRCCamera
                 _vrcCamera = new VRCCamera(cameraComponent);
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
-                
-                // Send all initial values on play mode start
-                if (Application.isPlaying)
-                {
-                    SendInitialValues();
-                }
             }
             catch (Exception ex)
             {
@@ -72,39 +67,18 @@ namespace VRCCamera
             _vrcCamera.UpdateFromCamera();
 
             // Update other parameters via setter methods
-            _vrcCamera.SetExposure(exposure);
-            _vrcCamera.SetHue(hue);
-            _vrcCamera.SetSaturation(saturation);
-            _vrcCamera.SetLightness(lightness);
-            _vrcCamera.SetLookAtMeOffset(lookAtMeXOffset, lookAtMeYOffset);
-            _vrcCamera.SetFlySpeed(flySpeed);
-            _vrcCamera.SetTurnSpeed(turnSpeed);
-            _vrcCamera.SetSmoothingStrength(smoothingStrength);
-            _vrcCamera.SetPhotoRate(photoRate);
-            _vrcCamera.SetDuration(duration);
-        }
-        
-        private void SendInitialValues()
-        {
-            if (_vrcCamera == null || _synchronizer == null) return;
-            
-            // Update camera-tracked values first
-            _vrcCamera.UpdateFromCamera();
-            
-            // Set all parameter values
-            _vrcCamera.SetExposure(exposure);
-            _vrcCamera.SetHue(hue);
-            _vrcCamera.SetSaturation(saturation);
-            _vrcCamera.SetLightness(lightness);
-            _vrcCamera.SetLookAtMeOffset(lookAtMeXOffset, lookAtMeYOffset);
-            _vrcCamera.SetFlySpeed(flySpeed);
-            _vrcCamera.SetTurnSpeed(turnSpeed);
-            _vrcCamera.SetSmoothingStrength(smoothingStrength);
-            _vrcCamera.SetPhotoRate(photoRate);
-            _vrcCamera.SetDuration(duration);
-            
-            // Force send all values using Sync
-            _synchronizer.Sync();
+            _vrcCamera.SetExposure(new Exposure(exposure));
+            _vrcCamera.SetHue(new Hue(hue));
+            _vrcCamera.SetSaturation(new Saturation(saturation));
+            _vrcCamera.SetLightness(new Lightness(lightness));
+            _vrcCamera.SetLookAtMeOffset(new LookAtMeOffset(
+                new LookAtMeXOffset(lookAtMeXOffset),
+                new LookAtMeYOffset(lookAtMeYOffset)));
+            _vrcCamera.SetFlySpeed(new FlySpeed(flySpeed));
+            _vrcCamera.SetTurnSpeed(new TurnSpeed(turnSpeed));
+            _vrcCamera.SetSmoothingStrength(new SmoothingStrength(smoothingStrength));
+            _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
+            _vrcCamera.SetDuration(new Duration(duration));
         }
     }
 }
