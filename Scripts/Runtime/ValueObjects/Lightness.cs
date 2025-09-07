@@ -5,13 +5,13 @@ namespace JessiQa
 {
     /// <summary>
     /// Represents camera lightness value for VRChat OSC control (GreenScreen)
-    /// Range: 0-100, Default: 60
+    /// Range: 0-50, Default: 50
     /// </summary>
     public readonly struct Lightness : IEquatable<Lightness>
     {
         public const float MinValue = 0f;
-        public const float MaxValue = 100f;
-        public const float DefaultValue = 60f;
+        public const float MaxValue = 50f;
+        public const float DefaultValue = 50f;
 
         public readonly float Value;
 

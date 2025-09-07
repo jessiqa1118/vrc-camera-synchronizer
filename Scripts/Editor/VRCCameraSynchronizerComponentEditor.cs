@@ -10,6 +10,9 @@ namespace JessiQa.Editor
         private SerializedProperty _port;
         private SerializedProperty _exposure;
         private SerializedProperty _aperture;
+        private SerializedProperty _hue;
+        private SerializedProperty _saturation;
+        private SerializedProperty _lightness;
         private SerializedProperty _focalDistance;
 
         private void OnEnable()
@@ -18,6 +21,9 @@ namespace JessiQa.Editor
             _port = serializedObject.FindProperty("port");
             _exposure = serializedObject.FindProperty("exposure");
             _aperture = serializedObject.FindProperty("aperture");
+            _hue = serializedObject.FindProperty("hue");
+            _saturation = serializedObject.FindProperty("saturation");
+            _lightness = serializedObject.FindProperty("lightness");
             _focalDistance = serializedObject.FindProperty("focalDistance");
         }
 
@@ -33,6 +39,29 @@ namespace JessiQa.Editor
 
             // Camera Parameters
             EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
+            
+            EditorGUILayout.Space();
+            
+            // GreenScreen Parameters
+            EditorGUILayout.LabelField("GreenScreen", EditorStyles.boldLabel);
+            
+            // Color picker only
+            // Map Lightness to V for display
+            Color currentColor = Color.HSVToRGB(
+                _hue.floatValue / Hue.MaxValue, 
+                _saturation.floatValue / Saturation.MaxValue,
+                _lightness.floatValue / Lightness.MaxValue
+            );
+            
+            EditorGUI.BeginChangeCheck();
+            Color newColor = EditorGUILayout.ColorField("GreenScreen Color", currentColor);
+            if (EditorGUI.EndChangeCheck())
+            {
+                Color.RGBToHSV(newColor, out float h, out float s, out float v);
+                _hue.floatValue = h * Hue.MaxValue;
+                _saturation.floatValue = s * Saturation.MaxValue;
+                _lightness.floatValue = v * Lightness.MaxValue;
+            }
             
             EditorGUILayout.Space();
             
