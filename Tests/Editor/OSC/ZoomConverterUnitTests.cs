@@ -17,7 +17,7 @@ namespace JessiQa.Tests.Unit
         public void ToOSCMessage_WithValidZoom_CreatesCorrectMessage()
         {
             // Arrange
-            var zoom = new Zoom(45f);
+            var zoom = new Zoom(45f, true);
             
             // Act
             var message = _converter.ToOSCMessage(zoom);
@@ -34,7 +34,7 @@ namespace JessiQa.Tests.Unit
         public void ToOSCMessage_WithMinValue_CreatesCorrectMessage()
         {
             // Arrange
-            var zoom = new Zoom(Zoom.MinValue);
+            var zoom = new Zoom(Zoom.MinValue, true);
             
             // Act
             var message = _converter.ToOSCMessage(zoom);
@@ -47,7 +47,7 @@ namespace JessiQa.Tests.Unit
         public void ToOSCMessage_WithMaxValue_CreatesCorrectMessage()
         {
             // Arrange
-            var zoom = new Zoom(Zoom.MaxValue);
+            var zoom = new Zoom(Zoom.MaxValue, true);
             
             // Act
             var message = _converter.ToOSCMessage(zoom);
@@ -135,7 +135,7 @@ namespace JessiQa.Tests.Unit
         public void RoundTrip_PreservesValue()
         {
             // Arrange
-            var originalZoom = new Zoom(90f);
+            var originalZoom = new Zoom(90f, true);
             
             // Act
             var message = _converter.ToOSCMessage(originalZoom);

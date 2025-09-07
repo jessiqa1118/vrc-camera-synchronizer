@@ -6,6 +6,16 @@ namespace JessiQa.Tests.Unit
     public class LightnessUnitTests
     {
         [Test]
+        public void Constructor_WithDefaultValue_UsesLightnessDefaultValue()
+        {
+            // Act
+            var lightness = new Lightness(Lightness.DefaultValue);
+            
+            // Assert
+            Assert.AreEqual(Lightness.DefaultValue, lightness.Value);
+        }
+        
+        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
             // Arrange
@@ -62,17 +72,17 @@ namespace JessiQa.Tests.Unit
         }
         
         [Test]
-        public void MaxValue_Is_OneHundred()
+        public void MaxValue_Is_Fifty()
         {
             // Assert
-            Assert.AreEqual(100f, Lightness.MaxValue);
+            Assert.AreEqual(50f, Lightness.MaxValue);
         }
         
         [Test]
-        public void DefaultValue_Is_Sixty()
+        public void DefaultValue_Is_Fifty()
         {
             // Assert
-            Assert.AreEqual(60f, Lightness.DefaultValue);
+            Assert.AreEqual(50f, Lightness.DefaultValue);
         }
         
         [Test]
@@ -108,8 +118,8 @@ namespace JessiQa.Tests.Unit
         public void Equality_WithSmallDifference_AreEqual()
         {
             // Arrange
-            var lightness1 = new Lightness(50.0f);
-            var lightness2 = new Lightness(50.0f + UnityEngine.Mathf.Epsilon);
+            var lightness1 = new Lightness(30.0f);
+            var lightness2 = new Lightness(30.0f + UnityEngine.Mathf.Epsilon);
             
             // Act & Assert
             Assert.AreEqual(lightness1, lightness2);
@@ -120,8 +130,8 @@ namespace JessiQa.Tests.Unit
         public void Equality_WithLargerDifference_AreNotEqual()
         {
             // Arrange
-            var lightness1 = new Lightness(50.0f);
-            var lightness2 = new Lightness(50.01f);
+            var lightness1 = new Lightness(30.0f);
+            var lightness2 = new Lightness(30.01f);
             
             // Act & Assert
             Assert.AreNotEqual(lightness1, lightness2);
@@ -132,13 +142,13 @@ namespace JessiQa.Tests.Unit
         public void ImplicitFloatConversion_ReturnsValue()
         {
             // Arrange
-            var lightness = new Lightness(70f);
+            var lightness = new Lightness(35f);
             
             // Act
             float value = lightness;
             
             // Assert
-            Assert.AreEqual(70f, value);
+            Assert.AreEqual(35f, value);
         }
         
         [Test]
@@ -156,11 +166,11 @@ namespace JessiQa.Tests.Unit
         }
         
         [TestCase(0f)]
+        [TestCase(10f)]
         [TestCase(20f)]
+        [TestCase(30f)]
         [TestCase(40f)]
-        [TestCase(60f)]
-        [TestCase(80f)]
-        [TestCase(100f)]
+        [TestCase(50f)]
         public void Constructor_WithValidRangeValues_StoresCorrectly(float value)
         {
             // Act

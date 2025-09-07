@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public Hue(float value = DefaultValue)
+        public Hue(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

@@ -6,6 +6,16 @@ namespace JessiQa.Tests.Unit
     public class ApertureUnitTests
     {
         [Test]
+        public void Constructor_WithDefaultValue_UsesApertureDefaultValue()
+        {
+            // Act
+            var aperture = new Aperture(Aperture.DefaultValue);
+            
+            // Assert
+            Assert.AreEqual(Aperture.DefaultValue, aperture.Value);
+        }
+        
+        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
             // Arrange

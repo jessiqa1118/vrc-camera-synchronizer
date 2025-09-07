@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public Lightness(float value = DefaultValue)
+        public Lightness(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

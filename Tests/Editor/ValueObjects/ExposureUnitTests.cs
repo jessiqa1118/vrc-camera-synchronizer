@@ -6,6 +6,16 @@ namespace JessiQa.Tests.Unit
     public class ExposureUnitTests
     {
         [Test]
+        public void Constructor_WithDefaultValue_UsesExposureDefaultValue()
+        {
+            // Act
+            var exposure = new Exposure(Exposure.DefaultValue);
+            
+            // Assert
+            Assert.AreEqual(Exposure.DefaultValue, exposure.Value);
+        }
+        
+        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
             // Arrange

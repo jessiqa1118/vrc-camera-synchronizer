@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public Saturation(float value = DefaultValue)
+        public Saturation(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public TurnSpeed(float value = DefaultValue)
+        public TurnSpeed(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

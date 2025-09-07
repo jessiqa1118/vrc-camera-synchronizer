@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public FlySpeed(float value = DefaultValue)
+        public FlySpeed(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

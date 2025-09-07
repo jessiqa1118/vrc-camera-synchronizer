@@ -10,7 +10,7 @@ namespace JessiQa.Tests.Unit
         public void Constructor_WithDefaultValue_UsesPhotoRateDefaultValue()
         {
             // Act
-            var photoRate = new PhotoRate();
+            var photoRate = new PhotoRate(PhotoRate.DefaultValue);
             
             // Assert
             Assert.AreEqual(PhotoRate.DefaultValue, photoRate.Value);

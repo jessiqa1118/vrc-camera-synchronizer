@@ -10,7 +10,7 @@ namespace JessiQa.Tests.Unit
         public void Constructor_WithDefaultValue_UsesTurnSpeedDefaultValue()
         {
             // Act
-            var turnSpeed = new TurnSpeed();
+            var turnSpeed = new TurnSpeed(TurnSpeed.DefaultValue);
             
             // Assert
             Assert.AreEqual(TurnSpeed.DefaultValue, turnSpeed.Value);

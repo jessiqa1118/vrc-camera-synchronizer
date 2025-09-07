@@ -6,6 +6,16 @@ namespace JessiQa.Tests.Unit
     public class SaturationUnitTests
     {
         [Test]
+        public void Constructor_WithDefaultValue_UsesSaturationDefaultValue()
+        {
+            // Act
+            var saturation = new Saturation(Saturation.DefaultValue);
+            
+            // Assert
+            Assert.AreEqual(Saturation.DefaultValue, saturation.Value);
+        }
+        
+        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
             // Arrange

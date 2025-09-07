@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public LookAtMeYOffset(float value = DefaultValue)
+        public LookAtMeYOffset(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

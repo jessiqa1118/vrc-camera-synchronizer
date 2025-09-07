@@ -6,7 +6,7 @@ namespace JessiQa
     {
         private readonly Camera _camera;
 
-        public Zoom Zoom => new(_camera.focalLength);
+        public Zoom Zoom => new(_camera.focalLength, true);
 
         public Exposure Exposure { get; set; }
         
@@ -37,16 +37,16 @@ namespace JessiQa
         public VRCCamera(Camera camera)
         {
             _camera = camera ?? throw new System.ArgumentNullException(nameof(camera));
-            Exposure = new Exposure();
-            Hue = new Hue();
-            Saturation = new Saturation();
-            Lightness = new Lightness();
-            LookAtMeOffset = new LookAtMeOffset(new LookAtMeXOffset(), new LookAtMeYOffset());
-            FlySpeed = new FlySpeed();
-            TurnSpeed = new TurnSpeed();
-            SmoothingStrength = new SmoothingStrength();
-            PhotoRate = new PhotoRate();
-            Duration = new Duration();
+            Exposure = new Exposure(Exposure.DefaultValue);
+            Hue = new Hue(Hue.DefaultValue);
+            Saturation = new Saturation(Saturation.DefaultValue);
+            Lightness = new Lightness(Lightness.DefaultValue);
+            LookAtMeOffset = new LookAtMeOffset(new LookAtMeXOffset(LookAtMeXOffset.DefaultValue), new LookAtMeYOffset(LookAtMeYOffset.DefaultValue));
+            FlySpeed = new FlySpeed(FlySpeed.DefaultValue);
+            TurnSpeed = new TurnSpeed(TurnSpeed.DefaultValue);
+            SmoothingStrength = new SmoothingStrength(SmoothingStrength.DefaultValue);
+            PhotoRate = new PhotoRate(PhotoRate.DefaultValue);
+            Duration = new Duration(Duration.DefaultValue);
         }
     }
 }

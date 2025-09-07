@@ -6,6 +6,16 @@ namespace JessiQa.Tests.Unit
     public class FocalDistanceUnitTests
     {
         [Test]
+        public void Constructor_WithDefaultValue_UsesFocalDistanceDefaultValue()
+        {
+            // Act
+            var focalDistance = new FocalDistance(FocalDistance.DefaultValue);
+            
+            // Assert
+            Assert.AreEqual(FocalDistance.DefaultValue, focalDistance.Value);
+        }
+        
+        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
             // Arrange

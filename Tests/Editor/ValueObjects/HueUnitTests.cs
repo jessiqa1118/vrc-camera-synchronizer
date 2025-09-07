@@ -6,6 +6,16 @@ namespace JessiQa.Tests.Unit
     public class HueUnitTests
     {
         [Test]
+        public void Constructor_WithDefaultValue_UsesHueDefaultValue()
+        {
+            // Act
+            var hue = new Hue(Hue.DefaultValue);
+            
+            // Assert
+            Assert.AreEqual(Hue.DefaultValue, hue.Value);
+        }
+        
+        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
             // Arrange

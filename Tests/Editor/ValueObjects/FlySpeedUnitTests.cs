@@ -10,7 +10,7 @@ namespace JessiQa.Tests.Unit
         public void Constructor_WithDefaultValue_UsesFlySpeedDefaultValue()
         {
             // Act
-            var flySpeed = new FlySpeed();
+            var flySpeed = new FlySpeed(FlySpeed.DefaultValue);
             
             // Assert
             Assert.AreEqual(FlySpeed.DefaultValue, flySpeed.Value);

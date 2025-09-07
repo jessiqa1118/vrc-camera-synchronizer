@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public PhotoRate(float value = DefaultValue)
+        public PhotoRate(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

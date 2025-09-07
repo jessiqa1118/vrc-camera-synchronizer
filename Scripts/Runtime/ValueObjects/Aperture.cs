@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public Aperture(float value = DefaultValue)
+        public Aperture(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

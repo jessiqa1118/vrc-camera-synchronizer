@@ -10,7 +10,7 @@ namespace JessiQa.Tests.Unit
         public void Constructor_WithDefaultValue_UsesDurationDefaultValue()
         {
             // Act
-            var duration = new Duration();
+            var duration = new Duration(Duration.DefaultValue);
             
             // Assert
             Assert.AreEqual(Duration.DefaultValue, duration.Value);

@@ -10,7 +10,7 @@ namespace JessiQa.Tests.Unit
         public void Constructor_WithDefaultValue_UsesSmoothingStrengthDefaultValue()
         {
             // Act
-            var smoothingStrength = new SmoothingStrength();
+            var smoothingStrength = new SmoothingStrength(SmoothingStrength.DefaultValue);
             
             // Assert
             Assert.AreEqual(SmoothingStrength.DefaultValue, smoothingStrength.Value);

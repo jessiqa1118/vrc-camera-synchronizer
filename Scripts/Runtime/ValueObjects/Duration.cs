@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public Duration(float value = DefaultValue)
+        public Duration(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

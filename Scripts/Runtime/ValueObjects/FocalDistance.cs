@@ -15,7 +15,7 @@ namespace JessiQa
 
         public readonly float Value;
 
-        public FocalDistance(float value = DefaultValue)
+        public FocalDistance(float value)
         {
             // Clamp value to valid range
             Value = Mathf.Clamp(value, MinValue, MaxValue);

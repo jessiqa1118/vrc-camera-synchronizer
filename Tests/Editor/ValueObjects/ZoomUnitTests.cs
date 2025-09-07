@@ -6,13 +6,23 @@ namespace JessiQa.Tests.Unit
     public class ZoomUnitTests
     {
         [Test]
+        public void Constructor_WithDefaultValue_UsesZoomDefaultValue()
+        {
+            // Act
+            var zoom = new Zoom(Zoom.DefaultValue, true);
+            
+            // Assert
+            Assert.AreEqual(Zoom.DefaultValue, zoom.Value);
+        }
+        
+        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
             // Arrange
             const float expectedValue = 45f;
             
             // Act
-            var zoom = new Zoom(expectedValue);
+            var zoom = new Zoom(expectedValue, true);
             
             // Assert
             Assert.AreEqual(expectedValue, zoom.Value);
@@ -25,7 +35,7 @@ namespace JessiQa.Tests.Unit
             const float inputValue = 10f;
             
             // Act
-            var zoom = new Zoom(inputValue);
+            var zoom = new Zoom(inputValue, true);
             
             // Assert
             Assert.AreEqual(Zoom.MinValue, zoom.Value);
@@ -38,7 +48,7 @@ namespace JessiQa.Tests.Unit
             const float inputValue = 200f;
             
             // Act
-            var zoom = new Zoom(inputValue);
+            var zoom = new Zoom(inputValue, true);
             
             // Assert
             Assert.AreEqual(Zoom.MaxValue, zoom.Value);
@@ -73,7 +83,7 @@ namespace JessiQa.Tests.Unit
         public void Constructor_WithBoundaryValues_StoresCorrectly(float value)
         {
             // Act
-            var zoom = new Zoom(value);
+            var zoom = new Zoom(value, true);
             
             // Assert
             Assert.AreEqual(value, zoom.Value);
@@ -98,8 +108,8 @@ namespace JessiQa.Tests.Unit
         public void Equality_SameValues_AreEqual()
         {
             // Arrange
-            var zoom1 = new Zoom(45f);
-            var zoom2 = new Zoom(45f);
+            var zoom1 = new Zoom(45f, true);
+            var zoom2 = new Zoom(45f, true);
             
             // Act & Assert
             Assert.AreEqual(zoom1, zoom2);
@@ -113,8 +123,8 @@ namespace JessiQa.Tests.Unit
         public void Equality_DifferentValues_AreNotEqual()
         {
             // Arrange
-            var zoom1 = new Zoom(45f);
-            var zoom2 = new Zoom(90f);
+            var zoom1 = new Zoom(45f, true);
+            var zoom2 = new Zoom(90f, true);
             
             // Act & Assert
             Assert.AreNotEqual(zoom1, zoom2);
@@ -127,8 +137,8 @@ namespace JessiQa.Tests.Unit
         public void Equality_WithSmallDifference_AreEqual()
         {
             // Arrange
-            var zoom1 = new Zoom(45.0f);
-            var zoom2 = new Zoom(45.0f + UnityEngine.Mathf.Epsilon);
+            var zoom1 = new Zoom(45.0f, true);
+            var zoom2 = new Zoom(45.0f + UnityEngine.Mathf.Epsilon, true);
             
             // Act & Assert
             Assert.AreEqual(zoom1, zoom2);
@@ -139,8 +149,8 @@ namespace JessiQa.Tests.Unit
         public void Equality_WithLargerDifference_AreNotEqual()
         {
             // Arrange
-            var zoom1 = new Zoom(45.0f);
-            var zoom2 = new Zoom(45.01f);
+            var zoom1 = new Zoom(45.0f, true);
+            var zoom2 = new Zoom(45.01f, true);
             
             // Act & Assert
             Assert.AreNotEqual(zoom1, zoom2);
@@ -151,7 +161,7 @@ namespace JessiQa.Tests.Unit
         public void ImplicitFloatConversion_ReturnsValue()
         {
             // Arrange
-            var zoom = new Zoom(75f);
+            var zoom = new Zoom(75f, true);
             
             // Act
             float value = zoom;
@@ -164,8 +174,8 @@ namespace JessiQa.Tests.Unit
         public void Equality_WithBoxedObject_WorksCorrectly()
         {
             // Arrange
-            var zoom = new Zoom(50f);
-            object boxedZoom = new Zoom(50f);
+            var zoom = new Zoom(50f, true);
+            object boxedZoom = new Zoom(50f, true);
             object differentObject = "not a zoom";
             
             // Act & Assert
