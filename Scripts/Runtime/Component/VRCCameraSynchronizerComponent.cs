@@ -9,8 +9,22 @@ namespace JessiQa
     {
         [SerializeField] private string destination = "127.0.0.1";
         [SerializeField] private int port = 9000;
+        [SerializeField] private float exposure = Exposure.DefaultValue;
+        [SerializeField] private float aperture = Aperture.DefaultValue;
+        [SerializeField] private float hue = Hue.DefaultValue;
+        [SerializeField] private float saturation = Saturation.DefaultValue;
+        [SerializeField] private float lightness = Lightness.DefaultValue;
+        [SerializeField] private float lookAtMeXOffset = LookAtMeXOffset.DefaultValue;
+        [SerializeField] private float lookAtMeYOffset = LookAtMeYOffset.DefaultValue;
+        [SerializeField] private float focalDistance = FocalDistance.DefaultValue;
+        [SerializeField] private float flySpeed = FlySpeed.DefaultValue;
+        [SerializeField] private float turnSpeed = TurnSpeed.DefaultValue;
+        [SerializeField] private float smoothingStrength = SmoothingStrength.DefaultValue;
+        [SerializeField] private float photoRate = PhotoRate.DefaultValue;
+        [SerializeField] private float duration = Duration.DefaultValue;
 
         private VRCCameraSynchronizer _synchronizer;
+        private VRCCamera _vrcCamera;
 
         private void OnEnable()
         {
@@ -25,8 +39,9 @@ namespace JessiQa
             IOSCTransmitter transmitter = null;
             try
             {
+                _vrcCamera = new VRCCamera(cameraComponent);
                 transmitter = new OSCJackTransmitter(destination, port);
-                _synchronizer = new VRCCameraSynchronizer(transmitter, cameraComponent);
+                _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
             }
             catch (Exception ex)
             {
@@ -46,7 +61,43 @@ namespace JessiQa
         private void FixedUpdate()
         {
             // NOTE: Use FixedUpdate to reduce the frequency of updates
+            if (_vrcCamera != null)
+            {
+                _vrcCamera.Exposure = new Exposure(exposure);
+                _vrcCamera.Hue = new Hue(hue);
+                _vrcCamera.Saturation = new Saturation(saturation);
+                _vrcCamera.Lightness = new Lightness(lightness);
+                _vrcCamera.LookAtMeOffset = new LookAtMeOffset(lookAtMeXOffset, lookAtMeYOffset);
+                _vrcCamera.FlySpeed = new FlySpeed(flySpeed);
+                _vrcCamera.TurnSpeed = new TurnSpeed(turnSpeed);
+                _vrcCamera.SmoothingStrength = new SmoothingStrength(smoothingStrength);
+                _vrcCamera.PhotoRate = new PhotoRate(photoRate);
+                _vrcCamera.Duration = new Duration(duration);
+                // Aperture and FocalDistance are now automatically synced from Camera component
+                
+                // Update display values for Inspector
+                var camera = GetComponent<Camera>();
+                if (camera != null)
+                {
+                    aperture = camera.aperture;
+                    focalDistance = camera.focusDistance;
+                }
+            }
+
             _synchronizer?.Sync();
         }
+        
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            // In Editor, update display values when component changes
+            var camera = GetComponent<Camera>();
+            if (camera != null)
+            {
+                aperture = camera.aperture;
+                focalDistance = camera.focusDistance;
+            }
+        }
+#endif
     }
 }
