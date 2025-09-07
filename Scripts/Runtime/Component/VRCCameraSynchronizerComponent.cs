@@ -20,6 +20,7 @@ namespace JessiQa
         [SerializeField] private float flySpeed = FlySpeed.DefaultValue;
         [SerializeField] private float turnSpeed = TurnSpeed.DefaultValue;
         [SerializeField] private float smoothingStrength = SmoothingStrength.DefaultValue;
+        [SerializeField] private float photoRate = PhotoRate.DefaultValue;
 
         private VRCCameraSynchronizer _synchronizer;
         private VRCCamera _vrcCamera;
@@ -70,6 +71,7 @@ namespace JessiQa
                 _vrcCamera.FlySpeed = new FlySpeed(flySpeed);
                 _vrcCamera.TurnSpeed = new TurnSpeed(turnSpeed);
                 _vrcCamera.SmoothingStrength = new SmoothingStrength(smoothingStrength);
+                _vrcCamera.PhotoRate = new PhotoRate(photoRate);
                 // Aperture and FocalDistance are now automatically synced from Camera component
                 
                 // Update display values for Inspector

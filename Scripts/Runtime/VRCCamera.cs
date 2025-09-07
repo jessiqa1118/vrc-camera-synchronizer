@@ -31,6 +31,8 @@ namespace JessiQa
         public TurnSpeed TurnSpeed { get; set; }
         
         public SmoothingStrength SmoothingStrength { get; set; }
+        
+        public PhotoRate PhotoRate { get; set; }
 
         public VRCCamera(Camera camera)
         {
@@ -44,6 +46,7 @@ namespace JessiQa
             FlySpeed = new FlySpeed();
             TurnSpeed = new TurnSpeed();
             SmoothingStrength = new SmoothingStrength();
+            PhotoRate = new PhotoRate();
         }
     }
 }
