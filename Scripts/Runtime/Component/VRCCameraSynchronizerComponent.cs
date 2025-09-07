@@ -15,6 +15,7 @@ namespace JessiQa
         [SerializeField] private float saturation = Saturation.DefaultValue;
         [SerializeField] private float lightness = Lightness.DefaultValue;
         [SerializeField] private float lookAtMeXOffset = LookAtMeXOffset.DefaultValue;
+        [SerializeField] private float lookAtMeYOffset = LookAtMeYOffset.DefaultValue;
         [SerializeField] private float focalDistance = FocalDistance.DefaultValue;
 
         private VRCCameraSynchronizer _synchronizer;
@@ -62,6 +63,7 @@ namespace JessiQa
                 _vrcCamera.Saturation = new Saturation(saturation);
                 _vrcCamera.Lightness = new Lightness(lightness);
                 _vrcCamera.LookAtMeXOffset = new LookAtMeXOffset(lookAtMeXOffset);
+                _vrcCamera.LookAtMeYOffset = new LookAtMeYOffset(lookAtMeYOffset);
                 // Aperture and FocalDistance are now automatically synced from Camera component
                 
                 // Update display values for Inspector

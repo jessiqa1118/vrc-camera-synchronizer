@@ -23,6 +23,8 @@ namespace JessiQa
         public Lightness Lightness { get; set; }
         
         public LookAtMeXOffset LookAtMeXOffset { get; set; }
+        
+        public LookAtMeYOffset LookAtMeYOffset { get; set; }
 
         public VRCCamera(Camera camera)
         {
@@ -32,6 +34,7 @@ namespace JessiQa
             Saturation = new Saturation();
             Lightness = new Lightness();
             LookAtMeXOffset = new LookAtMeXOffset();
+            LookAtMeYOffset = new LookAtMeYOffset();
         }
     }
 }
