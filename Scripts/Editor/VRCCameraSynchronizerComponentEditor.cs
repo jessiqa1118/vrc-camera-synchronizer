@@ -18,6 +18,7 @@ namespace JessiQa.Editor
         private SerializedProperty _focalDistance;
         private SerializedProperty _flySpeed;
         private SerializedProperty _turnSpeed;
+        private SerializedProperty _smoothingStrength;
 
         private void OnEnable()
         {
@@ -33,6 +34,7 @@ namespace JessiQa.Editor
             _focalDistance = serializedObject.FindProperty("focalDistance");
             _flySpeed = serializedObject.FindProperty("flySpeed");
             _turnSpeed = serializedObject.FindProperty("turnSpeed");
+            _smoothingStrength = serializedObject.FindProperty("smoothingStrength");
         }
 
         public override void OnInspectorGUI()
@@ -92,6 +94,7 @@ namespace JessiQa.Editor
             EditorGUILayout.LabelField("Movement", EditorStyles.boldLabel);
             EditorGUILayout.Slider(_flySpeed, FlySpeed.MinValue, FlySpeed.MaxValue, "Fly Speed");
             EditorGUILayout.Slider(_turnSpeed, TurnSpeed.MinValue, TurnSpeed.MaxValue, "Turn Speed");
+            EditorGUILayout.Slider(_smoothingStrength, SmoothingStrength.MinValue, SmoothingStrength.MaxValue, "Smoothing Strength");
             
             EditorGUILayout.Space();
             

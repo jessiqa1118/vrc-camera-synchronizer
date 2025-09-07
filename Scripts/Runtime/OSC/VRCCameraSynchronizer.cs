@@ -18,6 +18,7 @@ namespace JessiQa
         private readonly LookAtMeYOffsetConverter _lookAtMeYOffsetConverter = new();
         private readonly FlySpeedConverter _flySpeedConverter = new();
         private readonly TurnSpeedConverter _turnSpeedConverter = new();
+        private readonly SmoothingStrengthConverter _smoothingStrengthConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -73,6 +74,10 @@ namespace JessiQa
             // Send TurnSpeed
             var turnSpeedMessage = _turnSpeedConverter.ToOSCMessage(_vrcCamera.TurnSpeed);
             _transmitter.Send(turnSpeedMessage);
+            
+            // Send SmoothingStrength
+            var smoothingStrengthMessage = _smoothingStrengthConverter.ToOSCMessage(_vrcCamera.SmoothingStrength);
+            _transmitter.Send(smoothingStrengthMessage);
         }
 
         public void Dispose()

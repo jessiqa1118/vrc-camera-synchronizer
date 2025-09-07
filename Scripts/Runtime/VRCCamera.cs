@@ -29,6 +29,8 @@ namespace JessiQa
         public FlySpeed FlySpeed { get; set; }
         
         public TurnSpeed TurnSpeed { get; set; }
+        
+        public SmoothingStrength SmoothingStrength { get; set; }
 
         public VRCCamera(Camera camera)
         {
@@ -41,6 +43,7 @@ namespace JessiQa
             LookAtMeYOffset = new LookAtMeYOffset();
             FlySpeed = new FlySpeed();
             TurnSpeed = new TurnSpeed();
+            SmoothingStrength = new SmoothingStrength();
         }
     }
 }
