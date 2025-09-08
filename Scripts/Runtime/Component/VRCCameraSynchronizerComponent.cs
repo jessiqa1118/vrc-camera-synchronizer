@@ -22,6 +22,7 @@ namespace VRCCamera
         [SerializeField] private float smoothingStrength = SmoothingStrength.DefaultValue;
         [SerializeField] private float photoRate = PhotoRate.DefaultValue;
         [SerializeField] private float duration = Duration.DefaultValue;
+        [SerializeField] private bool showUIInCamera = false;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -40,6 +41,22 @@ namespace VRCCamera
             try
             {
                 _vrcCamera = new VRCCamera(cameraComponent);
+                
+                // Set all initial values before creating synchronizer to avoid duplicate messages
+                _vrcCamera.SetExposure(new Exposure(exposure));
+                _vrcCamera.SetHue(new Hue(hue));
+                _vrcCamera.SetSaturation(new Saturation(saturation));
+                _vrcCamera.SetLightness(new Lightness(lightness));
+                _vrcCamera.SetLookAtMeOffset(new LookAtMeOffset(
+                    new LookAtMeXOffset(lookAtMeXOffset),
+                    new LookAtMeYOffset(lookAtMeYOffset)));
+                _vrcCamera.SetFlySpeed(new FlySpeed(flySpeed));
+                _vrcCamera.SetTurnSpeed(new TurnSpeed(turnSpeed));
+                _vrcCamera.SetSmoothingStrength(new SmoothingStrength(smoothingStrength));
+                _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
+                _vrcCamera.SetDuration(new Duration(duration));
+                _vrcCamera.SetShowUIInCamera(new ShowUIInCameraToggle(showUIInCamera));
+                
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
             }
@@ -81,6 +98,7 @@ namespace VRCCamera
             _vrcCamera.SetSmoothingStrength(new SmoothingStrength(smoothingStrength));
             _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
             _vrcCamera.SetDuration(new Duration(duration));
+            _vrcCamera.SetShowUIInCamera(new ShowUIInCameraToggle(showUIInCamera));
         }
     }
 }

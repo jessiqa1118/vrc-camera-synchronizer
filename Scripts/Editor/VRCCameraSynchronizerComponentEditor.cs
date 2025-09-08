@@ -20,6 +20,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _smoothingStrength;
         private SerializedProperty _photoRate;
         private SerializedProperty _duration;
+        private SerializedProperty _showUIInCamera;
 
         private void OnEnable()
         {
@@ -36,6 +37,7 @@ namespace VRCCamera.Editor
             _smoothingStrength = serializedObject.FindProperty("smoothingStrength");
             _photoRate = serializedObject.FindProperty("photoRate");
             _duration = serializedObject.FindProperty("duration");
+            _showUIInCamera = serializedObject.FindProperty("showUIInCamera");
         }
 
         public override void OnInspectorGUI()
@@ -50,6 +52,12 @@ namespace VRCCamera.Editor
 
             // Camera Parameters
             EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
+            
+            EditorGUILayout.Space();
+            
+            // Toggle Parameters
+            EditorGUILayout.LabelField("Toggles", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("Show UI In Camera"));
             
             EditorGUILayout.Space();
             

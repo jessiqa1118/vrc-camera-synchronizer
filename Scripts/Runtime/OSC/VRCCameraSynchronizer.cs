@@ -21,6 +21,7 @@ namespace VRCCamera
         private readonly SmoothingStrengthConverter _smoothingStrengthConverter = new();
         private readonly PhotoRateConverter _photoRateConverter = new();
         private readonly DurationConverter _durationConverter = new();
+        private readonly ShowUIInCameraToggleConverter _showUIInCameraToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -42,6 +43,7 @@ namespace VRCCamera
             _vrcCamera.SmoothingStrength.OnValueChanged += OnSmoothingStrengthChanged;
             _vrcCamera.PhotoRate.OnValueChanged += OnPhotoRateChanged;
             _vrcCamera.Duration.OnValueChanged += OnDurationChanged;
+            _vrcCamera.ShowUIInCamera.OnValueChanged += OnShowUIInCameraChanged;
             
             // Send initial values
             Sync();
@@ -155,6 +157,14 @@ namespace VRCCamera
             var message = _durationConverter.ToOSCMessage(duration);
             _transmitter.Send(message);
         }
+        
+        private void OnShowUIInCameraChanged(ShowUIInCameraToggle showUIInCamera)
+        {
+            if (_disposed) return;
+            
+            var message = _showUIInCameraToggleConverter.ToOSCMessage(showUIInCamera);
+            _transmitter.Send(message);
+        }
 
         public void Sync()
         {
@@ -179,6 +189,7 @@ namespace VRCCamera
             _transmitter.Send(_smoothingStrengthConverter.ToOSCMessage(_vrcCamera.SmoothingStrength.Value));
             _transmitter.Send(_photoRateConverter.ToOSCMessage(_vrcCamera.PhotoRate.Value));
             _transmitter.Send(_durationConverter.ToOSCMessage(_vrcCamera.Duration.Value));
+            _transmitter.Send(_showUIInCameraToggleConverter.ToOSCMessage(_vrcCamera.ShowUIInCamera.Value));
         }
 
         public void Dispose()
@@ -201,6 +212,7 @@ namespace VRCCamera
                 _vrcCamera.SmoothingStrength.OnValueChanged -= OnSmoothingStrengthChanged;
                 _vrcCamera.PhotoRate.OnValueChanged -= OnPhotoRateChanged;
                 _vrcCamera.Duration.OnValueChanged -= OnDurationChanged;
+                _vrcCamera.ShowUIInCamera.OnValueChanged -= OnShowUIInCameraChanged;
             }
             
             _transmitter?.Dispose();

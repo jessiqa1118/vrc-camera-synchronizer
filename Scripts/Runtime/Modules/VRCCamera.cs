@@ -21,6 +21,7 @@ namespace VRCCamera
         public ReactiveProperty<SmoothingStrength> SmoothingStrength { get; }
         public ReactiveProperty<PhotoRate> PhotoRate { get; }
         public ReactiveProperty<Duration> Duration { get; }
+        public ReactiveProperty<ShowUIInCameraToggle> ShowUIInCamera { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -42,6 +43,7 @@ namespace VRCCamera
             SmoothingStrength = new ReactiveProperty<SmoothingStrength>(new SmoothingStrength(Parameters.SmoothingStrength.DefaultValue));
             PhotoRate = new ReactiveProperty<PhotoRate>(new PhotoRate(Parameters.PhotoRate.DefaultValue));
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
+            ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
         }
 
         /// <summary>
@@ -136,6 +138,14 @@ namespace VRCCamera
         }
         
         /// <summary>
+        /// Sets ShowUIInCamera toggle value reactively
+        /// </summary>
+        public void SetShowUIInCamera(ShowUIInCameraToggle showUIInCamera)
+        {
+            ShowUIInCamera.SetValue(showUIInCamera);
+        }
+        
+        /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
         /// </summary>
         public void Dispose()
@@ -154,6 +164,7 @@ namespace VRCCamera
             SmoothingStrength?.ClearSubscriptions();
             PhotoRate?.ClearSubscriptions();
             Duration?.ClearSubscriptions();
+            ShowUIInCamera?.ClearSubscriptions();
         }
     }
 }
