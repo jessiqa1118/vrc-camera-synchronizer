@@ -22,6 +22,7 @@ namespace VRCCamera
         public ReactiveProperty<PhotoRate> PhotoRate { get; }
         public ReactiveProperty<Duration> Duration { get; }
         public ReactiveProperty<ShowUIInCameraToggle> ShowUIInCamera { get; }
+        public ReactiveProperty<LockToggle> Lock { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -44,6 +45,7 @@ namespace VRCCamera
             PhotoRate = new ReactiveProperty<PhotoRate>(new PhotoRate(Parameters.PhotoRate.DefaultValue));
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
             ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
+            Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
         }
 
         /// <summary>
@@ -136,13 +138,21 @@ namespace VRCCamera
         {
             Duration.SetValue(duration);
         }
-        
+
         /// <summary>
         /// Sets ShowUIInCamera toggle value reactively
         /// </summary>
         public void SetShowUIInCamera(ShowUIInCameraToggle showUIInCamera)
         {
             ShowUIInCamera.SetValue(showUIInCamera);
+        }
+
+        /// <summary>
+        /// Sets Lock toggle value reactively
+        /// </summary>
+        public void SetLock(LockToggle lockToggle)
+        {
+            Lock.SetValue(lockToggle);
         }
         
         /// <summary>
@@ -165,6 +175,7 @@ namespace VRCCamera
             PhotoRate?.ClearSubscriptions();
             Duration?.ClearSubscriptions();
             ShowUIInCamera?.ClearSubscriptions();
+            Lock?.ClearSubscriptions();
         }
     }
 }

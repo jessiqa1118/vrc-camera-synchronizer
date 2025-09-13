@@ -23,6 +23,7 @@ namespace VRCCamera
         [SerializeField] private float photoRate = PhotoRate.DefaultValue;
         [SerializeField] private float duration = Duration.DefaultValue;
         [SerializeField] private bool showUIInCamera = false;
+        [SerializeField] private bool lockCamera = false;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -56,6 +57,7 @@ namespace VRCCamera
                 _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
                 _vrcCamera.SetDuration(new Duration(duration));
                 _vrcCamera.SetShowUIInCamera(new ShowUIInCameraToggle(showUIInCamera));
+                _vrcCamera.SetLock(new LockToggle(lockCamera));
                 
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -99,6 +101,7 @@ namespace VRCCamera
             _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
             _vrcCamera.SetDuration(new Duration(duration));
             _vrcCamera.SetShowUIInCamera(new ShowUIInCameraToggle(showUIInCamera));
+            _vrcCamera.SetLock(new LockToggle(lockCamera));
         }
     }
 }
