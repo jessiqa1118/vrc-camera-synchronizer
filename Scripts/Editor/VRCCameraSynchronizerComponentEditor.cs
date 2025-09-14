@@ -33,6 +33,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _flying;
         private SerializedProperty _triggerTakesPhotos;
         private SerializedProperty _dollyPathsStayVisible;
+        private SerializedProperty _cameraEars;
 
         private void OnEnable()
         {
@@ -62,6 +63,7 @@ namespace VRCCamera.Editor
             _flying = serializedObject.FindProperty("flying");
             _triggerTakesPhotos = serializedObject.FindProperty("triggerTakesPhotos");
             _dollyPathsStayVisible = serializedObject.FindProperty("dollyPathsStayVisible");
+            _cameraEars = serializedObject.FindProperty("cameraEars");
         }
 
         public override void OnInspectorGUI()
@@ -89,6 +91,7 @@ namespace VRCCamera.Editor
             EditorGUILayout.PropertyField(_flying, new GUIContent("Flying"));
             EditorGUILayout.PropertyField(_triggerTakesPhotos, new GUIContent("Trigger Takes Photos"));
             EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Dolly Paths Stay Visible"));
+            EditorGUILayout.PropertyField(_cameraEars, new GUIContent("Camera Ears"));
 
             EditorGUILayout.Space();
 
