@@ -1,7 +1,6 @@
 using UnityEditor;
 using UnityEngine;
 using Parameters;
-using VRCCamera;
 
 namespace VRCCamera.Editor
 {
