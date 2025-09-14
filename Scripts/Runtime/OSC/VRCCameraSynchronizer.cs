@@ -424,28 +424,16 @@ namespace VRCCamera
             _transmitter?.Dispose();
         }
 
-        public void Close()
+        public void Close() => SendAction(OSCCameraEndpoints.Close);
+
+        public void Capture() => SendAction(OSCCameraEndpoints.Capture);
+
+        public void CaptureDelayed() => SendAction(OSCCameraEndpoints.CaptureDelayed);
+
+        private void SendAction(Address address)
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
-
-            var message = new Message(OSCCameraEndpoints.Close, Array.Empty<Argument>());
-            _transmitter.Send(message);
-        }
-
-        public void Capture()
-        {
-            if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
-
-            var message = new Message(OSCCameraEndpoints.Capture, Array.Empty<Argument>());
-            _transmitter.Send(message);
-        }
-
-        public void CaptureDelayed()
-        {
-            if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
-
-            var message = new Message(OSCCameraEndpoints.CaptureDelayed, Array.Empty<Argument>());
-            _transmitter.Send(message);
+            _transmitter.Send(new Message(address, Array.Empty<Argument>()));
         }
     }
 }
