@@ -37,6 +37,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _showFocus;
         private SerializedProperty _streaming;
         private SerializedProperty _rollWhileFlying;
+        private SerializedProperty _orientationIsLandscape;
 
         private void OnEnable()
         {
@@ -70,6 +71,7 @@ namespace VRCCamera.Editor
             _showFocus = serializedObject.FindProperty("showFocus");
             _streaming = serializedObject.FindProperty("streaming");
             _rollWhileFlying = serializedObject.FindProperty("rollWhileFlying");
+            _orientationIsLandscape = serializedObject.FindProperty("orientationIsLandscape");
         }
 
         public override void OnInspectorGUI()
@@ -101,6 +103,7 @@ namespace VRCCamera.Editor
             EditorGUILayout.PropertyField(_showFocus, new GUIContent("Show Focus"));
             EditorGUILayout.PropertyField(_streaming, new GUIContent("Streaming"));
             EditorGUILayout.PropertyField(_rollWhileFlying, new GUIContent("Roll While Flying"));
+            EditorGUILayout.PropertyField(_orientationIsLandscape, new GUIContent("Orientation Is Landscape"));
 
             EditorGUILayout.Space();
 

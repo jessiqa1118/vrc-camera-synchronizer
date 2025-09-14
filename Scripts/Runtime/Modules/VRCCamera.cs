@@ -38,6 +38,7 @@ namespace VRCCamera
         public ReactiveProperty<ShowFocusToggle> ShowFocus { get; }
         public ReactiveProperty<StreamingToggle> Streaming { get; }
         public ReactiveProperty<RollWhileFlyingToggle> RollWhileFlying { get; }
+        public ReactiveProperty<OrientationIsLandscapeToggle> OrientationIsLandscape { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -76,6 +77,7 @@ namespace VRCCamera
             ShowFocus = new ReactiveProperty<ShowFocusToggle>(new ShowFocusToggle(false));
             Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
             RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
+            OrientationIsLandscape = new ReactiveProperty<OrientationIsLandscapeToggle>(new OrientationIsLandscapeToggle(false));
         }
 
         /// <summary>
@@ -304,6 +306,14 @@ namespace VRCCamera
         {
             RollWhileFlying.SetValue(rollWhileFlying);
         }
+
+        /// <summary>
+        /// Sets OrientationIsLandscape toggle value reactively
+        /// </summary>
+        public void SetOrientationIsLandscape(OrientationIsLandscapeToggle orientationIsLandscape)
+        {
+            OrientationIsLandscape.SetValue(orientationIsLandscape);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -341,6 +351,7 @@ namespace VRCCamera
             ShowFocus?.ClearSubscriptions();
             Streaming?.ClearSubscriptions();
             RollWhileFlying?.ClearSubscriptions();
+            OrientationIsLandscape?.ClearSubscriptions();
         }
     }
 }

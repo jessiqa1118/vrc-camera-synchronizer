@@ -38,6 +38,7 @@ namespace VRCCamera
         private readonly ShowFocusToggleConverter _showFocusToggleConverter = new();
         private readonly StreamingToggleConverter _streamingToggleConverter = new();
         private readonly RollWhileFlyingToggleConverter _rollWhileFlyingToggleConverter = new();
+        private readonly OrientationIsLandscapeToggleConverter _orientationIsLandscapeToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -76,6 +77,7 @@ namespace VRCCamera
             _vrcCamera.ShowFocus.OnValueChanged += OnShowFocusChanged;
             _vrcCamera.Streaming.OnValueChanged += OnStreamingChanged;
             _vrcCamera.RollWhileFlying.OnValueChanged += OnRollWhileFlyingChanged;
+            _vrcCamera.OrientationIsLandscape.OnValueChanged += OnOrientationIsLandscapeChanged;
             
             // Send initial values
             Sync();
@@ -326,6 +328,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnOrientationIsLandscapeChanged(OrientationIsLandscapeToggle orientation)
+        {
+            if (_disposed) return;
+
+            var message = _orientationIsLandscapeToggleConverter.ToOSCMessage(orientation);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -366,6 +376,7 @@ namespace VRCCamera
             _transmitter.Send(_showFocusToggleConverter.ToOSCMessage(_vrcCamera.ShowFocus.Value));
             _transmitter.Send(_streamingToggleConverter.ToOSCMessage(_vrcCamera.Streaming.Value));
             _transmitter.Send(_rollWhileFlyingToggleConverter.ToOSCMessage(_vrcCamera.RollWhileFlying.Value));
+            _transmitter.Send(_orientationIsLandscapeToggleConverter.ToOSCMessage(_vrcCamera.OrientationIsLandscape.Value));
         }
 
         public void Dispose()
@@ -405,6 +416,7 @@ namespace VRCCamera
                 _vrcCamera.ShowFocus.OnValueChanged -= OnShowFocusChanged;
                 _vrcCamera.Streaming.OnValueChanged -= OnStreamingChanged;
                 _vrcCamera.RollWhileFlying.OnValueChanged -= OnRollWhileFlyingChanged;
+                _vrcCamera.OrientationIsLandscape.OnValueChanged -= OnOrientationIsLandscapeChanged;
             }
             
             _transmitter?.Dispose();
