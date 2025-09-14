@@ -25,6 +25,7 @@ namespace VRCCamera
         public ReactiveProperty<LockToggle> Lock { get; }
         public ReactiveProperty<LocalPlayerToggle> LocalPlayer { get; }
         public ReactiveProperty<RemotePlayerToggle> RemotePlayer { get; }
+        public ReactiveProperty<EnvironmentToggle> Environment { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -50,6 +51,7 @@ namespace VRCCamera
             Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
             LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(false));
             RemotePlayer = new ReactiveProperty<RemotePlayerToggle>(new RemotePlayerToggle(false));
+            Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(false));
         }
 
         /// <summary>
@@ -174,6 +176,14 @@ namespace VRCCamera
         {
             RemotePlayer.SetValue(remotePlayer);
         }
+
+        /// <summary>
+        /// Sets Environment toggle value reactively
+        /// </summary>
+        public void SetEnvironment(EnvironmentToggle environment)
+        {
+            Environment.SetValue(environment);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -198,6 +208,7 @@ namespace VRCCamera
             Lock?.ClearSubscriptions();
             LocalPlayer?.ClearSubscriptions();
             RemotePlayer?.ClearSubscriptions();
+            Environment?.ClearSubscriptions();
         }
     }
 }

@@ -101,8 +101,8 @@ namespace VRCCamera.Tests.Unit
             // Act
             var synchronizer = new VRCCameraSynchronizer(mockTransmitter, vrcCamera);
             
-            // Assert - Constructor should send all 18 initial values (14 sliders + 4 toggles)
-            Assert.AreEqual(18, mockTransmitter.SendCallCount);
+            // Assert - Constructor should send all 19 initial values (14 sliders + 5 toggles)
+            Assert.AreEqual(19, mockTransmitter.SendCallCount);
             
             // Cleanup
             synchronizer.Dispose();
@@ -122,8 +122,8 @@ namespace VRCCamera.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Sync now force sends all 18 parameters (14 sliders + 4 toggles) + 1 from SetExposure = 19
-            Assert.AreEqual(19, _mockTransmitter.SendCallCount);
+            // Sync now force sends all 19 parameters (14 sliders + 5 toggles) + 1 from SetExposure = 20
+            Assert.AreEqual(20, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
         }
         
@@ -163,7 +163,7 @@ namespace VRCCamera.Tests.Unit
             var secondCallCount = _mockTransmitter.SendCallCount;
             
             // Assert
-            Assert.AreEqual(18, secondCallCount); // 18 messages per Sync call (14 sliders + 4 toggles)
+            Assert.AreEqual(19, secondCallCount); // 19 messages per Sync call (14 sliders + 5 toggles)
         }
         
         [Test]
@@ -175,7 +175,7 @@ namespace VRCCamera.Tests.Unit
             // Assert
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             var message = _mockTransmitter.LastSentMessage.Value;
-            // Last message is ShowUIInCamera toggle, which has TypeTag "F" for false
+            // Last message is a toggle with default false, which has TypeTag "F"
             Assert.AreEqual("F", message.TypeTag.Value);
         }
         

@@ -24,6 +24,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _lockCamera;
         private SerializedProperty _localPlayer;
         private SerializedProperty _remotePlayer;
+        private SerializedProperty _environment;
 
         private void OnEnable()
         {
@@ -44,6 +45,7 @@ namespace VRCCamera.Editor
             _lockCamera = serializedObject.FindProperty("lockCamera");
             _localPlayer = serializedObject.FindProperty("localPlayer");
             _remotePlayer = serializedObject.FindProperty("remotePlayer");
+            _environment = serializedObject.FindProperty("environment");
         }
 
         public override void OnInspectorGUI()
@@ -70,7 +72,8 @@ namespace VRCCamera.Editor
             // Mask Parameters
             EditorGUILayout.LabelField("Mask", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(_localPlayer, new GUIContent("Local User"));
-            EditorGUILayout.PropertyField(_remotePlayer, new GUIContent("Remote Users"));
+            EditorGUILayout.PropertyField(_remotePlayer, new GUIContent("Remote User"));
+            EditorGUILayout.PropertyField(_environment, new GUIContent("World"));
             EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("UI"));
             
             EditorGUILayout.Space();

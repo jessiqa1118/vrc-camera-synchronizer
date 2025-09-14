@@ -25,6 +25,7 @@ namespace VRCCamera
         private readonly LockToggleConverter _lockToggleConverter = new();
         private readonly LocalPlayerToggleConverter _localPlayerToggleConverter = new();
         private readonly RemotePlayerToggleConverter _remotePlayerToggleConverter = new();
+        private readonly EnvironmentToggleConverter _environmentToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -50,6 +51,7 @@ namespace VRCCamera
             _vrcCamera.Lock.OnValueChanged += OnLockChanged;
             _vrcCamera.LocalPlayer.OnValueChanged += OnLocalPlayerChanged;
             _vrcCamera.RemotePlayer.OnValueChanged += OnRemotePlayerChanged;
+            _vrcCamera.Environment.OnValueChanged += OnEnvironmentChanged;
             
             // Send initial values
             Sync();
@@ -196,6 +198,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnEnvironmentChanged(EnvironmentToggle environment)
+        {
+            if (_disposed) return;
+
+            var message = _environmentToggleConverter.ToOSCMessage(environment);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -223,6 +233,7 @@ namespace VRCCamera
             _transmitter.Send(_lockToggleConverter.ToOSCMessage(_vrcCamera.Lock.Value));
             _transmitter.Send(_localPlayerToggleConverter.ToOSCMessage(_vrcCamera.LocalPlayer.Value));
             _transmitter.Send(_remotePlayerToggleConverter.ToOSCMessage(_vrcCamera.RemotePlayer.Value));
+            _transmitter.Send(_environmentToggleConverter.ToOSCMessage(_vrcCamera.Environment.Value));
         }
 
         public void Dispose()
@@ -249,6 +260,7 @@ namespace VRCCamera
                 _vrcCamera.Lock.OnValueChanged -= OnLockChanged;
                 _vrcCamera.LocalPlayer.OnValueChanged -= OnLocalPlayerChanged;
                 _vrcCamera.RemotePlayer.OnValueChanged -= OnRemotePlayerChanged;
+                _vrcCamera.Environment.OnValueChanged -= OnEnvironmentChanged;
             }
             
             _transmitter?.Dispose();
