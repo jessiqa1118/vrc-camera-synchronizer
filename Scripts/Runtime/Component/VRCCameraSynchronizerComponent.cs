@@ -22,6 +22,24 @@ namespace VRCCamera
         [SerializeField] private float smoothingStrength = SmoothingStrength.DefaultValue;
         [SerializeField] private float photoRate = PhotoRate.DefaultValue;
         [SerializeField] private float duration = Duration.DefaultValue;
+        [SerializeField] private bool showUIInCamera = false;
+        [SerializeField] private bool lockCamera = false;
+        [SerializeField] private bool localPlayer = false;
+        [SerializeField] private bool remotePlayer = false;
+        [SerializeField] private bool environment = false;
+        [SerializeField] private bool greenScreen = false;
+        [SerializeField] private bool smoothMovement = false;
+        [SerializeField] private bool lookAtMe = false;
+        [SerializeField] private bool autoLevelRoll = false;
+        [SerializeField] private bool autoLevelPitch = false;
+        [SerializeField] private bool flying = false;
+        [SerializeField] private bool triggerTakesPhotos = false;
+        [SerializeField] private bool dollyPathsStayVisible = false;
+        [SerializeField] private bool cameraEars = false;
+        [SerializeField] private bool showFocus = false;
+        [SerializeField] private bool streaming = false;
+        [SerializeField] private bool rollWhileFlying = false;
+        [SerializeField] private bool orientationIsLandscape = false;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -31,7 +49,7 @@ namespace VRCCamera
             var cameraComponent = GetComponent<Camera>();
             if (!cameraComponent)
             {
-                Debug.LogError($"[{nameof(VRCCameraSynchronizer)}] Camera component is missing");
+                Debug.LogError($"[{nameof(VRCCameraSynchronizerComponent)}] Camera component is missing");
                 enabled = false;
                 return;
             }
@@ -40,6 +58,39 @@ namespace VRCCamera
             try
             {
                 _vrcCamera = new VRCCamera(cameraComponent);
+                
+                // Set all initial values before creating synchronizer to avoid duplicate messages
+                _vrcCamera.SetExposure(new Exposure(exposure));
+                _vrcCamera.SetHue(new Hue(hue));
+                _vrcCamera.SetSaturation(new Saturation(saturation));
+                _vrcCamera.SetLightness(new Lightness(lightness));
+                _vrcCamera.SetLookAtMeOffset(new LookAtMeOffset(
+                    new LookAtMeXOffset(lookAtMeXOffset),
+                    new LookAtMeYOffset(lookAtMeYOffset)));
+                _vrcCamera.SetFlySpeed(new FlySpeed(flySpeed));
+                _vrcCamera.SetTurnSpeed(new TurnSpeed(turnSpeed));
+                _vrcCamera.SetSmoothingStrength(new SmoothingStrength(smoothingStrength));
+                _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
+                _vrcCamera.SetDuration(new Duration(duration));
+                _vrcCamera.SetShowUIInCamera(new ShowUIInCameraToggle(showUIInCamera));
+                _vrcCamera.SetLock(new LockToggle(lockCamera));
+                _vrcCamera.SetLocalPlayer(new LocalPlayerToggle(localPlayer));
+                _vrcCamera.SetRemotePlayer(new RemotePlayerToggle(remotePlayer));
+                _vrcCamera.SetEnvironment(new EnvironmentToggle(environment));
+                _vrcCamera.SetGreenScreen(new GreenScreenToggle(greenScreen));
+                _vrcCamera.SetSmoothMovement(new SmoothMovementToggle(smoothMovement));
+                _vrcCamera.SetLookAtMe(new LookAtMeToggle(lookAtMe));
+                _vrcCamera.SetAutoLevelRoll(new AutoLevelRollToggle(autoLevelRoll));
+                _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
+                _vrcCamera.SetFlying(new FlyingToggle(flying));
+                _vrcCamera.SetTriggerTakesPhotos(new TriggerTakesPhotosToggle(triggerTakesPhotos));
+                _vrcCamera.SetDollyPathsStayVisible(new DollyPathsStayVisibleToggle(dollyPathsStayVisible));
+                _vrcCamera.SetCameraEars(new CameraEarsToggle(cameraEars));
+                _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
+                _vrcCamera.SetStreaming(new StreamingToggle(streaming));
+                _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
+                _vrcCamera.SetOrientationIsLandscape(new OrientationIsLandscapeToggle(orientationIsLandscape));
+                
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
             }
@@ -47,7 +98,7 @@ namespace VRCCamera
             {
                 transmitter?.Dispose();
                 Debug.LogError(
-                    $"[{nameof(VRCCameraSynchronizer)}] Failed to initialize: {ex.Message}\n{ex.StackTrace}");
+                    $"[{nameof(VRCCameraSynchronizerComponent)}] Failed to initialize: {ex.Message}\n{ex.StackTrace}");
                 enabled = false;
             }
         }
@@ -81,6 +132,24 @@ namespace VRCCamera
             _vrcCamera.SetSmoothingStrength(new SmoothingStrength(smoothingStrength));
             _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
             _vrcCamera.SetDuration(new Duration(duration));
+            _vrcCamera.SetShowUIInCamera(new ShowUIInCameraToggle(showUIInCamera));
+            _vrcCamera.SetLock(new LockToggle(lockCamera));
+            _vrcCamera.SetLocalPlayer(new LocalPlayerToggle(localPlayer));
+            _vrcCamera.SetRemotePlayer(new RemotePlayerToggle(remotePlayer));
+            _vrcCamera.SetEnvironment(new EnvironmentToggle(environment));
+            _vrcCamera.SetGreenScreen(new GreenScreenToggle(greenScreen));
+            _vrcCamera.SetSmoothMovement(new SmoothMovementToggle(smoothMovement));
+            _vrcCamera.SetLookAtMe(new LookAtMeToggle(lookAtMe));
+            _vrcCamera.SetAutoLevelRoll(new AutoLevelRollToggle(autoLevelRoll));
+            _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
+            _vrcCamera.SetFlying(new FlyingToggle(flying));
+            _vrcCamera.SetTriggerTakesPhotos(new TriggerTakesPhotosToggle(triggerTakesPhotos));
+            _vrcCamera.SetDollyPathsStayVisible(new DollyPathsStayVisibleToggle(dollyPathsStayVisible));
+            _vrcCamera.SetCameraEars(new CameraEarsToggle(cameraEars));
+            _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
+            _vrcCamera.SetStreaming(new StreamingToggle(streaming));
+            _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
+            _vrcCamera.SetOrientationIsLandscape(new OrientationIsLandscapeToggle(orientationIsLandscape));
         }
     }
 }

@@ -20,6 +20,24 @@ namespace VRCCamera.Editor
         private SerializedProperty _smoothingStrength;
         private SerializedProperty _photoRate;
         private SerializedProperty _duration;
+        private SerializedProperty _showUIInCamera;
+        private SerializedProperty _lockCamera;
+        private SerializedProperty _localPlayer;
+        private SerializedProperty _remotePlayer;
+        private SerializedProperty _environment;
+        private SerializedProperty _greenScreen;
+        private SerializedProperty _smoothMovement;
+        private SerializedProperty _lookAtMe;
+        private SerializedProperty _autoLevelRoll;
+        private SerializedProperty _autoLevelPitch;
+        private SerializedProperty _flying;
+        private SerializedProperty _triggerTakesPhotos;
+        private SerializedProperty _dollyPathsStayVisible;
+        private SerializedProperty _cameraEars;
+        private SerializedProperty _showFocus;
+        private SerializedProperty _streaming;
+        private SerializedProperty _rollWhileFlying;
+        private SerializedProperty _orientationIsLandscape;
 
         private void OnEnable()
         {
@@ -36,6 +54,24 @@ namespace VRCCamera.Editor
             _smoothingStrength = serializedObject.FindProperty("smoothingStrength");
             _photoRate = serializedObject.FindProperty("photoRate");
             _duration = serializedObject.FindProperty("duration");
+            _showUIInCamera = serializedObject.FindProperty("showUIInCamera");
+            _lockCamera = serializedObject.FindProperty("lockCamera");
+            _localPlayer = serializedObject.FindProperty("localPlayer");
+            _remotePlayer = serializedObject.FindProperty("remotePlayer");
+            _environment = serializedObject.FindProperty("environment");
+            _greenScreen = serializedObject.FindProperty("greenScreen");
+            _smoothMovement = serializedObject.FindProperty("smoothMovement");
+            _lookAtMe = serializedObject.FindProperty("lookAtMe");
+            _autoLevelRoll = serializedObject.FindProperty("autoLevelRoll");
+            _autoLevelPitch = serializedObject.FindProperty("autoLevelPitch");
+            _flying = serializedObject.FindProperty("flying");
+            _triggerTakesPhotos = serializedObject.FindProperty("triggerTakesPhotos");
+            _dollyPathsStayVisible = serializedObject.FindProperty("dollyPathsStayVisible");
+            _cameraEars = serializedObject.FindProperty("cameraEars");
+            _showFocus = serializedObject.FindProperty("showFocus");
+            _streaming = serializedObject.FindProperty("streaming");
+            _rollWhileFlying = serializedObject.FindProperty("rollWhileFlying");
+            _orientationIsLandscape = serializedObject.FindProperty("orientationIsLandscape");
         }
 
         public override void OnInspectorGUI()
@@ -53,26 +89,50 @@ namespace VRCCamera.Editor
             
             EditorGUILayout.Space();
             
-            // GreenScreen Parameters
-            EditorGUILayout.LabelField("GreenScreen", EditorStyles.boldLabel);
-            
-            // Color picker only
-            // Map Lightness to V for display
-            Color currentColor = Color.HSVToRGB(
-                _hue.floatValue / Hue.MaxValue, 
+            // Toggle Parameters
+            EditorGUILayout.LabelField("Toggles", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_lockCamera, new GUIContent("Lock"));
+            EditorGUILayout.PropertyField(_smoothMovement, new GUIContent("Smooth Movement"));
+            EditorGUILayout.PropertyField(_lookAtMe, new GUIContent("Look At Me"));
+            EditorGUILayout.PropertyField(_autoLevelRoll, new GUIContent("Auto Level Roll"));
+            EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
+            EditorGUILayout.PropertyField(_flying, new GUIContent("Flying"));
+            EditorGUILayout.PropertyField(_triggerTakesPhotos, new GUIContent("Trigger Takes Photos"));
+            EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Dolly Paths Stay Visible"));
+            EditorGUILayout.PropertyField(_cameraEars, new GUIContent("Camera Ears"));
+            EditorGUILayout.PropertyField(_showFocus, new GUIContent("Show Focus"));
+            EditorGUILayout.PropertyField(_streaming, new GUIContent("Streaming"));
+            EditorGUILayout.PropertyField(_rollWhileFlying, new GUIContent("Roll While Flying"));
+            EditorGUILayout.PropertyField(_orientationIsLandscape, new GUIContent("Orientation Is Landscape"));
+
+            EditorGUILayout.Space();
+
+            // Mask Parameters
+            EditorGUILayout.LabelField("Mask", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_localPlayer, new GUIContent("Local User"));
+            EditorGUILayout.PropertyField(_remotePlayer, new GUIContent("Remote User"));
+            EditorGUILayout.PropertyField(_environment, new GUIContent("World"));
+            EditorGUILayout.PropertyField(_greenScreen, new GUIContent("Green Screen"));
+            EditorGUI.indentLevel++;
+            // Color picker for Green Screen (Hue/Saturation/Lightness)
+            Color currentMaskColor = Color.HSVToRGB(
+                _hue.floatValue / Hue.MaxValue,
                 _saturation.floatValue / Saturation.MaxValue,
                 _lightness.floatValue / Lightness.MaxValue
             );
-            
             EditorGUI.BeginChangeCheck();
-            Color newColor = EditorGUILayout.ColorField("GreenScreen Color", currentColor);
+            Color newMaskColor = EditorGUILayout.ColorField("Color", currentMaskColor);
             if (EditorGUI.EndChangeCheck())
             {
-                Color.RGBToHSV(newColor, out float h, out float s, out float v);
+                Color.RGBToHSV(newMaskColor, out float h, out float s, out float v);
                 _hue.floatValue = h * Hue.MaxValue;
                 _saturation.floatValue = s * Saturation.MaxValue;
                 _lightness.floatValue = v * Lightness.MaxValue;
             }
+            EditorGUI.indentLevel--;
+            EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("UI"));
+            
+            EditorGUILayout.Space();
             
             EditorGUILayout.Space();
             
@@ -105,22 +165,22 @@ namespace VRCCamera.Editor
             
             // Get current camera values
             var component = (VRCCameraSynchronizerComponent)target;
-            var camera = component.GetComponent<Camera>();
-            
-            if (camera != null)
+            var unityCamera = component.GetComponent<Camera>();
+
+            if (unityCamera != null)
             {
                 GUI.enabled = false; // Make read-only
                 
                 // Zoom (focal length) - clamp the display value
-                float clampedZoom = Mathf.Clamp(camera.focalLength, Zoom.MinValue, Zoom.MaxValue);
+                float clampedZoom = Mathf.Clamp(unityCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
                 EditorGUILayout.Slider("Zoom (Focal Length)", clampedZoom, Zoom.MinValue, Zoom.MaxValue);
                 
                 // Aperture - clamp the display value
-                float clampedAperture = Mathf.Clamp(camera.aperture, Aperture.MinValue, Aperture.MaxValue);
+                float clampedAperture = Mathf.Clamp(unityCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
                 EditorGUILayout.Slider("Aperture", clampedAperture, Aperture.MinValue, Aperture.MaxValue);
                 
                 // Focal Distance - clamp the display value
-                float clampedFocalDistance = Mathf.Clamp(camera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
+                float clampedFocalDistance = Mathf.Clamp(unityCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
                 EditorGUILayout.Slider("Focal Distance", clampedFocalDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
                 
                 GUI.enabled = true;

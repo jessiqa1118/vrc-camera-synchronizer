@@ -101,8 +101,8 @@ namespace VRCCamera.Tests.Unit
             // Act
             var synchronizer = new VRCCameraSynchronizer(mockTransmitter, vrcCamera);
             
-            // Assert - Constructor should send all 14 initial values
-            Assert.AreEqual(14, mockTransmitter.SendCallCount);
+            // Assert - Constructor should send all 32 initial values (14 sliders + 18 toggles)
+            Assert.AreEqual(32, mockTransmitter.SendCallCount);
             
             // Cleanup
             synchronizer.Dispose();
@@ -122,8 +122,8 @@ namespace VRCCamera.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Sync now force sends all 14 parameters + 1 from SetExposure = 15
-            Assert.AreEqual(15, _mockTransmitter.SendCallCount);
+            // Sync now force sends all 32 parameters (14 sliders + 18 toggles) + 1 from SetExposure = 33
+            Assert.AreEqual(33, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
         }
         
@@ -138,12 +138,13 @@ namespace VRCCamera.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Force sends all 14 messages
-            Assert.AreEqual(14, _mockTransmitter.SendCallCount);
+            // Force sends all 32 messages (14 sliders + 18 toggles)
+            Assert.AreEqual(32, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             
+            // Last message is ShowUIInCamera toggle which has Bool type
             var message = _mockTransmitter.LastSentMessage.Value;
-            Assert.AreEqual(Argument.ValueType.Float32, message.Arguments[0].Type);
+            Assert.AreEqual(Argument.ValueType.Bool, message.Arguments[0].Type);
         }
         
         [Test]
@@ -162,7 +163,7 @@ namespace VRCCamera.Tests.Unit
             var secondCallCount = _mockTransmitter.SendCallCount;
             
             // Assert
-            Assert.AreEqual(14, secondCallCount); // 14 messages per Sync call
+            Assert.AreEqual(32, secondCallCount); // 32 messages per Sync call (14 sliders + 18 toggles)
         }
         
         [Test]
@@ -174,7 +175,8 @@ namespace VRCCamera.Tests.Unit
             // Assert
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             var message = _mockTransmitter.LastSentMessage.Value;
-            Assert.AreEqual("f", message.TypeTag.Value);
+            // Last message is a toggle with default false, which has TypeTag "F"
+            Assert.AreEqual("F", message.TypeTag.Value);
         }
         
         [Test]
