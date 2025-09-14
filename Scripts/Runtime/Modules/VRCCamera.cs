@@ -27,6 +27,7 @@ namespace VRCCamera
         public ReactiveProperty<RemotePlayerToggle> RemotePlayer { get; }
         public ReactiveProperty<EnvironmentToggle> Environment { get; }
         public ReactiveProperty<GreenScreenToggle> GreenScreen { get; }
+        public ReactiveProperty<SmoothMovementToggle> SmoothMovement { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -54,6 +55,7 @@ namespace VRCCamera
             RemotePlayer = new ReactiveProperty<RemotePlayerToggle>(new RemotePlayerToggle(false));
             Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(false));
             GreenScreen = new ReactiveProperty<GreenScreenToggle>(new GreenScreenToggle(false));
+            SmoothMovement = new ReactiveProperty<SmoothMovementToggle>(new SmoothMovementToggle(false));
         }
 
         /// <summary>
@@ -194,6 +196,14 @@ namespace VRCCamera
         {
             GreenScreen.SetValue(greenScreen);
         }
+
+        /// <summary>
+        /// Sets SmoothMovement toggle value reactively
+        /// </summary>
+        public void SetSmoothMovement(SmoothMovementToggle smoothMovement)
+        {
+            SmoothMovement.SetValue(smoothMovement);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -220,6 +230,7 @@ namespace VRCCamera
             RemotePlayer?.ClearSubscriptions();
             Environment?.ClearSubscriptions();
             GreenScreen?.ClearSubscriptions();
+            SmoothMovement?.ClearSubscriptions();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace VRCCamera
         [SerializeField] private bool remotePlayer = false;
         [SerializeField] private bool environment = false;
         [SerializeField] private bool greenScreen = false;
+        [SerializeField] private bool smoothMovement = false;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -66,6 +67,7 @@ namespace VRCCamera
                 _vrcCamera.SetRemotePlayer(new RemotePlayerToggle(remotePlayer));
                 _vrcCamera.SetEnvironment(new EnvironmentToggle(environment));
                 _vrcCamera.SetGreenScreen(new GreenScreenToggle(greenScreen));
+                _vrcCamera.SetSmoothMovement(new SmoothMovementToggle(smoothMovement));
                 
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -114,6 +116,7 @@ namespace VRCCamera
             _vrcCamera.SetRemotePlayer(new RemotePlayerToggle(remotePlayer));
             _vrcCamera.SetEnvironment(new EnvironmentToggle(environment));
             _vrcCamera.SetGreenScreen(new GreenScreenToggle(greenScreen));
+            _vrcCamera.SetSmoothMovement(new SmoothMovementToggle(smoothMovement));
         }
     }
 }
