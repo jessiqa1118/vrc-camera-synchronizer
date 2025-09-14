@@ -25,6 +25,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _localPlayer;
         private SerializedProperty _remotePlayer;
         private SerializedProperty _environment;
+        private SerializedProperty _greenScreen;
 
         private void OnEnable()
         {
@@ -46,6 +47,7 @@ namespace VRCCamera.Editor
             _localPlayer = serializedObject.FindProperty("localPlayer");
             _remotePlayer = serializedObject.FindProperty("remotePlayer");
             _environment = serializedObject.FindProperty("environment");
+            _greenScreen = serializedObject.FindProperty("greenScreen");
         }
 
         public override void OnInspectorGUI()
@@ -74,30 +76,27 @@ namespace VRCCamera.Editor
             EditorGUILayout.PropertyField(_localPlayer, new GUIContent("Local User"));
             EditorGUILayout.PropertyField(_remotePlayer, new GUIContent("Remote User"));
             EditorGUILayout.PropertyField(_environment, new GUIContent("World"));
-            EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("UI"));
-            
-            EditorGUILayout.Space();
-            
-            // GreenScreen Parameters
-            EditorGUILayout.LabelField("GreenScreen", EditorStyles.boldLabel);
-            
-            // Color picker only
-            // Map Lightness to V for display
-            Color currentColor = Color.HSVToRGB(
-                _hue.floatValue / Hue.MaxValue, 
+            EditorGUILayout.PropertyField(_greenScreen, new GUIContent("Green Screen"));
+            EditorGUI.indentLevel++;
+            // Color picker for Green Screen (Hue/Saturation/Lightness)
+            Color currentMaskColor = Color.HSVToRGB(
+                _hue.floatValue / Hue.MaxValue,
                 _saturation.floatValue / Saturation.MaxValue,
                 _lightness.floatValue / Lightness.MaxValue
             );
-            
             EditorGUI.BeginChangeCheck();
-            Color newColor = EditorGUILayout.ColorField("GreenScreen Color", currentColor);
+            Color newMaskColor = EditorGUILayout.ColorField("Color", currentMaskColor);
             if (EditorGUI.EndChangeCheck())
             {
-                Color.RGBToHSV(newColor, out float h, out float s, out float v);
+                Color.RGBToHSV(newMaskColor, out float h, out float s, out float v);
                 _hue.floatValue = h * Hue.MaxValue;
                 _saturation.floatValue = s * Saturation.MaxValue;
                 _lightness.floatValue = v * Lightness.MaxValue;
             }
+            EditorGUI.indentLevel--;
+            EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("UI"));
+            
+            EditorGUILayout.Space();
             
             EditorGUILayout.Space();
             

@@ -26,6 +26,7 @@ namespace VRCCamera
         public ReactiveProperty<LocalPlayerToggle> LocalPlayer { get; }
         public ReactiveProperty<RemotePlayerToggle> RemotePlayer { get; }
         public ReactiveProperty<EnvironmentToggle> Environment { get; }
+        public ReactiveProperty<GreenScreenToggle> GreenScreen { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -52,6 +53,7 @@ namespace VRCCamera
             LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(false));
             RemotePlayer = new ReactiveProperty<RemotePlayerToggle>(new RemotePlayerToggle(false));
             Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(false));
+            GreenScreen = new ReactiveProperty<GreenScreenToggle>(new GreenScreenToggle(false));
         }
 
         /// <summary>
@@ -184,6 +186,14 @@ namespace VRCCamera
         {
             Environment.SetValue(environment);
         }
+
+        /// <summary>
+        /// Sets GreenScreen toggle value reactively
+        /// </summary>
+        public void SetGreenScreen(GreenScreenToggle greenScreen)
+        {
+            GreenScreen.SetValue(greenScreen);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -209,6 +219,7 @@ namespace VRCCamera
             LocalPlayer?.ClearSubscriptions();
             RemotePlayer?.ClearSubscriptions();
             Environment?.ClearSubscriptions();
+            GreenScreen?.ClearSubscriptions();
         }
     }
 }
