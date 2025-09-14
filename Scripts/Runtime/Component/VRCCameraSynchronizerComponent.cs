@@ -111,6 +111,22 @@ namespace VRCCamera
             _vrcCamera = null;
         }
 
+        // Action wrappers for Editor buttons or external callers
+        public void Action_CloseCamera()
+        {
+            _synchronizer?.Close();
+        }
+
+        public void Action_Capture()
+        {
+            _synchronizer?.Capture();
+        }
+
+        public void Action_CaptureDelayed()
+        {
+            _synchronizer?.CaptureDelayed();
+        }
+
         private void FixedUpdate()
         {
             // NOTE: Use FixedUpdate to reduce the frequency of updates
