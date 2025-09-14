@@ -432,6 +432,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        // Note: Additional actions (Capture, CaptureDelayed) will be added in follow-up work
+        public void Capture()
+        {
+            if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
+
+            var message = new Message(OSCCameraEndpoints.Capture, Array.Empty<Argument>());
+            _transmitter.Send(message);
+        }
+
+        // Note: Additional action (CaptureDelayed) will be added in follow-up work
     }
 }

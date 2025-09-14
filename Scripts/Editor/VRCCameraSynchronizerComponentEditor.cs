@@ -93,6 +93,11 @@ namespace VRCCamera.Editor
                     var targetComponent = (VRCCameraSynchronizerComponent)target;
                     targetComponent.Action_CloseCamera();
                 }
+                if (GUILayout.Button("Capture"))
+                {
+                    var targetComponent = (VRCCameraSynchronizerComponent)target;
+                    targetComponent.Action_Capture();
+                }
             }
 
             EditorGUILayout.Space();
