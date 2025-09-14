@@ -22,6 +22,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _duration;
         private SerializedProperty _showUIInCamera;
         private SerializedProperty _lockCamera;
+        private SerializedProperty _localPlayer;
 
         private void OnEnable()
         {
@@ -40,6 +41,7 @@ namespace VRCCamera.Editor
             _duration = serializedObject.FindProperty("duration");
             _showUIInCamera = serializedObject.FindProperty("showUIInCamera");
             _lockCamera = serializedObject.FindProperty("lockCamera");
+            _localPlayer = serializedObject.FindProperty("localPlayer");
         }
 
         public override void OnInspectorGUI()
@@ -59,8 +61,14 @@ namespace VRCCamera.Editor
             
             // Toggle Parameters
             EditorGUILayout.LabelField("Toggles", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("Show UI In Camera"));
             EditorGUILayout.PropertyField(_lockCamera, new GUIContent("Lock"));
+
+            EditorGUILayout.Space();
+
+            // Mask Parameters
+            EditorGUILayout.LabelField("Mask", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_localPlayer, new GUIContent("Local User"));
+            EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("UI"));
             
             EditorGUILayout.Space();
             

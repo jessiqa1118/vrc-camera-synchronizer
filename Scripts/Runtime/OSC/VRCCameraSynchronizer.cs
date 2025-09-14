@@ -23,6 +23,7 @@ namespace VRCCamera
         private readonly DurationConverter _durationConverter = new();
         private readonly ShowUIInCameraToggleConverter _showUIInCameraToggleConverter = new();
         private readonly LockToggleConverter _lockToggleConverter = new();
+        private readonly LocalPlayerToggleConverter _localPlayerToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -46,6 +47,7 @@ namespace VRCCamera
             _vrcCamera.Duration.OnValueChanged += OnDurationChanged;
             _vrcCamera.ShowUIInCamera.OnValueChanged += OnShowUIInCameraChanged;
             _vrcCamera.Lock.OnValueChanged += OnLockChanged;
+            _vrcCamera.LocalPlayer.OnValueChanged += OnLocalPlayerChanged;
             
             // Send initial values
             Sync();
@@ -176,6 +178,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnLocalPlayerChanged(LocalPlayerToggle localPlayer)
+        {
+            if (_disposed) return;
+
+            var message = _localPlayerToggleConverter.ToOSCMessage(localPlayer);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -201,6 +211,7 @@ namespace VRCCamera
             _transmitter.Send(_durationConverter.ToOSCMessage(_vrcCamera.Duration.Value));
             _transmitter.Send(_showUIInCameraToggleConverter.ToOSCMessage(_vrcCamera.ShowUIInCamera.Value));
             _transmitter.Send(_lockToggleConverter.ToOSCMessage(_vrcCamera.Lock.Value));
+            _transmitter.Send(_localPlayerToggleConverter.ToOSCMessage(_vrcCamera.LocalPlayer.Value));
         }
 
         public void Dispose()
@@ -225,6 +236,7 @@ namespace VRCCamera
                 _vrcCamera.Duration.OnValueChanged -= OnDurationChanged;
                 _vrcCamera.ShowUIInCamera.OnValueChanged -= OnShowUIInCameraChanged;
                 _vrcCamera.Lock.OnValueChanged -= OnLockChanged;
+                _vrcCamera.LocalPlayer.OnValueChanged -= OnLocalPlayerChanged;
             }
             
             _transmitter?.Dispose();

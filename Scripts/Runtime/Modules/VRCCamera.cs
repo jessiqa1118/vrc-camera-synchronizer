@@ -23,6 +23,7 @@ namespace VRCCamera
         public ReactiveProperty<Duration> Duration { get; }
         public ReactiveProperty<ShowUIInCameraToggle> ShowUIInCamera { get; }
         public ReactiveProperty<LockToggle> Lock { get; }
+        public ReactiveProperty<LocalPlayerToggle> LocalPlayer { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -46,6 +47,7 @@ namespace VRCCamera
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
             ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
             Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
+            LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(false));
         }
 
         /// <summary>
@@ -154,6 +156,14 @@ namespace VRCCamera
         {
             Lock.SetValue(lockToggle);
         }
+
+        /// <summary>
+        /// Sets LocalPlayer toggle value reactively
+        /// </summary>
+        public void SetLocalPlayer(LocalPlayerToggle localPlayer)
+        {
+            LocalPlayer.SetValue(localPlayer);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -176,6 +186,7 @@ namespace VRCCamera
             Duration?.ClearSubscriptions();
             ShowUIInCamera?.ClearSubscriptions();
             Lock?.ClearSubscriptions();
+            LocalPlayer?.ClearSubscriptions();
         }
     }
 }
