@@ -28,6 +28,7 @@ namespace VRCCamera
         public ReactiveProperty<EnvironmentToggle> Environment { get; }
         public ReactiveProperty<GreenScreenToggle> GreenScreen { get; }
         public ReactiveProperty<SmoothMovementToggle> SmoothMovement { get; }
+        public ReactiveProperty<LookAtMeToggle> LookAtMe { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -56,6 +57,7 @@ namespace VRCCamera
             Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(false));
             GreenScreen = new ReactiveProperty<GreenScreenToggle>(new GreenScreenToggle(false));
             SmoothMovement = new ReactiveProperty<SmoothMovementToggle>(new SmoothMovementToggle(false));
+            LookAtMe = new ReactiveProperty<LookAtMeToggle>(new LookAtMeToggle(false));
         }
 
         /// <summary>
@@ -204,6 +206,14 @@ namespace VRCCamera
         {
             SmoothMovement.SetValue(smoothMovement);
         }
+
+        /// <summary>
+        /// Sets LookAtMe toggle value reactively
+        /// </summary>
+        public void SetLookAtMe(LookAtMeToggle lookAtMe)
+        {
+            LookAtMe.SetValue(lookAtMe);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -231,6 +241,7 @@ namespace VRCCamera
             Environment?.ClearSubscriptions();
             GreenScreen?.ClearSubscriptions();
             SmoothMovement?.ClearSubscriptions();
+            LookAtMe?.ClearSubscriptions();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace VRCCamera
         private readonly EnvironmentToggleConverter _environmentToggleConverter = new();
         private readonly GreenScreenToggleConverter _greenScreenToggleConverter = new();
         private readonly SmoothMovementToggleConverter _smoothMovementToggleConverter = new();
+        private readonly LookAtMeToggleConverter _lookAtMeToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -56,6 +57,7 @@ namespace VRCCamera
             _vrcCamera.Environment.OnValueChanged += OnEnvironmentChanged;
             _vrcCamera.GreenScreen.OnValueChanged += OnGreenScreenChanged;
             _vrcCamera.SmoothMovement.OnValueChanged += OnSmoothMovementChanged;
+            _vrcCamera.LookAtMe.OnValueChanged += OnLookAtMeChanged;
             
             // Send initial values
             Sync();
@@ -226,6 +228,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnLookAtMeChanged(LookAtMeToggle lookAtMe)
+        {
+            if (_disposed) return;
+
+            var message = _lookAtMeToggleConverter.ToOSCMessage(lookAtMe);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -256,6 +266,7 @@ namespace VRCCamera
             _transmitter.Send(_environmentToggleConverter.ToOSCMessage(_vrcCamera.Environment.Value));
             _transmitter.Send(_greenScreenToggleConverter.ToOSCMessage(_vrcCamera.GreenScreen.Value));
             _transmitter.Send(_smoothMovementToggleConverter.ToOSCMessage(_vrcCamera.SmoothMovement.Value));
+            _transmitter.Send(_lookAtMeToggleConverter.ToOSCMessage(_vrcCamera.LookAtMe.Value));
         }
 
         public void Dispose()
@@ -285,6 +296,7 @@ namespace VRCCamera
                 _vrcCamera.Environment.OnValueChanged -= OnEnvironmentChanged;
                 _vrcCamera.GreenScreen.OnValueChanged -= OnGreenScreenChanged;
                 _vrcCamera.SmoothMovement.OnValueChanged -= OnSmoothMovementChanged;
+                _vrcCamera.LookAtMe.OnValueChanged -= OnLookAtMeChanged;
             }
             
             _transmitter?.Dispose();

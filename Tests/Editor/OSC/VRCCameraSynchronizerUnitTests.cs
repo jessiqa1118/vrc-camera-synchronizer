@@ -101,8 +101,8 @@ namespace VRCCamera.Tests.Unit
             // Act
             var synchronizer = new VRCCameraSynchronizer(mockTransmitter, vrcCamera);
             
-            // Assert - Constructor should send all 21 initial values (14 sliders + 7 toggles)
-            Assert.AreEqual(21, mockTransmitter.SendCallCount);
+            // Assert - Constructor should send all 22 initial values (14 sliders + 8 toggles)
+            Assert.AreEqual(22, mockTransmitter.SendCallCount);
             
             // Cleanup
             synchronizer.Dispose();
@@ -122,8 +122,8 @@ namespace VRCCamera.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Sync now force sends all 21 parameters (14 sliders + 7 toggles) + 1 from SetExposure = 22
-            Assert.AreEqual(22, _mockTransmitter.SendCallCount);
+            // Sync now force sends all 22 parameters (14 sliders + 8 toggles) + 1 from SetExposure = 23
+            Assert.AreEqual(23, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
         }
         
@@ -163,7 +163,7 @@ namespace VRCCamera.Tests.Unit
             var secondCallCount = _mockTransmitter.SendCallCount;
             
             // Assert
-            Assert.AreEqual(21, secondCallCount); // 21 messages per Sync call (14 sliders + 7 toggles)
+            Assert.AreEqual(22, secondCallCount); // 22 messages per Sync call (14 sliders + 8 toggles)
         }
         
         [Test]

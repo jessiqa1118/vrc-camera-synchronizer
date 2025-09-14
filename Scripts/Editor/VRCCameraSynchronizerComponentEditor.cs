@@ -27,6 +27,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _environment;
         private SerializedProperty _greenScreen;
         private SerializedProperty _smoothMovement;
+        private SerializedProperty _lookAtMe;
 
         private void OnEnable()
         {
@@ -50,6 +51,7 @@ namespace VRCCamera.Editor
             _environment = serializedObject.FindProperty("environment");
             _greenScreen = serializedObject.FindProperty("greenScreen");
             _smoothMovement = serializedObject.FindProperty("smoothMovement");
+            _lookAtMe = serializedObject.FindProperty("lookAtMe");
         }
 
         public override void OnInspectorGUI()
@@ -71,6 +73,7 @@ namespace VRCCamera.Editor
             EditorGUILayout.LabelField("Toggles", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(_lockCamera, new GUIContent("Lock"));
             EditorGUILayout.PropertyField(_smoothMovement, new GUIContent("Smooth Movement"));
+            EditorGUILayout.PropertyField(_lookAtMe, new GUIContent("Look At Me"));
 
             EditorGUILayout.Space();
 
