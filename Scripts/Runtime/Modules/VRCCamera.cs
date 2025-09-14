@@ -37,6 +37,7 @@ namespace VRCCamera
         public ReactiveProperty<CameraEarsToggle> CameraEars { get; }
         public ReactiveProperty<ShowFocusToggle> ShowFocus { get; }
         public ReactiveProperty<StreamingToggle> Streaming { get; }
+        public ReactiveProperty<RollWhileFlyingToggle> RollWhileFlying { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -74,6 +75,7 @@ namespace VRCCamera
             CameraEars = new ReactiveProperty<CameraEarsToggle>(new CameraEarsToggle(false));
             ShowFocus = new ReactiveProperty<ShowFocusToggle>(new ShowFocusToggle(false));
             Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
+            RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
         }
 
         /// <summary>
@@ -294,6 +296,14 @@ namespace VRCCamera
         {
             Streaming.SetValue(streaming);
         }
+
+        /// <summary>
+        /// Sets RollWhileFlying toggle value reactively
+        /// </summary>
+        public void SetRollWhileFlying(RollWhileFlyingToggle rollWhileFlying)
+        {
+            RollWhileFlying.SetValue(rollWhileFlying);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -330,6 +340,7 @@ namespace VRCCamera
             CameraEars?.ClearSubscriptions();
             ShowFocus?.ClearSubscriptions();
             Streaming?.ClearSubscriptions();
+            RollWhileFlying?.ClearSubscriptions();
         }
     }
 }
