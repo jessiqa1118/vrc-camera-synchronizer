@@ -84,6 +84,19 @@ namespace VRCCamera.Editor
             
             EditorGUILayout.Space();
 
+            // Actions (Play Mode only)
+            EditorGUILayout.LabelField("Actions", EditorStyles.boldLabel);
+            using (new EditorGUI.DisabledScope(!Application.isPlaying))
+            {
+                if (GUILayout.Button("Close Camera"))
+                {
+                    var targetComponent = (VRCCameraSynchronizerComponent)target;
+                    targetComponent.Action_CloseCamera();
+                }
+            }
+
+            EditorGUILayout.Space();
+
             // Camera Parameters
             EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
             
@@ -159,7 +172,7 @@ namespace VRCCamera.Editor
             EditorGUILayout.Slider(_duration, Duration.MinValue, Duration.MaxValue, "Duration");
             
             EditorGUILayout.Space();
-            
+
             // Camera Sync (Read-only)
             EditorGUILayout.LabelField("Camera Sync (From Camera Component)", EditorStyles.boldLabel);
             

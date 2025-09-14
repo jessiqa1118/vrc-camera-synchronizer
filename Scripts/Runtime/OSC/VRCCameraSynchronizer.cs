@@ -1,5 +1,6 @@
 using System;
 using Parameters;
+using OSC;
 
 namespace VRCCamera
 {
@@ -422,5 +423,15 @@ namespace VRCCamera
 
             _transmitter?.Dispose();
         }
+
+        public void Close()
+        {
+            if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
+
+            var message = new Message(OSCCameraEndpoints.Close, Array.Empty<Argument>());
+            _transmitter.Send(message);
+        }
+
+        // Note: Additional actions (Capture, CaptureDelayed) will be added in follow-up work
     }
 }
