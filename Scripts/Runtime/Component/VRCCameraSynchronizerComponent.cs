@@ -37,6 +37,7 @@ namespace VRCCamera
         [SerializeField] private bool dollyPathsStayVisible = false;
         [SerializeField] private bool cameraEars = false;
         [SerializeField] private bool showFocus = false;
+        [SerializeField] private bool streaming = false;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -84,6 +85,7 @@ namespace VRCCamera
                 _vrcCamera.SetDollyPathsStayVisible(new DollyPathsStayVisibleToggle(dollyPathsStayVisible));
                 _vrcCamera.SetCameraEars(new CameraEarsToggle(cameraEars));
                 _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
+                _vrcCamera.SetStreaming(new StreamingToggle(streaming));
                 
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -141,6 +143,7 @@ namespace VRCCamera
             _vrcCamera.SetDollyPathsStayVisible(new DollyPathsStayVisibleToggle(dollyPathsStayVisible));
             _vrcCamera.SetCameraEars(new CameraEarsToggle(cameraEars));
             _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
+            _vrcCamera.SetStreaming(new StreamingToggle(streaming));
         }
     }
 }

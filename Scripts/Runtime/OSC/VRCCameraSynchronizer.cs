@@ -36,6 +36,7 @@ namespace VRCCamera
         private readonly DollyPathsStayVisibleToggleConverter _dollyPathsStayVisibleToggleConverter = new();
         private readonly CameraEarsToggleConverter _cameraEarsToggleConverter = new();
         private readonly ShowFocusToggleConverter _showFocusToggleConverter = new();
+        private readonly StreamingToggleConverter _streamingToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -72,6 +73,7 @@ namespace VRCCamera
             _vrcCamera.DollyPathsStayVisible.OnValueChanged += OnDollyPathsStayVisibleChanged;
             _vrcCamera.CameraEars.OnValueChanged += OnCameraEarsChanged;
             _vrcCamera.ShowFocus.OnValueChanged += OnShowFocusChanged;
+            _vrcCamera.Streaming.OnValueChanged += OnStreamingChanged;
             
             // Send initial values
             Sync();
@@ -306,6 +308,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnStreamingChanged(StreamingToggle streaming)
+        {
+            if (_disposed) return;
+
+            var message = _streamingToggleConverter.ToOSCMessage(streaming);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -344,6 +354,7 @@ namespace VRCCamera
             _transmitter.Send(_dollyPathsStayVisibleToggleConverter.ToOSCMessage(_vrcCamera.DollyPathsStayVisible.Value));
             _transmitter.Send(_cameraEarsToggleConverter.ToOSCMessage(_vrcCamera.CameraEars.Value));
             _transmitter.Send(_showFocusToggleConverter.ToOSCMessage(_vrcCamera.ShowFocus.Value));
+            _transmitter.Send(_streamingToggleConverter.ToOSCMessage(_vrcCamera.Streaming.Value));
         }
 
         public void Dispose()
@@ -381,6 +392,7 @@ namespace VRCCamera
                 _vrcCamera.DollyPathsStayVisible.OnValueChanged -= OnDollyPathsStayVisibleChanged;
                 _vrcCamera.CameraEars.OnValueChanged -= OnCameraEarsChanged;
                 _vrcCamera.ShowFocus.OnValueChanged -= OnShowFocusChanged;
+                _vrcCamera.Streaming.OnValueChanged -= OnStreamingChanged;
             }
             
             _transmitter?.Dispose();

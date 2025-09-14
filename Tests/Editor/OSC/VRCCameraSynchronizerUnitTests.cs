@@ -101,8 +101,8 @@ namespace VRCCamera.Tests.Unit
             // Act
             var synchronizer = new VRCCameraSynchronizer(mockTransmitter, vrcCamera);
             
-            // Assert - Constructor should send all 29 initial values (14 sliders + 15 toggles)
-            Assert.AreEqual(29, mockTransmitter.SendCallCount);
+            // Assert - Constructor should send all 30 initial values (14 sliders + 16 toggles)
+            Assert.AreEqual(30, mockTransmitter.SendCallCount);
             
             // Cleanup
             synchronizer.Dispose();
@@ -122,8 +122,8 @@ namespace VRCCamera.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Sync now force sends all 29 parameters (14 sliders + 15 toggles) + 1 from SetExposure = 30
-            Assert.AreEqual(30, _mockTransmitter.SendCallCount);
+            // Sync now force sends all 30 parameters (14 sliders + 16 toggles) + 1 from SetExposure = 31
+            Assert.AreEqual(31, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
         }
         
@@ -138,8 +138,8 @@ namespace VRCCamera.Tests.Unit
             _synchronizer.Sync();
             
             // Assert
-            // Force sends all 29 messages (14 sliders + 15 toggles)
-            Assert.AreEqual(29, _mockTransmitter.SendCallCount);
+            // Force sends all 30 messages (14 sliders + 16 toggles)
+            Assert.AreEqual(30, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             
             // Last message is ShowUIInCamera toggle which has Bool type
@@ -163,7 +163,7 @@ namespace VRCCamera.Tests.Unit
             var secondCallCount = _mockTransmitter.SendCallCount;
             
             // Assert
-            Assert.AreEqual(29, secondCallCount); // 29 messages per Sync call (14 sliders + 15 toggles)
+            Assert.AreEqual(30, secondCallCount); // 30 messages per Sync call (14 sliders + 16 toggles)
         }
         
         [Test]

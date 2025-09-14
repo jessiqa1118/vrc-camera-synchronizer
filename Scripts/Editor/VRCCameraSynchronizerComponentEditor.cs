@@ -35,6 +35,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _dollyPathsStayVisible;
         private SerializedProperty _cameraEars;
         private SerializedProperty _showFocus;
+        private SerializedProperty _streaming;
 
         private void OnEnable()
         {
@@ -66,6 +67,7 @@ namespace VRCCamera.Editor
             _dollyPathsStayVisible = serializedObject.FindProperty("dollyPathsStayVisible");
             _cameraEars = serializedObject.FindProperty("cameraEars");
             _showFocus = serializedObject.FindProperty("showFocus");
+            _streaming = serializedObject.FindProperty("streaming");
         }
 
         public override void OnInspectorGUI()
@@ -95,6 +97,7 @@ namespace VRCCamera.Editor
             EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Dolly Paths Stay Visible"));
             EditorGUILayout.PropertyField(_cameraEars, new GUIContent("Camera Ears"));
             EditorGUILayout.PropertyField(_showFocus, new GUIContent("Show Focus"));
+            EditorGUILayout.PropertyField(_streaming, new GUIContent("Streaming"));
 
             EditorGUILayout.Space();
 

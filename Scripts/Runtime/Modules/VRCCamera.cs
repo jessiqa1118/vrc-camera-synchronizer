@@ -36,6 +36,7 @@ namespace VRCCamera
         public ReactiveProperty<DollyPathsStayVisibleToggle> DollyPathsStayVisible { get; }
         public ReactiveProperty<CameraEarsToggle> CameraEars { get; }
         public ReactiveProperty<ShowFocusToggle> ShowFocus { get; }
+        public ReactiveProperty<StreamingToggle> Streaming { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -72,6 +73,7 @@ namespace VRCCamera
             DollyPathsStayVisible = new ReactiveProperty<DollyPathsStayVisibleToggle>(new DollyPathsStayVisibleToggle(false));
             CameraEars = new ReactiveProperty<CameraEarsToggle>(new CameraEarsToggle(false));
             ShowFocus = new ReactiveProperty<ShowFocusToggle>(new ShowFocusToggle(false));
+            Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
         }
 
         /// <summary>
@@ -284,6 +286,14 @@ namespace VRCCamera
         {
             ShowFocus.SetValue(showFocus);
         }
+
+        /// <summary>
+        /// Sets Streaming toggle value reactively
+        /// </summary>
+        public void SetStreaming(StreamingToggle streaming)
+        {
+            Streaming.SetValue(streaming);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -319,6 +329,7 @@ namespace VRCCamera
             DollyPathsStayVisible?.ClearSubscriptions();
             CameraEars?.ClearSubscriptions();
             ShowFocus?.ClearSubscriptions();
+            Streaming?.ClearSubscriptions();
         }
     }
 }
