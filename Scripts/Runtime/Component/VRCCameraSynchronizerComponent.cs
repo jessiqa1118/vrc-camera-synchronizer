@@ -32,6 +32,7 @@ namespace VRCCamera
         [SerializeField] private bool lookAtMe = false;
         [SerializeField] private bool autoLevelRoll = false;
         [SerializeField] private bool autoLevelPitch = false;
+        [SerializeField] private bool flying = false;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -74,6 +75,7 @@ namespace VRCCamera
                 _vrcCamera.SetLookAtMe(new LookAtMeToggle(lookAtMe));
                 _vrcCamera.SetAutoLevelRoll(new AutoLevelRollToggle(autoLevelRoll));
                 _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
+                _vrcCamera.SetFlying(new FlyingToggle(flying));
                 
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -126,6 +128,7 @@ namespace VRCCamera
             _vrcCamera.SetLookAtMe(new LookAtMeToggle(lookAtMe));
             _vrcCamera.SetAutoLevelRoll(new AutoLevelRollToggle(autoLevelRoll));
             _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
+            _vrcCamera.SetFlying(new FlyingToggle(flying));
         }
     }
 }
