@@ -31,6 +31,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _autoLevelRoll;
         private SerializedProperty _autoLevelPitch;
         private SerializedProperty _flying;
+        private SerializedProperty _triggerTakesPhotos;
 
         private void OnEnable()
         {
@@ -58,6 +59,7 @@ namespace VRCCamera.Editor
             _autoLevelRoll = serializedObject.FindProperty("autoLevelRoll");
             _autoLevelPitch = serializedObject.FindProperty("autoLevelPitch");
             _flying = serializedObject.FindProperty("flying");
+            _triggerTakesPhotos = serializedObject.FindProperty("triggerTakesPhotos");
         }
 
         public override void OnInspectorGUI()
@@ -83,6 +85,7 @@ namespace VRCCamera.Editor
             EditorGUILayout.PropertyField(_autoLevelRoll, new GUIContent("Auto Level Roll"));
             EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
             EditorGUILayout.PropertyField(_flying, new GUIContent("Flying"));
+            EditorGUILayout.PropertyField(_triggerTakesPhotos, new GUIContent("Trigger Takes Photos"));
 
             EditorGUILayout.Space();
 

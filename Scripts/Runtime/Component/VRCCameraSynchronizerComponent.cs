@@ -33,6 +33,7 @@ namespace VRCCamera
         [SerializeField] private bool autoLevelRoll = false;
         [SerializeField] private bool autoLevelPitch = false;
         [SerializeField] private bool flying = false;
+        [SerializeField] private bool triggerTakesPhotos = false;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -76,6 +77,7 @@ namespace VRCCamera
                 _vrcCamera.SetAutoLevelRoll(new AutoLevelRollToggle(autoLevelRoll));
                 _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
                 _vrcCamera.SetFlying(new FlyingToggle(flying));
+                _vrcCamera.SetTriggerTakesPhotos(new TriggerTakesPhotosToggle(triggerTakesPhotos));
                 
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -129,6 +131,7 @@ namespace VRCCamera
             _vrcCamera.SetAutoLevelRoll(new AutoLevelRollToggle(autoLevelRoll));
             _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
             _vrcCamera.SetFlying(new FlyingToggle(flying));
+            _vrcCamera.SetTriggerTakesPhotos(new TriggerTakesPhotosToggle(triggerTakesPhotos));
         }
     }
 }

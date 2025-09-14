@@ -32,6 +32,7 @@ namespace VRCCamera
         private readonly AutoLevelRollToggleConverter _autoLevelRollToggleConverter = new();
         private readonly AutoLevelPitchToggleConverter _autoLevelPitchToggleConverter = new();
         private readonly FlyingToggleConverter _flyingToggleConverter = new();
+        private readonly TriggerTakesPhotosToggleConverter _triggerTakesPhotosToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -64,6 +65,7 @@ namespace VRCCamera
             _vrcCamera.AutoLevelRoll.OnValueChanged += OnAutoLevelRollChanged;
             _vrcCamera.AutoLevelPitch.OnValueChanged += OnAutoLevelPitchChanged;
             _vrcCamera.Flying.OnValueChanged += OnFlyingChanged;
+            _vrcCamera.TriggerTakesPhotos.OnValueChanged += OnTriggerTakesPhotosChanged;
             
             // Send initial values
             Sync();
@@ -266,6 +268,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnTriggerTakesPhotosChanged(TriggerTakesPhotosToggle trigger)
+        {
+            if (_disposed) return;
+
+            var message = _triggerTakesPhotosToggleConverter.ToOSCMessage(trigger);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -300,6 +310,7 @@ namespace VRCCamera
             _transmitter.Send(_autoLevelRollToggleConverter.ToOSCMessage(_vrcCamera.AutoLevelRoll.Value));
             _transmitter.Send(_autoLevelPitchToggleConverter.ToOSCMessage(_vrcCamera.AutoLevelPitch.Value));
             _transmitter.Send(_flyingToggleConverter.ToOSCMessage(_vrcCamera.Flying.Value));
+            _transmitter.Send(_triggerTakesPhotosToggleConverter.ToOSCMessage(_vrcCamera.TriggerTakesPhotos.Value));
         }
 
         public void Dispose()
@@ -333,6 +344,7 @@ namespace VRCCamera
                 _vrcCamera.AutoLevelRoll.OnValueChanged -= OnAutoLevelRollChanged;
                 _vrcCamera.AutoLevelPitch.OnValueChanged -= OnAutoLevelPitchChanged;
                 _vrcCamera.Flying.OnValueChanged -= OnFlyingChanged;
+                _vrcCamera.TriggerTakesPhotos.OnValueChanged -= OnTriggerTakesPhotosChanged;
             }
             
             _transmitter?.Dispose();
