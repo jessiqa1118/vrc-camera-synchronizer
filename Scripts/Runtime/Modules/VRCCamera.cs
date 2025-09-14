@@ -35,6 +35,7 @@ namespace VRCCamera
         public ReactiveProperty<TriggerTakesPhotosToggle> TriggerTakesPhotos { get; }
         public ReactiveProperty<DollyPathsStayVisibleToggle> DollyPathsStayVisible { get; }
         public ReactiveProperty<CameraEarsToggle> CameraEars { get; }
+        public ReactiveProperty<ShowFocusToggle> ShowFocus { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -70,6 +71,7 @@ namespace VRCCamera
             TriggerTakesPhotos = new ReactiveProperty<TriggerTakesPhotosToggle>(new TriggerTakesPhotosToggle(false));
             DollyPathsStayVisible = new ReactiveProperty<DollyPathsStayVisibleToggle>(new DollyPathsStayVisibleToggle(false));
             CameraEars = new ReactiveProperty<CameraEarsToggle>(new CameraEarsToggle(false));
+            ShowFocus = new ReactiveProperty<ShowFocusToggle>(new ShowFocusToggle(false));
         }
 
         /// <summary>
@@ -274,6 +276,14 @@ namespace VRCCamera
         {
             CameraEars.SetValue(cameraEars);
         }
+
+        /// <summary>
+        /// Sets ShowFocus toggle value reactively
+        /// </summary>
+        public void SetShowFocus(ShowFocusToggle showFocus)
+        {
+            ShowFocus.SetValue(showFocus);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -308,6 +318,7 @@ namespace VRCCamera
             TriggerTakesPhotos?.ClearSubscriptions();
             DollyPathsStayVisible?.ClearSubscriptions();
             CameraEars?.ClearSubscriptions();
+            ShowFocus?.ClearSubscriptions();
         }
     }
 }

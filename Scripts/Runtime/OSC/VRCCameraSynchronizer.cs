@@ -35,6 +35,7 @@ namespace VRCCamera
         private readonly TriggerTakesPhotosToggleConverter _triggerTakesPhotosToggleConverter = new();
         private readonly DollyPathsStayVisibleToggleConverter _dollyPathsStayVisibleToggleConverter = new();
         private readonly CameraEarsToggleConverter _cameraEarsToggleConverter = new();
+        private readonly ShowFocusToggleConverter _showFocusToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -70,6 +71,7 @@ namespace VRCCamera
             _vrcCamera.TriggerTakesPhotos.OnValueChanged += OnTriggerTakesPhotosChanged;
             _vrcCamera.DollyPathsStayVisible.OnValueChanged += OnDollyPathsStayVisibleChanged;
             _vrcCamera.CameraEars.OnValueChanged += OnCameraEarsChanged;
+            _vrcCamera.ShowFocus.OnValueChanged += OnShowFocusChanged;
             
             // Send initial values
             Sync();
@@ -296,6 +298,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnShowFocusChanged(ShowFocusToggle showFocus)
+        {
+            if (_disposed) return;
+
+            var message = _showFocusToggleConverter.ToOSCMessage(showFocus);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -333,6 +343,7 @@ namespace VRCCamera
             _transmitter.Send(_triggerTakesPhotosToggleConverter.ToOSCMessage(_vrcCamera.TriggerTakesPhotos.Value));
             _transmitter.Send(_dollyPathsStayVisibleToggleConverter.ToOSCMessage(_vrcCamera.DollyPathsStayVisible.Value));
             _transmitter.Send(_cameraEarsToggleConverter.ToOSCMessage(_vrcCamera.CameraEars.Value));
+            _transmitter.Send(_showFocusToggleConverter.ToOSCMessage(_vrcCamera.ShowFocus.Value));
         }
 
         public void Dispose()
@@ -369,6 +380,7 @@ namespace VRCCamera
                 _vrcCamera.TriggerTakesPhotos.OnValueChanged -= OnTriggerTakesPhotosChanged;
                 _vrcCamera.DollyPathsStayVisible.OnValueChanged -= OnDollyPathsStayVisibleChanged;
                 _vrcCamera.CameraEars.OnValueChanged -= OnCameraEarsChanged;
+                _vrcCamera.ShowFocus.OnValueChanged -= OnShowFocusChanged;
             }
             
             _transmitter?.Dispose();
