@@ -30,6 +30,7 @@ namespace VRCCamera
         private readonly SmoothMovementToggleConverter _smoothMovementToggleConverter = new();
         private readonly LookAtMeToggleConverter _lookAtMeToggleConverter = new();
         private readonly AutoLevelRollToggleConverter _autoLevelRollToggleConverter = new();
+        private readonly AutoLevelPitchToggleConverter _autoLevelPitchToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -60,6 +61,7 @@ namespace VRCCamera
             _vrcCamera.SmoothMovement.OnValueChanged += OnSmoothMovementChanged;
             _vrcCamera.LookAtMe.OnValueChanged += OnLookAtMeChanged;
             _vrcCamera.AutoLevelRoll.OnValueChanged += OnAutoLevelRollChanged;
+            _vrcCamera.AutoLevelPitch.OnValueChanged += OnAutoLevelPitchChanged;
             
             // Send initial values
             Sync();
@@ -246,6 +248,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnAutoLevelPitchChanged(AutoLevelPitchToggle autoLevelPitch)
+        {
+            if (_disposed) return;
+
+            var message = _autoLevelPitchToggleConverter.ToOSCMessage(autoLevelPitch);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -278,6 +288,7 @@ namespace VRCCamera
             _transmitter.Send(_smoothMovementToggleConverter.ToOSCMessage(_vrcCamera.SmoothMovement.Value));
             _transmitter.Send(_lookAtMeToggleConverter.ToOSCMessage(_vrcCamera.LookAtMe.Value));
             _transmitter.Send(_autoLevelRollToggleConverter.ToOSCMessage(_vrcCamera.AutoLevelRoll.Value));
+            _transmitter.Send(_autoLevelPitchToggleConverter.ToOSCMessage(_vrcCamera.AutoLevelPitch.Value));
         }
 
         public void Dispose()
@@ -309,6 +320,7 @@ namespace VRCCamera
                 _vrcCamera.SmoothMovement.OnValueChanged -= OnSmoothMovementChanged;
                 _vrcCamera.LookAtMe.OnValueChanged -= OnLookAtMeChanged;
                 _vrcCamera.AutoLevelRoll.OnValueChanged -= OnAutoLevelRollChanged;
+                _vrcCamera.AutoLevelPitch.OnValueChanged -= OnAutoLevelPitchChanged;
             }
             
             _transmitter?.Dispose();

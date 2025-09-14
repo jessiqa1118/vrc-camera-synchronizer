@@ -30,6 +30,7 @@ namespace VRCCamera
         public ReactiveProperty<SmoothMovementToggle> SmoothMovement { get; }
         public ReactiveProperty<LookAtMeToggle> LookAtMe { get; }
         public ReactiveProperty<AutoLevelRollToggle> AutoLevelRoll { get; }
+        public ReactiveProperty<AutoLevelPitchToggle> AutoLevelPitch { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -60,6 +61,7 @@ namespace VRCCamera
             SmoothMovement = new ReactiveProperty<SmoothMovementToggle>(new SmoothMovementToggle(false));
             LookAtMe = new ReactiveProperty<LookAtMeToggle>(new LookAtMeToggle(false));
             AutoLevelRoll = new ReactiveProperty<AutoLevelRollToggle>(new AutoLevelRollToggle(false));
+            AutoLevelPitch = new ReactiveProperty<AutoLevelPitchToggle>(new AutoLevelPitchToggle(false));
         }
 
         /// <summary>
@@ -224,6 +226,14 @@ namespace VRCCamera
         {
             AutoLevelRoll.SetValue(autoLevelRoll);
         }
+
+        /// <summary>
+        /// Sets AutoLevelPitch toggle value reactively
+        /// </summary>
+        public void SetAutoLevelPitch(AutoLevelPitchToggle autoLevelPitch)
+        {
+            AutoLevelPitch.SetValue(autoLevelPitch);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -253,6 +263,7 @@ namespace VRCCamera
             SmoothMovement?.ClearSubscriptions();
             LookAtMe?.ClearSubscriptions();
             AutoLevelRoll?.ClearSubscriptions();
+            AutoLevelPitch?.ClearSubscriptions();
         }
     }
 }

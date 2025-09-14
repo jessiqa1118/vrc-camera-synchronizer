@@ -29,6 +29,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _smoothMovement;
         private SerializedProperty _lookAtMe;
         private SerializedProperty _autoLevelRoll;
+        private SerializedProperty _autoLevelPitch;
 
         private void OnEnable()
         {
@@ -54,6 +55,7 @@ namespace VRCCamera.Editor
             _smoothMovement = serializedObject.FindProperty("smoothMovement");
             _lookAtMe = serializedObject.FindProperty("lookAtMe");
             _autoLevelRoll = serializedObject.FindProperty("autoLevelRoll");
+            _autoLevelPitch = serializedObject.FindProperty("autoLevelPitch");
         }
 
         public override void OnInspectorGUI()
@@ -77,6 +79,7 @@ namespace VRCCamera.Editor
             EditorGUILayout.PropertyField(_smoothMovement, new GUIContent("Smooth Movement"));
             EditorGUILayout.PropertyField(_lookAtMe, new GUIContent("Look At Me"));
             EditorGUILayout.PropertyField(_autoLevelRoll, new GUIContent("Auto Level Roll"));
+            EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
 
             EditorGUILayout.Space();
 
