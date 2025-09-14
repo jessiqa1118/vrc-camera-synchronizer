@@ -382,7 +382,8 @@ namespace VRCCamera
         public void Dispose()
         {
             if (_disposed) return;
-            
+            _disposed = true; // Gate all handlers before tearing down
+
             // Unsubscribe from events
             if (_vrcCamera != null)
             {
@@ -418,9 +419,8 @@ namespace VRCCamera
                 _vrcCamera.RollWhileFlying.OnValueChanged -= OnRollWhileFlyingChanged;
                 _vrcCamera.OrientationIsLandscape.OnValueChanged -= OnOrientationIsLandscapeChanged;
             }
-            
+
             _transmitter?.Dispose();
-            _disposed = true;
         }
     }
 }

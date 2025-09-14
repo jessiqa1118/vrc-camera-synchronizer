@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using Parameters;
+using VRCCamera;
 
 namespace VRCCamera.Editor
 {
@@ -165,22 +166,22 @@ namespace VRCCamera.Editor
             
             // Get current camera values
             var component = (VRCCameraSynchronizerComponent)target;
-            var camera = component.GetComponent<Camera>();
-            
-            if (camera != null)
+            var unityCamera = component.GetComponent<Camera>();
+
+            if (unityCamera != null)
             {
                 GUI.enabled = false; // Make read-only
                 
                 // Zoom (focal length) - clamp the display value
-                float clampedZoom = Mathf.Clamp(camera.focalLength, Zoom.MinValue, Zoom.MaxValue);
+                float clampedZoom = Mathf.Clamp(unityCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
                 EditorGUILayout.Slider("Zoom (Focal Length)", clampedZoom, Zoom.MinValue, Zoom.MaxValue);
                 
                 // Aperture - clamp the display value
-                float clampedAperture = Mathf.Clamp(camera.aperture, Aperture.MinValue, Aperture.MaxValue);
+                float clampedAperture = Mathf.Clamp(unityCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
                 EditorGUILayout.Slider("Aperture", clampedAperture, Aperture.MinValue, Aperture.MaxValue);
                 
                 // Focal Distance - clamp the display value
-                float clampedFocalDistance = Mathf.Clamp(camera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
+                float clampedFocalDistance = Mathf.Clamp(unityCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
                 EditorGUILayout.Slider("Focal Distance", clampedFocalDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
                 
                 GUI.enabled = true;

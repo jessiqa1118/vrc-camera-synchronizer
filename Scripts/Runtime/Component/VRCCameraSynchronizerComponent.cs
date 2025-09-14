@@ -49,7 +49,7 @@ namespace VRCCamera
             var cameraComponent = GetComponent<Camera>();
             if (!cameraComponent)
             {
-                Debug.LogError($"[{nameof(VRCCameraSynchronizer)}] Camera component is missing");
+                Debug.LogError($"[{nameof(VRCCameraSynchronizerComponent)}] Camera component is missing");
                 enabled = false;
                 return;
             }
@@ -98,7 +98,7 @@ namespace VRCCamera
             {
                 transmitter?.Dispose();
                 Debug.LogError(
-                    $"[{nameof(VRCCameraSynchronizer)}] Failed to initialize: {ex.Message}\n{ex.StackTrace}");
+                    $"[{nameof(VRCCameraSynchronizerComponent)}] Failed to initialize: {ex.Message}\n{ex.StackTrace}");
                 enabled = false;
             }
         }
