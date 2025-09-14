@@ -32,6 +32,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _autoLevelPitch;
         private SerializedProperty _flying;
         private SerializedProperty _triggerTakesPhotos;
+        private SerializedProperty _dollyPathsStayVisible;
 
         private void OnEnable()
         {
@@ -60,6 +61,7 @@ namespace VRCCamera.Editor
             _autoLevelPitch = serializedObject.FindProperty("autoLevelPitch");
             _flying = serializedObject.FindProperty("flying");
             _triggerTakesPhotos = serializedObject.FindProperty("triggerTakesPhotos");
+            _dollyPathsStayVisible = serializedObject.FindProperty("dollyPathsStayVisible");
         }
 
         public override void OnInspectorGUI()
@@ -86,6 +88,7 @@ namespace VRCCamera.Editor
             EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
             EditorGUILayout.PropertyField(_flying, new GUIContent("Flying"));
             EditorGUILayout.PropertyField(_triggerTakesPhotos, new GUIContent("Trigger Takes Photos"));
+            EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Dolly Paths Stay Visible"));
 
             EditorGUILayout.Space();
 

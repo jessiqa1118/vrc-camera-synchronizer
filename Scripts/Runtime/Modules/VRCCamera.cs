@@ -33,6 +33,7 @@ namespace VRCCamera
         public ReactiveProperty<AutoLevelPitchToggle> AutoLevelPitch { get; }
         public ReactiveProperty<FlyingToggle> Flying { get; }
         public ReactiveProperty<TriggerTakesPhotosToggle> TriggerTakesPhotos { get; }
+        public ReactiveProperty<DollyPathsStayVisibleToggle> DollyPathsStayVisible { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -66,6 +67,7 @@ namespace VRCCamera
             AutoLevelPitch = new ReactiveProperty<AutoLevelPitchToggle>(new AutoLevelPitchToggle(false));
             Flying = new ReactiveProperty<FlyingToggle>(new FlyingToggle(false));
             TriggerTakesPhotos = new ReactiveProperty<TriggerTakesPhotosToggle>(new TriggerTakesPhotosToggle(false));
+            DollyPathsStayVisible = new ReactiveProperty<DollyPathsStayVisibleToggle>(new DollyPathsStayVisibleToggle(false));
         }
 
         /// <summary>
@@ -254,6 +256,14 @@ namespace VRCCamera
         {
             TriggerTakesPhotos.SetValue(trigger);
         }
+
+        /// <summary>
+        /// Sets DollyPathsStayVisible toggle value reactively
+        /// </summary>
+        public void SetDollyPathsStayVisible(DollyPathsStayVisibleToggle dollyPathsStayVisible)
+        {
+            DollyPathsStayVisible.SetValue(dollyPathsStayVisible);
+        }
         
         /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
@@ -286,6 +296,7 @@ namespace VRCCamera
             AutoLevelPitch?.ClearSubscriptions();
             Flying?.ClearSubscriptions();
             TriggerTakesPhotos?.ClearSubscriptions();
+            DollyPathsStayVisible?.ClearSubscriptions();
         }
     }
 }

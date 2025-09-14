@@ -34,6 +34,7 @@ namespace VRCCamera
         [SerializeField] private bool autoLevelPitch = false;
         [SerializeField] private bool flying = false;
         [SerializeField] private bool triggerTakesPhotos = false;
+        [SerializeField] private bool dollyPathsStayVisible = false;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -78,6 +79,7 @@ namespace VRCCamera
                 _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
                 _vrcCamera.SetFlying(new FlyingToggle(flying));
                 _vrcCamera.SetTriggerTakesPhotos(new TriggerTakesPhotosToggle(triggerTakesPhotos));
+                _vrcCamera.SetDollyPathsStayVisible(new DollyPathsStayVisibleToggle(dollyPathsStayVisible));
                 
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -132,6 +134,7 @@ namespace VRCCamera
             _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
             _vrcCamera.SetFlying(new FlyingToggle(flying));
             _vrcCamera.SetTriggerTakesPhotos(new TriggerTakesPhotosToggle(triggerTakesPhotos));
+            _vrcCamera.SetDollyPathsStayVisible(new DollyPathsStayVisibleToggle(dollyPathsStayVisible));
         }
     }
 }

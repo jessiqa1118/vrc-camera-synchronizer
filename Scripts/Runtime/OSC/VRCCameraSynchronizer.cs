@@ -33,6 +33,7 @@ namespace VRCCamera
         private readonly AutoLevelPitchToggleConverter _autoLevelPitchToggleConverter = new();
         private readonly FlyingToggleConverter _flyingToggleConverter = new();
         private readonly TriggerTakesPhotosToggleConverter _triggerTakesPhotosToggleConverter = new();
+        private readonly DollyPathsStayVisibleToggleConverter _dollyPathsStayVisibleToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -66,6 +67,7 @@ namespace VRCCamera
             _vrcCamera.AutoLevelPitch.OnValueChanged += OnAutoLevelPitchChanged;
             _vrcCamera.Flying.OnValueChanged += OnFlyingChanged;
             _vrcCamera.TriggerTakesPhotos.OnValueChanged += OnTriggerTakesPhotosChanged;
+            _vrcCamera.DollyPathsStayVisible.OnValueChanged += OnDollyPathsStayVisibleChanged;
             
             // Send initial values
             Sync();
@@ -276,6 +278,14 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
+        private void OnDollyPathsStayVisibleChanged(DollyPathsStayVisibleToggle dolly)
+        {
+            if (_disposed) return;
+
+            var message = _dollyPathsStayVisibleToggleConverter.ToOSCMessage(dolly);
+            _transmitter.Send(message);
+        }
+
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
@@ -311,6 +321,7 @@ namespace VRCCamera
             _transmitter.Send(_autoLevelPitchToggleConverter.ToOSCMessage(_vrcCamera.AutoLevelPitch.Value));
             _transmitter.Send(_flyingToggleConverter.ToOSCMessage(_vrcCamera.Flying.Value));
             _transmitter.Send(_triggerTakesPhotosToggleConverter.ToOSCMessage(_vrcCamera.TriggerTakesPhotos.Value));
+            _transmitter.Send(_dollyPathsStayVisibleToggleConverter.ToOSCMessage(_vrcCamera.DollyPathsStayVisible.Value));
         }
 
         public void Dispose()
@@ -345,6 +356,7 @@ namespace VRCCamera
                 _vrcCamera.AutoLevelPitch.OnValueChanged -= OnAutoLevelPitchChanged;
                 _vrcCamera.Flying.OnValueChanged -= OnFlyingChanged;
                 _vrcCamera.TriggerTakesPhotos.OnValueChanged -= OnTriggerTakesPhotosChanged;
+                _vrcCamera.DollyPathsStayVisible.OnValueChanged -= OnDollyPathsStayVisibleChanged;
             }
             
             _transmitter?.Dispose();
