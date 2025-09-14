@@ -98,6 +98,11 @@ namespace VRCCamera.Editor
                     var targetComponent = (VRCCameraSynchronizerComponent)target;
                     targetComponent.Action_Capture();
                 }
+                if (GUILayout.Button("Capture (Delayed)"))
+                {
+                    var targetComponent = (VRCCameraSynchronizerComponent)target;
+                    targetComponent.Action_CaptureDelayed();
+                }
             }
 
             EditorGUILayout.Space();

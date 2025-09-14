@@ -122,7 +122,10 @@ namespace VRCCamera
             _synchronizer?.Capture();
         }
 
-        // Future: CaptureDelayed action can be added here
+        public void Action_CaptureDelayed()
+        {
+            _synchronizer?.CaptureDelayed();
+        }
 
         private void FixedUpdate()
         {

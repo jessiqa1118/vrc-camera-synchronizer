@@ -115,5 +115,50 @@ namespace VRCCamera.Tests.Unit
             vrcCamera.Dispose();
             UnityEngine.Object.DestroyImmediate(cameraGo);
         }
+
+        [Test]
+        public void CaptureDelayed_SendsCorrectActionMessage()
+        {
+            // Arrange
+            var transmitter = new MockTransmitter();
+            var cameraGo = new GameObject("TestCamera");
+            var camera = cameraGo.AddComponent<Camera>();
+            var vrcCamera = new VRCCamera(camera);
+            var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
+
+            // Act
+            synchronizer.CaptureDelayed();
+
+            // Assert
+            Assert.IsTrue(transmitter.LastSentMessage.HasValue);
+            var msg = transmitter.LastSentMessage.Value;
+            Assert.AreEqual(OSCCameraEndpoints.CaptureDelayed.Value, msg.Address.Value);
+            Assert.AreEqual(0, msg.Arguments.Length);
+            Assert.AreEqual(string.Empty, msg.TypeTag.Value);
+
+            // Cleanup
+            synchronizer.Dispose();
+            vrcCamera.Dispose();
+            UnityEngine.Object.DestroyImmediate(cameraGo);
+        }
+
+        [Test]
+        public void CaptureDelayed_AfterDispose_Throws()
+        {
+            // Arrange
+            var transmitter = new MockTransmitter();
+            var cameraGo = new GameObject("TestCamera");
+            var camera = cameraGo.AddComponent<Camera>();
+            var vrcCamera = new VRCCamera(camera);
+            var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
+            synchronizer.Dispose();
+
+            // Act & Assert
+            Assert.Throws<ObjectDisposedException>(() => synchronizer.CaptureDelayed());
+
+            // Cleanup
+            vrcCamera.Dispose();
+            UnityEngine.Object.DestroyImmediate(cameraGo);
+        }
     }
 }
