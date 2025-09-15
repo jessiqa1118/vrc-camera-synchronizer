@@ -21,6 +21,10 @@ namespace VRCCamera
         public ReactiveProperty<SmoothingStrength> SmoothingStrength { get; }
         public ReactiveProperty<PhotoRate> PhotoRate { get; }
         public ReactiveProperty<Duration> Duration { get; }
+        /// <summary>
+        /// Current world-space pose (position + euler rotation) for OSC sync
+        /// </summary>
+        public ReactiveProperty<Parameters.Pose> Pose { get; }
         public ReactiveProperty<ShowUIInCameraToggle> ShowUIInCamera { get; }
         public ReactiveProperty<LockToggle> Lock { get; }
         public ReactiveProperty<LocalPlayerToggle> LocalPlayer { get; }
@@ -65,6 +69,12 @@ namespace VRCCamera
             SmoothingStrength = new ReactiveProperty<SmoothingStrength>(new SmoothingStrength(Parameters.SmoothingStrength.DefaultValue));
             PhotoRate = new ReactiveProperty<PhotoRate>(new PhotoRate(Parameters.PhotoRate.DefaultValue));
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
+            // Initialize Pose from camera transform
+            var t = _camera.transform;
+            var euler = t.rotation.eulerAngles;
+            Pose = new ReactiveProperty<Parameters.Pose>(new Parameters.Pose(
+                new Parameters.Pose.Position(t.position.x, t.position.y, t.position.z),
+                new Parameters.Pose.Rotation(euler.x, euler.y, euler.z)));
             ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
             Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
             LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(true));
@@ -177,6 +187,14 @@ namespace VRCCamera
         public void SetDuration(Duration duration)
         {
             Duration.SetValue(duration);
+        }
+
+        /// <summary>
+        /// Sets Pose value reactively
+        /// </summary>
+        public void SetPose(Parameters.Pose pose)
+        {
+            Pose.SetValue(pose);
         }
 
         /// <summary>
@@ -369,6 +387,7 @@ namespace VRCCamera
             RollWhileFlying?.ClearSubscriptions();
             Orientation?.ClearSubscriptions();
             Mode?.ClearSubscriptions();
+            Pose?.ClearSubscriptions();
             Items?.ClearSubscriptions();
         }
     }

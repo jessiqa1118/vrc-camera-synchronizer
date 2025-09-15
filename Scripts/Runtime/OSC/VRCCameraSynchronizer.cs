@@ -39,6 +39,7 @@ namespace VRCCamera
         private readonly ShowFocusToggleConverter _showFocusToggleConverter = new();
         private readonly StreamingToggleConverter _streamingToggleConverter = new();
         private readonly RollWhileFlyingToggleConverter _rollWhileFlyingToggleConverter = new();
+        private readonly PoseConverter _poseConverter = new();
         private readonly ModeConverter _modeConverter = new();
         private bool _disposed = false;
 
@@ -74,6 +75,7 @@ namespace VRCCamera
             _vrcCamera.Flying.OnValueChanged += OnFlyingChanged;
             _vrcCamera.TriggerTakesPhotos.OnValueChanged += OnTriggerTakesPhotosChanged;
             _vrcCamera.DollyPathsStayVisible.OnValueChanged += OnDollyPathsStayVisibleChanged;
+            _vrcCamera.Pose.OnValueChanged += OnPoseChanged;
             _vrcCamera.Mode.OnValueChanged += OnModeChanged;
             _vrcCamera.CameraEars.OnValueChanged += OnCameraEarsChanged;
             _vrcCamera.ShowFocus.OnValueChanged += OnShowFocusChanged;
@@ -362,6 +364,7 @@ namespace VRCCamera
             _transmitter.Send(_smoothingStrengthConverter.ToOSCMessage(_vrcCamera.SmoothingStrength.Value));
             _transmitter.Send(_photoRateConverter.ToOSCMessage(_vrcCamera.PhotoRate.Value));
             _transmitter.Send(_durationConverter.ToOSCMessage(_vrcCamera.Duration.Value));
+            _transmitter.Send(_poseConverter.ToOSCMessage(_vrcCamera.Pose.Value));
             _transmitter.Send(_showUIInCameraToggleConverter.ToOSCMessage(_vrcCamera.ShowUIInCamera.Value));
             _transmitter.Send(_lockToggleConverter.ToOSCMessage(_vrcCamera.Lock.Value));
             _transmitter.Send(_localPlayerToggleConverter.ToOSCMessage(_vrcCamera.LocalPlayer.Value));
@@ -418,6 +421,7 @@ namespace VRCCamera
                 _vrcCamera.Flying.OnValueChanged -= OnFlyingChanged;
                 _vrcCamera.TriggerTakesPhotos.OnValueChanged -= OnTriggerTakesPhotosChanged;
                 _vrcCamera.DollyPathsStayVisible.OnValueChanged -= OnDollyPathsStayVisibleChanged;
+                _vrcCamera.Pose.OnValueChanged -= OnPoseChanged;
                 _vrcCamera.CameraEars.OnValueChanged -= OnCameraEarsChanged;
                 _vrcCamera.ShowFocus.OnValueChanged -= OnShowFocusChanged;
                 _vrcCamera.Streaming.OnValueChanged -= OnStreamingChanged;
@@ -439,6 +443,13 @@ namespace VRCCamera
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
             _transmitter.Send(new Message(address, Array.Empty<Argument>()));
+        }
+
+        private void OnPoseChanged(Pose pose)
+        {
+            if (_disposed) return;
+            var message = _poseConverter.ToOSCMessage(pose);
+            _transmitter.Send(message);
         }
 
         private void OnModeChanged(Mode mode)
