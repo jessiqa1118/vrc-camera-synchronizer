@@ -24,9 +24,9 @@ namespace VRCCamera
         [SerializeField] private float duration = Duration.DefaultValue;
         [SerializeField] private bool showUIInCamera = false;
         [SerializeField] private bool lockCamera = false;
-        [SerializeField] private bool localPlayer = false;
-        [SerializeField] private bool remotePlayer = false;
-        [SerializeField] private bool environment = false;
+        [SerializeField] private bool localPlayer = true;
+        [SerializeField] private bool remotePlayer = true;
+        [SerializeField] private bool environment = true;
         [SerializeField] private bool greenScreen = false;
         [SerializeField] private bool smoothMovement = false;
         [SerializeField] private bool lookAtMe = false;

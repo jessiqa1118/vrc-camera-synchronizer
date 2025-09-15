@@ -62,9 +62,9 @@ namespace VRCCamera
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
             ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
             Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
-            LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(false));
-            RemotePlayer = new ReactiveProperty<RemotePlayerToggle>(new RemotePlayerToggle(false));
-            Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(false));
+            LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(true));
+            RemotePlayer = new ReactiveProperty<RemotePlayerToggle>(new RemotePlayerToggle(true));
+            Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(true));
             GreenScreen = new ReactiveProperty<GreenScreenToggle>(new GreenScreenToggle(false));
             SmoothMovement = new ReactiveProperty<SmoothMovementToggle>(new SmoothMovementToggle(false));
             LookAtMe = new ReactiveProperty<LookAtMeToggle>(new LookAtMeToggle(false));
