@@ -40,6 +40,10 @@ namespace VRCCamera
         public ReactiveProperty<RollWhileFlyingToggle> RollWhileFlying { get; }
         public ReactiveProperty<Orientation> Orientation { get; }
         public ReactiveProperty<ItemsToggle> Items { get; }
+        /// <summary>
+        /// Current camera <see cref="Mode"/>; changes are published over OSC.
+        /// </summary>
+        public ReactiveProperty<Mode> Mode { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -79,6 +83,7 @@ namespace VRCCamera
             Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
             RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
             Orientation = new ReactiveProperty<Orientation>(Parameters.Orientation.Landscape);
+            Mode = new ReactiveProperty<Mode>(Parameters.Mode.Photo);
             // Items has no OSC endpoint; keep as display-only (default true)
             Items = new ReactiveProperty<ItemsToggle>(new ItemsToggle(true));
         }
@@ -319,6 +324,14 @@ namespace VRCCamera
         }
         
         /// <summary>
+        /// Sets <see cref="Mode"/> value reactively
+        /// </summary>
+        public void SetMode(Mode mode)
+        {
+            Mode.SetValue(mode);
+        }
+        
+        /// <summary>
         /// Disposes the VRCCamera and clears all event subscriptions
         /// </summary>
         public void Dispose()
@@ -355,6 +368,7 @@ namespace VRCCamera
             Streaming?.ClearSubscriptions();
             RollWhileFlying?.ClearSubscriptions();
             Orientation?.ClearSubscriptions();
+            Mode?.ClearSubscriptions();
             Items?.ClearSubscriptions();
         }
     }

@@ -39,6 +39,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _streaming;
         private SerializedProperty _rollWhileFlying;
         private SerializedProperty _orientation;
+        private SerializedProperty _mode;
 
         private void OnEnable()
         {
@@ -74,6 +75,7 @@ namespace VRCCamera.Editor
             _streaming = serializedObject.FindProperty("streaming");
             _rollWhileFlying = serializedObject.FindProperty("rollWhileFlying");
             _orientation = serializedObject.FindProperty("orientation");
+            _mode = serializedObject.FindProperty("mode");
         }
 
         public override void OnInspectorGUI()
@@ -123,6 +125,27 @@ namespace VRCCamera.Editor
             EditorGUILayout.LabelField("General", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
+                // Mode: custom ordering/labels while preserving OSC indices
+                var modeOrder = new Mode[]
+                {
+                    Mode.Off,       // 0
+                    Mode.Photo,     // 1
+                    Mode.Multilayer,// 4
+                    Mode.Stream,    // 2
+                    Mode.Print,     // 5
+                    Mode.Emoji,     // 3
+                    Mode.Drone      // 6
+                };
+                var modeLabels = new[] { "Off", "Local Photo", "Multi Layer", "Stream", "Print", "Emoji", "Drone" };
+                var currentModeValue = _mode.intValue;
+                var currentIndex = System.Array.IndexOf(modeOrder, (Mode)currentModeValue);
+                if (currentIndex < 0) currentIndex = 0;
+                EditorGUI.BeginChangeCheck();
+                var newIndex = EditorGUILayout.Popup("Camera Mode", currentIndex, modeLabels);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    _mode.intValue = (int)modeOrder[newIndex];
+                }
                 EditorGUILayout.PropertyField(_orientation, new GUIContent("Orientation"));
                 EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
                 // Display camera-driven parameters as read-only
