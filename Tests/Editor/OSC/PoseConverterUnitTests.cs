@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using OSC;
-using Parameters;
+using UnityEngine;
 
 namespace VRCCamera.Tests.Unit
 {
@@ -18,7 +18,7 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void ToOSCMessage_BuildsMessage_WithSixFloats()
         {
-            var pose = new Pose(new Pose.Position(1f, 2f, 3f), new Pose.Rotation(10f, 20f, 30f));
+            var pose = new Pose(new Vector3(1f, 2f, 3f), Quaternion.Euler(10f, 20f, 30f));
             var msg = _converter.ToOSCMessage(pose);
 
             Assert.AreEqual(OSCCameraEndpoints.Pose.Value, msg.Address.Value);
@@ -38,8 +38,12 @@ namespace VRCCamera.Tests.Unit
                 new Argument(10f), new Argument(20f), new Argument(30f)
             });
             var pose = _converter.FromOSCMessage(msg);
-            Assert.AreEqual(new Pose.Position(1f, 2f, 3f), pose.Pos);
-            Assert.AreEqual(new Pose.Rotation(10f, 20f, 30f), pose.Rot);
+            Assert.AreEqual(1f, pose.position.x);
+            Assert.AreEqual(2f, pose.position.y);
+            Assert.AreEqual(3f, pose.position.z);
+            Assert.AreEqual(10f, pose.rotation.eulerAngles.x);
+            Assert.AreEqual(20f, pose.rotation.eulerAngles.y);
+            Assert.AreEqual(30f, pose.rotation.eulerAngles.z);
         }
 
         [Test]
@@ -51,8 +55,12 @@ namespace VRCCamera.Tests.Unit
                 new Argument(10), new Argument(20), new Argument(30)
             });
             var pose = _converter.FromOSCMessage(msg);
-            Assert.AreEqual(new Pose.Position(1f, 2f, 3f), pose.Pos);
-            Assert.AreEqual(new Pose.Rotation(10f, 20f, 30f), pose.Rot);
+            Assert.AreEqual(1f, pose.position.x);
+            Assert.AreEqual(2f, pose.position.y);
+            Assert.AreEqual(3f, pose.position.z);
+            Assert.AreEqual(10f, pose.rotation.eulerAngles.x);
+            Assert.AreEqual(20f, pose.rotation.eulerAngles.y);
+            Assert.AreEqual(30f, pose.rotation.eulerAngles.z);
         }
 
         [Test]
@@ -64,9 +72,15 @@ namespace VRCCamera.Tests.Unit
                 new Argument(10f), new Argument(20f), new Argument(30f)
             });
             var pose = _converter.FromOSCMessage(msg);
-            Assert.AreEqual(new Pose.Position(0f,0f,0f), pose.Pos);
-            Assert.AreEqual(new Pose.Rotation(0f,0f,0f), pose.Rot);
+            Assert.AreEqual(0f, pose.position.x);
+            Assert.AreEqual(0f, pose.position.y);
+            Assert.AreEqual(0f, pose.position.z);
+            Assert.AreEqual(0f, pose.rotation.eulerAngles.x);
+            Assert.AreEqual(0f, pose.rotation.eulerAngles.y);
+            Assert.AreEqual(0f, pose.rotation.eulerAngles.z);
         }
     }
 }
+
+
 

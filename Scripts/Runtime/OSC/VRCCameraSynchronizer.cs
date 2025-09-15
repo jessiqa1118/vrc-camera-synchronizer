@@ -1,6 +1,6 @@
 using System;
-using Parameters;
 using OSC;
+using Parameters;
 
 namespace VRCCamera
 {
@@ -445,7 +445,7 @@ namespace VRCCamera
             _transmitter.Send(new Message(address, Array.Empty<Argument>()));
         }
 
-        private void OnPoseChanged(Pose pose)
+        private void OnPoseChanged(UnityEngine.Pose pose)
         {
             if (_disposed) return;
             var message = _poseConverter.ToOSCMessage(pose);
@@ -461,3 +461,4 @@ namespace VRCCamera
         }
     }
 }
+

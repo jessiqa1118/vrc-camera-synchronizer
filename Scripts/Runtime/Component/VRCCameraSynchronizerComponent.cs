@@ -10,7 +10,7 @@ namespace VRCCamera
     {
         [SerializeField] private string destination = "127.0.0.1";
         [SerializeField] private int port = 9000;
-        
+
         [SerializeField] private float exposure = Exposure.DefaultValue;
         [SerializeField] private float hue = Hue.DefaultValue;
         [SerializeField] private float saturation = Saturation.DefaultValue;
@@ -27,7 +27,9 @@ namespace VRCCamera
         [SerializeField] private bool localPlayer = true;
         [SerializeField] private bool remotePlayer = true;
         [SerializeField] private bool environment = true;
+
         [SerializeField] private bool greenScreen = false;
+
         // Display-only (no OSC endpoint)
         [SerializeField] private bool items = true;
         [SerializeField] private bool smoothMovement = false;
@@ -61,7 +63,7 @@ namespace VRCCamera
             try
             {
                 _vrcCamera = new VRCCamera(cameraComponent);
-                
+
                 // Set all initial values before creating synchronizer to avoid duplicate messages
                 _vrcCamera.SetExposure(new Exposure(exposure));
                 _vrcCamera.SetHue(new Hue(hue));
@@ -94,13 +96,8 @@ namespace VRCCamera
                 _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
                 _vrcCamera.SetOrientation(orientation);
                 _vrcCamera.SetMode(mode);
-                // Initial Pose from current transform
-                var t0 = transform;
-                var e0 = t0.rotation.eulerAngles;
-                _vrcCamera.SetPose(new Parameters.Pose(
-                    new Parameters.Pose.Position(t0.position.x, t0.position.y, t0.position.z),
-                    new Parameters.Pose.Rotation(e0.x, e0.y, e0.z)));
-                
+                _vrcCamera.SetPose(new Pose(transform.position, transform.rotation));
+
                 transmitter = new OSCTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
             }
@@ -177,12 +174,9 @@ namespace VRCCamera
             _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
             _vrcCamera.SetOrientation(orientation);
             _vrcCamera.SetMode(mode);
-            // Update pose from transform
-            var t = transform;
-            var euler = t.rotation.eulerAngles;
-            _vrcCamera.SetPose(new Parameters.Pose(
-                new Parameters.Pose.Position(t.position.x, t.position.y, t.position.z),
-                new Parameters.Pose.Rotation(euler.x, euler.y, euler.z)));
+            _vrcCamera.SetPose(new Pose(transform.position, transform.rotation));
         }
     }
 }
+
+

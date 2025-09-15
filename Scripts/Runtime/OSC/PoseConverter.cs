@@ -1,5 +1,5 @@
 using OSC;
-using Parameters;
+using UnityEngine;
 
 namespace VRCCamera
 {
@@ -11,15 +11,19 @@ namespace VRCCamera
     {
         public Pose FromOSCMessage(Message message)
         {
-            if (message.Address != OSCCameraEndpoints.Pose)
+            if (message.Address != OSCCameraEndpoints.Pose || message.Arguments is not { Length: 6 })
             {
-                return new Pose(new Pose.Position(0, 0, 0), new Pose.Rotation(0, 0, 0));
+                return new Pose(Vector3.zero, Quaternion.identity);
             }
 
-            if (message.Arguments is not { Length: 6 })
-            {
-                return new Pose(new Pose.Position(0, 0, 0), new Pose.Rotation(0, 0, 0));
-            }
+            var px = Read(0);
+            var py = Read(1);
+            var pz = Read(2);
+            var rx = Read(3);
+            var ry = Read(4);
+            var rz = Read(5);
+
+            return new Pose(new Vector3(px, py, pz), Quaternion.Euler(rx, ry, rz));
 
             float Read(int i)
             {
@@ -31,27 +35,18 @@ namespace VRCCamera
                     _ => 0f
                 };
             }
-
-            var px = Read(0);
-            var py = Read(1);
-            var pz = Read(2);
-            var rx = Read(3);
-            var ry = Read(4);
-            var rz = Read(5);
-
-            return new Pose(new Pose.Position(px, py, pz), new Pose.Rotation(rx, ry, rz));
         }
 
         public Message ToOSCMessage(Pose pose)
         {
             return new Message(OSCCameraEndpoints.Pose, new[]
             {
-                new Argument(pose.Pos.X),
-                new Argument(pose.Pos.Y),
-                new Argument(pose.Pos.Z),
-                new Argument(pose.Rot.X),
-                new Argument(pose.Rot.Y),
-                new Argument(pose.Rot.Z)
+                new Argument(pose.position.x),
+                new Argument(pose.position.y),
+                new Argument(pose.position.z),
+                new Argument(pose.rotation.eulerAngles.x),
+                new Argument(pose.rotation.eulerAngles.y),
+                new Argument(pose.rotation.eulerAngles.z)
             });
         }
     }

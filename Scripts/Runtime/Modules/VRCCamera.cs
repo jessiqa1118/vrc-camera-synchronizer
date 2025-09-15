@@ -24,7 +24,7 @@ namespace VRCCamera
         /// <summary>
         /// Current world-space pose (position + euler rotation) for OSC sync
         /// </summary>
-        public ReactiveProperty<Parameters.Pose> Pose { get; }
+        public ReactiveProperty<Pose> Pose { get; }
         public ReactiveProperty<ShowUIInCameraToggle> ShowUIInCamera { get; }
         public ReactiveProperty<LockToggle> Lock { get; }
         public ReactiveProperty<LocalPlayerToggle> LocalPlayer { get; }
@@ -69,12 +69,7 @@ namespace VRCCamera
             SmoothingStrength = new ReactiveProperty<SmoothingStrength>(new SmoothingStrength(Parameters.SmoothingStrength.DefaultValue));
             PhotoRate = new ReactiveProperty<PhotoRate>(new PhotoRate(Parameters.PhotoRate.DefaultValue));
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
-            // Initialize Pose from camera transform
-            var t = _camera.transform;
-            var euler = t.rotation.eulerAngles;
-            Pose = new ReactiveProperty<Parameters.Pose>(new Parameters.Pose(
-                new Parameters.Pose.Position(t.position.x, t.position.y, t.position.z),
-                new Parameters.Pose.Rotation(euler.x, euler.y, euler.z)));
+            Pose = new ReactiveProperty<Pose>(new Pose(_camera.transform.position, _camera.transform.rotation));
             ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
             Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
             LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(true));
@@ -94,6 +89,7 @@ namespace VRCCamera
             RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
             Orientation = new ReactiveProperty<Orientation>(Parameters.Orientation.Landscape);
             Mode = new ReactiveProperty<Mode>(Parameters.Mode.Photo);
+            
             // Items has no OSC endpoint; keep as display-only (default true)
             Items = new ReactiveProperty<ItemsToggle>(new ItemsToggle(true));
         }
@@ -192,7 +188,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets Pose value reactively
         /// </summary>
-        public void SetPose(Parameters.Pose pose)
+        public void SetPose(Pose pose)
         {
             Pose.SetValue(pose);
         }
@@ -392,3 +388,5 @@ namespace VRCCamera
         }
     }
 }
+
+
