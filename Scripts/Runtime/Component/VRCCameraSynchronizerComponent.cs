@@ -41,7 +41,7 @@ namespace VRCCamera
         [SerializeField] private bool showFocus = false;
         [SerializeField] private bool streaming = false;
         [SerializeField] private bool rollWhileFlying = false;
-        [SerializeField] private bool orientationIsLandscape = true;
+        [SerializeField] private Orientation orientation = Orientation.Landscape;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -91,7 +91,7 @@ namespace VRCCamera
                 _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
                 _vrcCamera.SetStreaming(new StreamingToggle(streaming));
                 _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
-                _vrcCamera.SetOrientationIsLandscape(new OrientationIsLandscapeToggle(orientationIsLandscape));
+                _vrcCamera.SetOrientation(orientation);
                 
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -167,7 +167,7 @@ namespace VRCCamera
             _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
             _vrcCamera.SetStreaming(new StreamingToggle(streaming));
             _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
-            _vrcCamera.SetOrientationIsLandscape(new OrientationIsLandscapeToggle(orientationIsLandscape));
+            _vrcCamera.SetOrientation(orientation);
         }
     }
 }

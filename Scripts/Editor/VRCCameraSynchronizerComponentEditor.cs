@@ -38,7 +38,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _showFocus;
         private SerializedProperty _streaming;
         private SerializedProperty _rollWhileFlying;
-        private SerializedProperty _orientationIsLandscape;
+        private SerializedProperty _orientation;
 
         private void OnEnable()
         {
@@ -73,7 +73,7 @@ namespace VRCCamera.Editor
             _showFocus = serializedObject.FindProperty("showFocus");
             _streaming = serializedObject.FindProperty("streaming");
             _rollWhileFlying = serializedObject.FindProperty("rollWhileFlying");
-            _orientationIsLandscape = serializedObject.FindProperty("orientationIsLandscape");
+            _orientation = serializedObject.FindProperty("orientation");
         }
 
         public override void OnInspectorGUI()
@@ -117,7 +117,7 @@ namespace VRCCamera.Editor
             // General (under Actions)
             EditorGUILayout.LabelField("General", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(_orientationIsLandscape, new GUIContent("Orientation Is Landscape"));
+            EditorGUILayout.PropertyField(_orientation, new GUIContent("Orientation"));
             EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
             // Display camera-driven parameters as read-only
             var pComponent = (VRCCameraSynchronizerComponent)target;

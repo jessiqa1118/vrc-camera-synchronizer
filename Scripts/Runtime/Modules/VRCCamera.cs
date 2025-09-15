@@ -38,7 +38,7 @@ namespace VRCCamera
         public ReactiveProperty<ShowFocusToggle> ShowFocus { get; }
         public ReactiveProperty<StreamingToggle> Streaming { get; }
         public ReactiveProperty<RollWhileFlyingToggle> RollWhileFlying { get; }
-        public ReactiveProperty<OrientationIsLandscapeToggle> OrientationIsLandscape { get; }
+        public ReactiveProperty<Orientation> Orientation { get; }
         public ReactiveProperty<ItemsToggle> Items { get; }
 
         public VRCCamera(Camera camera)
@@ -78,7 +78,7 @@ namespace VRCCamera
             ShowFocus = new ReactiveProperty<ShowFocusToggle>(new ShowFocusToggle(false));
             Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
             RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
-            OrientationIsLandscape = new ReactiveProperty<OrientationIsLandscapeToggle>(new OrientationIsLandscapeToggle(true));
+            Orientation = new ReactiveProperty<Orientation>(Parameters.Orientation.Landscape);
             // Items has no OSC endpoint; keep as display-only (default true)
             Items = new ReactiveProperty<ItemsToggle>(new ItemsToggle(true));
         }
@@ -311,11 +311,11 @@ namespace VRCCamera
         }
 
         /// <summary>
-        /// Sets OrientationIsLandscape toggle value reactively
+        /// Sets Orientation value reactively
         /// </summary>
-        public void SetOrientationIsLandscape(OrientationIsLandscapeToggle orientationIsLandscape)
+        public void SetOrientation(Orientation orientation)
         {
-            OrientationIsLandscape.SetValue(orientationIsLandscape);
+            Orientation.SetValue(orientation);
         }
         
         /// <summary>
@@ -354,7 +354,7 @@ namespace VRCCamera
             ShowFocus?.ClearSubscriptions();
             Streaming?.ClearSubscriptions();
             RollWhileFlying?.ClearSubscriptions();
-            OrientationIsLandscape?.ClearSubscriptions();
+            Orientation?.ClearSubscriptions();
             Items?.ClearSubscriptions();
         }
     }
