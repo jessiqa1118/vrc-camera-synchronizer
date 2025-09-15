@@ -39,13 +39,18 @@ namespace VRCCamera.Tests.Unit
         }
 
         [Test]
+        public void FromOSCMessage_WithFloatIndex_TruncatesToEnum()
+        {
+            Assert.AreEqual(Mode.Photo, _converter.FromOSCMessage(new Message(OSCCameraEndpoints.Mode, new[] { new Argument(1.9f) })));
+            Assert.AreEqual(Mode.Stream, _converter.FromOSCMessage(new Message(OSCCameraEndpoints.Mode, new[] { new Argument(2.0f) })));
+        }
+
+        [Test]
         public void FromOSCMessage_InvalidInputs_ReturnsOff()
         {
             Assert.AreEqual(Mode.Off, _converter.FromOSCMessage(new Message(new Address("/other"), new[] { new Argument(2) })));
             Assert.AreEqual(Mode.Off, _converter.FromOSCMessage(new Message(OSCCameraEndpoints.Mode, System.Array.Empty<Argument>())));
-            Assert.AreEqual(Mode.Off, _converter.FromOSCMessage(new Message(OSCCameraEndpoints.Mode, new[] { new Argument(2.0f) })));
             Assert.AreEqual(Mode.Off, _converter.FromOSCMessage(new Message(OSCCameraEndpoints.Mode, new[] { new Argument(999) })));
         }
     }
 }
-

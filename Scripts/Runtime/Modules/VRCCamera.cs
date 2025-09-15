@@ -40,6 +40,9 @@ namespace VRCCamera
         public ReactiveProperty<RollWhileFlyingToggle> RollWhileFlying { get; }
         public ReactiveProperty<Orientation> Orientation { get; }
         public ReactiveProperty<ItemsToggle> Items { get; }
+        /// <summary>
+        /// Current camera <see cref="Mode"/>; changes are published over OSC.
+        /// </summary>
         public ReactiveProperty<Mode> Mode { get; }
 
         public VRCCamera(Camera camera)
@@ -321,7 +324,7 @@ namespace VRCCamera
         }
         
         /// <summary>
-        /// Sets Mode value reactively
+        /// Sets <see cref="Mode"/> value reactively
         /// </summary>
         public void SetMode(Mode mode)
         {
