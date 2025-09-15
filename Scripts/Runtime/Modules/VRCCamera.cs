@@ -38,7 +38,8 @@ namespace VRCCamera
         public ReactiveProperty<ShowFocusToggle> ShowFocus { get; }
         public ReactiveProperty<StreamingToggle> Streaming { get; }
         public ReactiveProperty<RollWhileFlyingToggle> RollWhileFlying { get; }
-        public ReactiveProperty<OrientationIsLandscapeToggle> OrientationIsLandscape { get; }
+        public ReactiveProperty<Orientation> Orientation { get; }
+        public ReactiveProperty<ItemsToggle> Items { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -62,9 +63,9 @@ namespace VRCCamera
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
             ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
             Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
-            LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(false));
-            RemotePlayer = new ReactiveProperty<RemotePlayerToggle>(new RemotePlayerToggle(false));
-            Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(false));
+            LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(true));
+            RemotePlayer = new ReactiveProperty<RemotePlayerToggle>(new RemotePlayerToggle(true));
+            Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(true));
             GreenScreen = new ReactiveProperty<GreenScreenToggle>(new GreenScreenToggle(false));
             SmoothMovement = new ReactiveProperty<SmoothMovementToggle>(new SmoothMovementToggle(false));
             LookAtMe = new ReactiveProperty<LookAtMeToggle>(new LookAtMeToggle(false));
@@ -77,7 +78,9 @@ namespace VRCCamera
             ShowFocus = new ReactiveProperty<ShowFocusToggle>(new ShowFocusToggle(false));
             Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
             RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
-            OrientationIsLandscape = new ReactiveProperty<OrientationIsLandscapeToggle>(new OrientationIsLandscapeToggle(false));
+            Orientation = new ReactiveProperty<Orientation>(Parameters.Orientation.Landscape);
+            // Items has no OSC endpoint; keep as display-only (default true)
+            Items = new ReactiveProperty<ItemsToggle>(new ItemsToggle(true));
         }
 
         /// <summary>
@@ -308,11 +311,11 @@ namespace VRCCamera
         }
 
         /// <summary>
-        /// Sets OrientationIsLandscape toggle value reactively
+        /// Sets Orientation value reactively
         /// </summary>
-        public void SetOrientationIsLandscape(OrientationIsLandscapeToggle orientationIsLandscape)
+        public void SetOrientation(Orientation orientation)
         {
-            OrientationIsLandscape.SetValue(orientationIsLandscape);
+            Orientation.SetValue(orientation);
         }
         
         /// <summary>
@@ -351,7 +354,8 @@ namespace VRCCamera
             ShowFocus?.ClearSubscriptions();
             Streaming?.ClearSubscriptions();
             RollWhileFlying?.ClearSubscriptions();
-            OrientationIsLandscape?.ClearSubscriptions();
+            Orientation?.ClearSubscriptions();
+            Items?.ClearSubscriptions();
         }
     }
 }

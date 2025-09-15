@@ -167,16 +167,19 @@ namespace VRCCamera.Tests.Unit
         }
         
         [Test]
-        public void Sync_GeneratesCorrectTypeTag()
+        public void Sync_LastMessageIsOrientationBool()
         {
             // Act
             _synchronizer.Sync();
-            
+
             // Assert
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             var message = _mockTransmitter.LastSentMessage.Value;
-            // Last message is a toggle with default false, which has TypeTag "F"
-            Assert.AreEqual("F", message.TypeTag.Value);
+            Assert.AreEqual(OSCCameraEndpoints.OrientationIsLandscape.Value, message.Address.Value);
+            Assert.AreEqual(1, message.Arguments.Length);
+            Assert.AreEqual(Argument.ValueType.Bool, message.Arguments[0].Type);
+            // Default Orientation is Landscape => true
+            Assert.IsTrue((bool)message.Arguments[0].Value);
         }
         
         [Test]
@@ -216,7 +219,45 @@ namespace VRCCamera.Tests.Unit
             // Assert
             Assert.IsTrue(_synchronizer != null);
         }
-        
+
+        [Test]
+        public void Orientation_ChangeToPortrait_SendsFalse()
+        {
+            // Arrange
+            _mockTransmitter.Reset();
+
+            // Act
+            _vrcCamera.SetOrientation(Orientation.Portrait);
+
+            // Assert
+            Assert.IsNotNull(_mockTransmitter.LastSentMessage);
+            var msg = _mockTransmitter.LastSentMessage.Value;
+            Assert.AreEqual(OSCCameraEndpoints.OrientationIsLandscape.Value, msg.Address.Value);
+            Assert.AreEqual(1, msg.Arguments.Length);
+            Assert.AreEqual(Argument.ValueType.Bool, msg.Arguments[0].Type);
+            Assert.IsFalse((bool)msg.Arguments[0].Value);
+        }
+
+        [Test]
+        public void Orientation_ChangeToLandscape_SendsTrue()
+        {
+            // Arrange
+            _mockTransmitter.Reset();
+            _vrcCamera.SetOrientation(Orientation.Portrait); // ensure change from default
+            _mockTransmitter.Reset();
+
+            // Act
+            _vrcCamera.SetOrientation(Orientation.Landscape);
+
+            // Assert
+            Assert.IsNotNull(_mockTransmitter.LastSentMessage);
+            var msg = _mockTransmitter.LastSentMessage.Value;
+            Assert.AreEqual(OSCCameraEndpoints.OrientationIsLandscape.Value, msg.Address.Value);
+            Assert.AreEqual(1, msg.Arguments.Length);
+            Assert.AreEqual(Argument.ValueType.Bool, msg.Arguments[0].Type);
+            Assert.IsTrue((bool)msg.Arguments[0].Value);
+        }
+
         [Test]
         public void ReactiveProperty_OnZoomChange_SendsMessage()
         {

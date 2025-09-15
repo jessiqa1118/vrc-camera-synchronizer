@@ -1,12 +1,13 @@
 using System;
+using System.Collections.Generic;
 
 namespace VRCCamera
 {
     /// <summary>
     /// Reactive property that notifies when value changes
     /// </summary>
-    /// <typeparam name="T">Value type that implements IEquatable</typeparam>
-    public class ReactiveProperty<T> where T : struct, IEquatable<T>
+    /// <typeparam name="T">Value type (struct)</typeparam>
+    public class ReactiveProperty<T> where T : struct
     {
         private T _value;
 
@@ -33,7 +34,7 @@ namespace VRCCamera
         /// </summary>
         public void SetValue(T newValue)
         {
-            if (_value.Equals(newValue)) return;
+            if (EqualityComparer<T>.Default.Equals(_value, newValue)) return;
 
             _value = newValue;
             OnValueChanged?.Invoke(_value);

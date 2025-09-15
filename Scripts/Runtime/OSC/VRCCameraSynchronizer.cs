@@ -39,7 +39,6 @@ namespace VRCCamera
         private readonly ShowFocusToggleConverter _showFocusToggleConverter = new();
         private readonly StreamingToggleConverter _streamingToggleConverter = new();
         private readonly RollWhileFlyingToggleConverter _rollWhileFlyingToggleConverter = new();
-        private readonly OrientationIsLandscapeToggleConverter _orientationIsLandscapeToggleConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -78,7 +77,7 @@ namespace VRCCamera
             _vrcCamera.ShowFocus.OnValueChanged += OnShowFocusChanged;
             _vrcCamera.Streaming.OnValueChanged += OnStreamingChanged;
             _vrcCamera.RollWhileFlying.OnValueChanged += OnRollWhileFlyingChanged;
-            _vrcCamera.OrientationIsLandscape.OnValueChanged += OnOrientationIsLandscapeChanged;
+            _vrcCamera.Orientation.OnValueChanged += OnOrientationChanged;
             
             // Send initial values
             Sync();
@@ -329,11 +328,12 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnOrientationIsLandscapeChanged(OrientationIsLandscapeToggle orientation)
+        private void OnOrientationChanged(Orientation orientation)
         {
             if (_disposed) return;
 
-            var message = _orientationIsLandscapeToggleConverter.ToOSCMessage(orientation);
+            bool isLandscape = orientation == Parameters.Orientation.Landscape;
+            var message = new OSC.Message(OSCCameraEndpoints.OrientationIsLandscape, new[] { new OSC.Argument(isLandscape) });
             _transmitter.Send(message);
         }
 
@@ -377,7 +377,8 @@ namespace VRCCamera
             _transmitter.Send(_showFocusToggleConverter.ToOSCMessage(_vrcCamera.ShowFocus.Value));
             _transmitter.Send(_streamingToggleConverter.ToOSCMessage(_vrcCamera.Streaming.Value));
             _transmitter.Send(_rollWhileFlyingToggleConverter.ToOSCMessage(_vrcCamera.RollWhileFlying.Value));
-            _transmitter.Send(_orientationIsLandscapeToggleConverter.ToOSCMessage(_vrcCamera.OrientationIsLandscape.Value));
+            var isLandscape = _vrcCamera.Orientation.Value == Parameters.Orientation.Landscape;
+            _transmitter.Send(new OSC.Message(OSCCameraEndpoints.OrientationIsLandscape, new[] { new OSC.Argument(isLandscape) }));
         }
 
         public void Dispose()
@@ -418,7 +419,7 @@ namespace VRCCamera
                 _vrcCamera.ShowFocus.OnValueChanged -= OnShowFocusChanged;
                 _vrcCamera.Streaming.OnValueChanged -= OnStreamingChanged;
                 _vrcCamera.RollWhileFlying.OnValueChanged -= OnRollWhileFlyingChanged;
-                _vrcCamera.OrientationIsLandscape.OnValueChanged -= OnOrientationIsLandscapeChanged;
+                _vrcCamera.Orientation.OnValueChanged -= OnOrientationChanged;
             }
 
             _transmitter?.Dispose();

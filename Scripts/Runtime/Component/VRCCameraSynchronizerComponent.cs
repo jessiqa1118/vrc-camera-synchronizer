@@ -24,10 +24,12 @@ namespace VRCCamera
         [SerializeField] private float duration = Duration.DefaultValue;
         [SerializeField] private bool showUIInCamera = false;
         [SerializeField] private bool lockCamera = false;
-        [SerializeField] private bool localPlayer = false;
-        [SerializeField] private bool remotePlayer = false;
-        [SerializeField] private bool environment = false;
+        [SerializeField] private bool localPlayer = true;
+        [SerializeField] private bool remotePlayer = true;
+        [SerializeField] private bool environment = true;
         [SerializeField] private bool greenScreen = false;
+        // Display-only (no OSC endpoint)
+        [SerializeField] private bool items = true;
         [SerializeField] private bool smoothMovement = false;
         [SerializeField] private bool lookAtMe = false;
         [SerializeField] private bool autoLevelRoll = false;
@@ -39,7 +41,7 @@ namespace VRCCamera
         [SerializeField] private bool showFocus = false;
         [SerializeField] private bool streaming = false;
         [SerializeField] private bool rollWhileFlying = false;
-        [SerializeField] private bool orientationIsLandscape = false;
+        [SerializeField] private Orientation orientation = Orientation.Landscape;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -89,7 +91,7 @@ namespace VRCCamera
                 _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
                 _vrcCamera.SetStreaming(new StreamingToggle(streaming));
                 _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
-                _vrcCamera.SetOrientationIsLandscape(new OrientationIsLandscapeToggle(orientationIsLandscape));
+                _vrcCamera.SetOrientation(orientation);
                 
                 transmitter = new OSCJackTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -165,7 +167,7 @@ namespace VRCCamera
             _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
             _vrcCamera.SetStreaming(new StreamingToggle(streaming));
             _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
-            _vrcCamera.SetOrientationIsLandscape(new OrientationIsLandscapeToggle(orientationIsLandscape));
+            _vrcCamera.SetOrientation(orientation);
         }
     }
 }
