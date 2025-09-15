@@ -26,6 +26,7 @@ namespace VRCCamera.Editor
         private SerializedProperty _remotePlayer;
         private SerializedProperty _environment;
         private SerializedProperty _greenScreen;
+        private SerializedProperty _items;
         private SerializedProperty _smoothMovement;
         private SerializedProperty _lookAtMe;
         private SerializedProperty _autoLevelRoll;
@@ -60,6 +61,7 @@ namespace VRCCamera.Editor
             _remotePlayer = serializedObject.FindProperty("remotePlayer");
             _environment = serializedObject.FindProperty("environment");
             _greenScreen = serializedObject.FindProperty("greenScreen");
+            _items = serializedObject.FindProperty("items");
             _smoothMovement = serializedObject.FindProperty("smoothMovement");
             _lookAtMe = serializedObject.FindProperty("lookAtMe");
             _autoLevelRoll = serializedObject.FindProperty("autoLevelRoll");
@@ -154,6 +156,10 @@ namespace VRCCamera.Editor
             }
             EditorGUI.indentLevel--;
             EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("UI"));
+            using (new EditorGUI.DisabledScope(true))
+            {
+                EditorGUILayout.PropertyField(_items, new GUIContent("Items (not supported)"));
+            }
             
             EditorGUILayout.Space();
             

@@ -39,6 +39,7 @@ namespace VRCCamera
         public ReactiveProperty<StreamingToggle> Streaming { get; }
         public ReactiveProperty<RollWhileFlyingToggle> RollWhileFlying { get; }
         public ReactiveProperty<OrientationIsLandscapeToggle> OrientationIsLandscape { get; }
+        public ReactiveProperty<ItemsToggle> Items { get; }
 
         public VRCCamera(Camera camera)
         {
@@ -78,6 +79,8 @@ namespace VRCCamera
             Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
             RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
             OrientationIsLandscape = new ReactiveProperty<OrientationIsLandscapeToggle>(new OrientationIsLandscapeToggle(false));
+            // Items has no OSC endpoint; keep as display-only (default true)
+            Items = new ReactiveProperty<ItemsToggle>(new ItemsToggle(true));
         }
 
         /// <summary>
@@ -352,6 +355,7 @@ namespace VRCCamera
             Streaming?.ClearSubscriptions();
             RollWhileFlying?.ClearSubscriptions();
             OrientationIsLandscape?.ClearSubscriptions();
+            Items?.ClearSubscriptions();
         }
     }
 }

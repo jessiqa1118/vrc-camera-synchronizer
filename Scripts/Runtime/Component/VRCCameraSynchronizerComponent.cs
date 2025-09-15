@@ -28,6 +28,8 @@ namespace VRCCamera
         [SerializeField] private bool remotePlayer = true;
         [SerializeField] private bool environment = true;
         [SerializeField] private bool greenScreen = false;
+        // Display-only (no OSC endpoint)
+        [SerializeField] private bool items = true;
         [SerializeField] private bool smoothMovement = false;
         [SerializeField] private bool lookAtMe = false;
         [SerializeField] private bool autoLevelRoll = false;
