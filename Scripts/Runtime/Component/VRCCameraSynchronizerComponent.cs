@@ -95,7 +95,7 @@ namespace VRCCamera
                 _vrcCamera.SetOrientation(orientation);
                 _vrcCamera.SetMode(mode);
                 
-                transmitter = new OSCJackTransmitter(destination, port);
+                transmitter = new OSCTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
             }
             catch (Exception ex)
