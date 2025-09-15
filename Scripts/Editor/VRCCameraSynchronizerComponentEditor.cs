@@ -96,16 +96,19 @@ namespace VRCCamera.Editor
             {
                 if (GUILayout.Button("Close Camera"))
                 {
+                    serializedObject.ApplyModifiedProperties();
                     var targetComponent = (VRCCameraSynchronizerComponent)target;
                     targetComponent.Action_CloseCamera();
                 }
                 if (GUILayout.Button("Take Photo"))
                 {
+                    serializedObject.ApplyModifiedProperties();
                     var targetComponent = (VRCCameraSynchronizerComponent)target;
                     targetComponent.Action_Capture();
                 }
                 if (GUILayout.Button("Timed (5s)"))
                 {
+                    serializedObject.ApplyModifiedProperties();
                     var targetComponent = (VRCCameraSynchronizerComponent)target;
                     targetComponent.Action_CaptureDelayed();
                 }
@@ -192,12 +195,20 @@ namespace VRCCamera.Editor
             EditorGUI.indentLevel++;
             if (pCamera != null)
             {
+#if UNITY_2021_2_OR_NEWER
                 EditorGUI.BeginDisabledGroup(true);
                 float fFocal = Mathf.Clamp(pCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
                 EditorGUILayout.Slider("Focal Distance", fFocal, FocalDistance.MinValue, FocalDistance.MaxValue);
                 float fAperture = Mathf.Clamp(pCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
                 EditorGUILayout.Slider("Aperture", fAperture, Aperture.MinValue, Aperture.MaxValue);
                 EditorGUI.EndDisabledGroup();
+#else
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.LabelField("Focal Distance", "(not supported on this Unity version)");
+                    EditorGUILayout.LabelField("Aperture", "(not supported on this Unity version)");
+                }
+#endif
             }
             EditorGUILayout.PropertyField(_showFocus, new GUIContent("Show"));
             EditorGUI.indentLevel--;
