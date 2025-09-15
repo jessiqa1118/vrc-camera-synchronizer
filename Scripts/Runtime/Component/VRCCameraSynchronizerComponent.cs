@@ -41,7 +41,7 @@ namespace VRCCamera
         [SerializeField] private bool showFocus = false;
         [SerializeField] private bool streaming = false;
         [SerializeField] private bool rollWhileFlying = false;
-        [SerializeField] private bool orientationIsLandscape = false;
+        [SerializeField] private bool orientationIsLandscape = true;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;

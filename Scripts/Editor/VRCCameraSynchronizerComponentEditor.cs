@@ -80,14 +80,18 @@ namespace VRCCamera.Editor
         {
             serializedObject.Update();
 
-            // OSC Settings
-            EditorGUILayout.PropertyField(_destination);
+            // VRChat Host
+            EditorGUILayout.LabelField("VRChat Host", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_destination, new GUIContent("IP Address"));
             EditorGUILayout.PropertyField(_port);
+            EditorGUI.indentLevel--;
             
             EditorGUILayout.Space();
 
             // Actions (Play Mode only)
             EditorGUILayout.LabelField("Actions", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
             using (new EditorGUI.DisabledScope(!Application.isPlaying))
             {
                 if (GUILayout.Button("Close Camera"))
@@ -107,33 +111,102 @@ namespace VRCCamera.Editor
                 }
             }
 
+            EditorGUI.indentLevel--;
             EditorGUILayout.Space();
 
-            // Camera Parameters
-            EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
-            
-            EditorGUILayout.Space();
-            
-            // Toggle Parameters
-            EditorGUILayout.LabelField("Toggles", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_lockCamera, new GUIContent("Lock"));
-            EditorGUILayout.PropertyField(_smoothMovement, new GUIContent("Smooth Movement"));
-            EditorGUILayout.PropertyField(_lookAtMe, new GUIContent("Look At Me"));
-            EditorGUILayout.PropertyField(_autoLevelRoll, new GUIContent("Auto Level Roll"));
-            EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
-            EditorGUILayout.PropertyField(_flying, new GUIContent("Flying"));
-            EditorGUILayout.PropertyField(_triggerTakesPhotos, new GUIContent("Trigger Takes Photos"));
-            EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Dolly Paths Stay Visible"));
-            EditorGUILayout.PropertyField(_cameraEars, new GUIContent("Camera Ears"));
-            EditorGUILayout.PropertyField(_showFocus, new GUIContent("Show Focus"));
-            EditorGUILayout.PropertyField(_streaming, new GUIContent("Streaming"));
-            EditorGUILayout.PropertyField(_rollWhileFlying, new GUIContent("Roll While Flying"));
+            // General (under Actions)
+            EditorGUILayout.LabelField("General", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(_orientationIsLandscape, new GUIContent("Orientation Is Landscape"));
+            EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
+            // Display camera-driven parameters as read-only
+            var pComponent = (VRCCameraSynchronizerComponent)target;
+            var pCamera = pComponent.GetComponent<Camera>();
+            if (pCamera != null)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+                float pZoom = Mathf.Clamp(pCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
+                EditorGUILayout.Slider("Zoom (Focal Length)", pZoom, Zoom.MinValue, Zoom.MaxValue);
+                EditorGUI.EndDisabledGroup();
+            }
+            EditorGUI.indentLevel--;
+
+            EditorGUILayout.Space();
+
+            // Toggles section removed (moved to Others at bottom)
+            EditorGUILayout.Space();
+
+            // Stream (before Mask)
+            EditorGUILayout.LabelField("Stream", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_streaming, new GUIContent("Spout Stream"));
+            using (new EditorGUI.DisabledScope(true))
+            {
+                // Draw as a normal PropertyField to match alignment with Spout Stream
+                EditorGUILayout.PropertyField(_cameraEars, new GUIContent("Audio From Camera"));
+                // Compute field area (right of the label) and place suffix right after the checkbox
+                var last = GUILayoutUtility.GetLastRect();
+                float labelW = EditorGUIUtility.labelWidth;
+                float fieldW = last.width - labelW;
+                float fieldX = last.x + labelW;
+                float toggleW = EditorGUIUtility.singleLineHeight; // checkbox approx square
+                float gap = 0f; // no gap between checkbox and suffix
+                var suffixRect = new Rect(fieldX + toggleW + gap, last.y, fieldW - toggleW - gap, last.height);
+                EditorGUI.LabelField(suffixRect, "(not supported)", EditorStyles.miniLabel);
+            }
+            EditorGUI.indentLevel--;
+
+            EditorGUILayout.Space();
+
+            // Flying (before Behaviour)
+            EditorGUILayout.LabelField("Flying", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_flying, new GUIContent("Enabled"));
+            EditorGUI.indentLevel++;
+            EditorGUILayout.Slider(_flySpeed, FlySpeed.MinValue, FlySpeed.MaxValue, "Fly Speed");
+            EditorGUILayout.Slider(_turnSpeed, TurnSpeed.MinValue, TurnSpeed.MaxValue, "Turn Speed");
+            EditorGUILayout.PropertyField(_rollWhileFlying, new GUIContent("Roll While Flying"));
+            EditorGUI.indentLevel--;
+            EditorGUI.indentLevel--;
+
+            EditorGUILayout.Space();
+
+            // Behaviour (before Mask)
+            EditorGUILayout.LabelField("Behaviour", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_smoothMovement, new GUIContent("Smoothed"));
+            EditorGUI.indentLevel++;
+            EditorGUILayout.Slider(_smoothingStrength, SmoothingStrength.MinValue, SmoothingStrength.MaxValue, "Smoothing Strength");
+            EditorGUI.indentLevel--;
+            EditorGUILayout.PropertyField(_lookAtMe, new GUIContent("Look-At-Me"));
+            EditorGUI.indentLevel++;
+            EditorGUILayout.Slider(_lookAtMeXOffset, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue, "Horizontal Offset");
+            EditorGUILayout.Slider(_lookAtMeYOffset, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue, "Vertical Offset");
+            EditorGUI.indentLevel--;
+            EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
+            EditorGUI.indentLevel--;
+
+            EditorGUILayout.Space();
+            // Focus
+            EditorGUILayout.LabelField("Focus", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            if (pCamera != null)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+                float fFocal = Mathf.Clamp(pCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
+                EditorGUILayout.Slider("Focal Distance", fFocal, FocalDistance.MinValue, FocalDistance.MaxValue);
+                float fAperture = Mathf.Clamp(pCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
+                EditorGUILayout.Slider("Aperture", fAperture, Aperture.MinValue, Aperture.MaxValue);
+                EditorGUI.EndDisabledGroup();
+            }
+            EditorGUILayout.PropertyField(_showFocus, new GUIContent("Show"));
+            EditorGUI.indentLevel--;
 
             EditorGUILayout.Space();
 
             // Mask Parameters
             EditorGUILayout.LabelField("Mask", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(_localPlayer, new GUIContent("Local User"));
             EditorGUILayout.PropertyField(_remotePlayer, new GUIContent("Remote User"));
             EditorGUILayout.PropertyField(_environment, new GUIContent("World"));
@@ -158,66 +231,46 @@ namespace VRCCamera.Editor
             EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("UI"));
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.PropertyField(_items, new GUIContent("Items (not supported)"));
+                // Draw like a normal PropertyField to match alignment, then append suffix
+                EditorGUILayout.PropertyField(_items, new GUIContent("Items"));
+                var last = GUILayoutUtility.GetLastRect();
+                float labelW = EditorGUIUtility.labelWidth;
+                float fieldW = last.width - labelW;
+                float fieldX = last.x + labelW;
+                float toggleW = EditorGUIUtility.singleLineHeight;
+                float gap = 0f;
+                var suffixRect = new Rect(fieldX + toggleW + gap, last.y, fieldW - toggleW - gap, last.height);
+                EditorGUI.LabelField(suffixRect, "(not supported)", EditorStyles.miniLabel);
             }
+            EditorGUI.indentLevel--;
             
             EditorGUILayout.Space();
             
             EditorGUILayout.Space();
-            
-            // LookAtMe Parameters
-            EditorGUILayout.LabelField("LookAtMe", EditorStyles.boldLabel);
-            
-            // Use sliders for X/Y offset
-            EditorGUILayout.Slider(_lookAtMeXOffset, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue, "X Offset");
-            EditorGUILayout.Slider(_lookAtMeYOffset, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue, "Y Offset");
-            
-            EditorGUILayout.Space();
-            
-            // Movement Parameters
-            EditorGUILayout.LabelField("Movement", EditorStyles.boldLabel);
-            EditorGUILayout.Slider(_flySpeed, FlySpeed.MinValue, FlySpeed.MaxValue, "Fly Speed");
-            EditorGUILayout.Slider(_turnSpeed, TurnSpeed.MinValue, TurnSpeed.MaxValue, "Turn Speed");
-            EditorGUILayout.Slider(_smoothingStrength, SmoothingStrength.MinValue, SmoothingStrength.MaxValue, "Smoothing Strength");
-            
-            EditorGUILayout.Space();
-            
-            // Photo Settings
-            EditorGUILayout.LabelField("Photo", EditorStyles.boldLabel);
-            EditorGUILayout.Slider(_photoRate, PhotoRate.MinValue, PhotoRate.MaxValue, "Photo Rate");
+
+            // Dolly (after Mask)
+            EditorGUILayout.LabelField("Dolly", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
             EditorGUILayout.Slider(_duration, Duration.MinValue, Duration.MaxValue, "Duration");
-            
+            EditorGUILayout.Slider(_photoRate, PhotoRate.MinValue, PhotoRate.MaxValue, "Photo Rate");
+            EditorGUI.indentLevel--;
+
             EditorGUILayout.Space();
 
-            // Camera Sync (Read-only)
-            EditorGUILayout.LabelField("Camera Sync (From Camera Component)", EditorStyles.boldLabel);
-            
-            // Get current camera values
-            var component = (VRCCameraSynchronizerComponent)target;
-            var unityCamera = component.GetComponent<Camera>();
+            // Others (migrated from Toggles)
+            EditorGUILayout.LabelField("Others", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_lockCamera, new GUIContent("Lock"));
+            EditorGUILayout.PropertyField(_autoLevelRoll, new GUIContent("Auto Level Roll"));
+            EditorGUILayout.PropertyField(_triggerTakesPhotos, new GUIContent("Trigger Takes Photos"));
+            EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Dolly Paths Stay Visible"));
+            EditorGUI.indentLevel--;
 
-            if (unityCamera != null)
-            {
-                GUI.enabled = false; // Make read-only
-                
-                // Zoom (focal length) - clamp the display value
-                float clampedZoom = Mathf.Clamp(unityCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
-                EditorGUILayout.Slider("Zoom (Focal Length)", clampedZoom, Zoom.MinValue, Zoom.MaxValue);
-                
-                // Aperture - clamp the display value
-                float clampedAperture = Mathf.Clamp(unityCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
-                EditorGUILayout.Slider("Aperture", clampedAperture, Aperture.MinValue, Aperture.MaxValue);
-                
-                // Focal Distance - clamp the display value
-                float clampedFocalDistance = Mathf.Clamp(unityCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
-                EditorGUILayout.Slider("Focal Distance", clampedFocalDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
-                
-                GUI.enabled = true;
-            }
-            else
-            {
-                EditorGUILayout.HelpBox("Camera component not found!", MessageType.Warning);
-            }
+            EditorGUILayout.Space();
+
+            // Movement Parameters (merged into Flying/Behaviour)
+
+            EditorGUILayout.Space();
 
             serializedObject.ApplyModifiedProperties();
         }

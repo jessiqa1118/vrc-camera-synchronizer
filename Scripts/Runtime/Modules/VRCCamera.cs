@@ -78,7 +78,7 @@ namespace VRCCamera
             ShowFocus = new ReactiveProperty<ShowFocusToggle>(new ShowFocusToggle(false));
             Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
             RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
-            OrientationIsLandscape = new ReactiveProperty<OrientationIsLandscapeToggle>(new OrientationIsLandscapeToggle(false));
+            OrientationIsLandscape = new ReactiveProperty<OrientationIsLandscapeToggle>(new OrientationIsLandscapeToggle(true));
             // Items has no OSC endpoint; keep as display-only (default true)
             Items = new ReactiveProperty<ItemsToggle>(new ItemsToggle(true));
         }
