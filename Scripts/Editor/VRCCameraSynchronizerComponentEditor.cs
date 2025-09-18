@@ -40,6 +40,10 @@ namespace VRCCamera.Editor
         private SerializedProperty _rollWhileFlying;
         private SerializedProperty _orientation;
         private SerializedProperty _mode;
+        private SerializedProperty _poseTransform;
+        private SerializedProperty _syncPoseFromTransform;
+        private SerializedProperty _posePosition;
+        private SerializedProperty _poseEuler;
 
         private void OnEnable()
         {
@@ -76,6 +80,10 @@ namespace VRCCamera.Editor
             _rollWhileFlying = serializedObject.FindProperty("rollWhileFlying");
             _orientation = serializedObject.FindProperty("orientation");
             _mode = serializedObject.FindProperty("mode");
+            _poseTransform = serializedObject.FindProperty("poseTransform");
+            _syncPoseFromTransform = serializedObject.FindProperty("syncPoseFromTransform");
+            _posePosition = serializedObject.FindProperty("posePosition");
+            _poseEuler = serializedObject.FindProperty("poseEuler");
         }
 
         public override void OnInspectorGUI()
@@ -88,6 +96,33 @@ namespace VRCCamera.Editor
             {
                 EditorGUILayout.PropertyField(_destination, new GUIContent("IP Address"));
                 EditorGUILayout.PropertyField(_port);
+            }
+
+            EditorGUILayout.Space();
+
+            // Pose (manual input or follow object)
+            EditorGUILayout.LabelField("Pose", EditorStyles.boldLabel);
+            using (new EditorGUI.IndentLevelScope())
+            {
+                EditorGUILayout.PropertyField(_syncPoseFromTransform, new GUIContent("Follow Object"));
+
+                EditorGUILayout.PropertyField(_poseTransform, new GUIContent("Source"));
+
+                if (_syncPoseFromTransform.boolValue)
+                {
+                    var src = _poseTransform.objectReferenceValue as Transform;
+                    if (src != null)
+                    {
+                        _posePosition.vector3Value = src.position;
+                        _poseEuler.vector3Value = src.rotation.eulerAngles;
+                    }
+                }
+
+                using (new EditorGUI.DisabledScope(_syncPoseFromTransform.boolValue))
+                {
+                    EditorGUILayout.PropertyField(_posePosition, new GUIContent("Position"));
+                    EditorGUILayout.PropertyField(_poseEuler, new GUIContent("Rotation (Euler, degrees)"));
+                }
             }
 
             EditorGUILayout.Space();
@@ -125,30 +160,35 @@ namespace VRCCamera.Editor
             EditorGUILayout.LabelField("General", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
-                // Mode: custom ordering/labels while preserving OSC indices
                 var modeOrder = new Mode[]
                 {
-                    Mode.Off,       // 0
-                    Mode.Photo,     // 1
-                    Mode.Multilayer,// 4
-                    Mode.Stream,    // 2
-                    Mode.Print,     // 5
-                    Mode.Emoji,     // 3
-                    Mode.Drone      // 6
+                    Mode.Off,
+                    Mode.Photo,
+                    Mode.Multilayer,
+                    Mode.Stream,
+                    Mode.Print,
+                    Mode.Emoji,
+                    Mode.Drone
                 };
+
                 var modeLabels = new[] { "Off", "Local Photo", "Multi Layer", "Stream", "Print", "Emoji", "Drone" };
                 var currentModeValue = _mode.intValue;
                 var currentIndex = System.Array.IndexOf(modeOrder, (Mode)currentModeValue);
-                if (currentIndex < 0) currentIndex = 0;
+                if (currentIndex < 0)
+                {
+                    currentIndex = 0;
+                }
+
                 EditorGUI.BeginChangeCheck();
                 var newIndex = EditorGUILayout.Popup("Camera Mode", currentIndex, modeLabels);
                 if (EditorGUI.EndChangeCheck())
                 {
                     _mode.intValue = (int)modeOrder[newIndex];
                 }
+
                 EditorGUILayout.PropertyField(_orientation, new GUIContent("Orientation"));
                 EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
-                // Display camera-driven parameters as read-only
+
                 var pComponent = (VRCCameraSynchronizerComponent)target;
                 var pCamera = pComponent.GetComponent<Camera>();
                 if (pCamera != null)
@@ -162,26 +202,22 @@ namespace VRCCamera.Editor
 
             EditorGUILayout.Space();
 
-            // Toggles section removed (moved to Others at bottom)
-            EditorGUILayout.Space();
-
             // Stream (before Mask)
             EditorGUILayout.LabelField("Stream", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
                 EditorGUILayout.PropertyField(_streaming, new GUIContent("Spout Stream"));
+
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    // Draw as a normal PropertyField to match alignment with Spout Stream
                     EditorGUILayout.PropertyField(_cameraEars, new GUIContent("Audio From Camera"));
-                    // Compute field area (right of the label) and place suffix right after the checkbox
+
                     var last = GUILayoutUtility.GetLastRect();
                     var labelW = EditorGUIUtility.labelWidth;
                     var fieldW = last.width - labelW;
                     var fieldX = last.x + labelW;
-                    var toggleW = EditorGUIUtility.singleLineHeight; // checkbox approx square
-                    var gap = 0f; // no gap between checkbox and suffix
-                    var suffixRect = new Rect(fieldX + toggleW + gap, last.y, fieldW - toggleW - gap, last.height);
+                    var toggleW = EditorGUIUtility.singleLineHeight;
+                    var suffixRect = new Rect(fieldX + toggleW, last.y, fieldW - toggleW, last.height);
                     EditorGUI.LabelField(suffixRect, "(not supported)", EditorStyles.miniLabel);
                 }
             }
@@ -210,23 +246,21 @@ namespace VRCCamera.Editor
                 EditorGUILayout.PropertyField(_smoothMovement, new GUIContent("Smoothed"));
                 using (new EditorGUI.IndentLevelScope())
                 {
-                    EditorGUILayout.Slider(_smoothingStrength, SmoothingStrength.MinValue, SmoothingStrength.MaxValue,
-                        "Smoothing Strength");
+                    EditorGUILayout.Slider(_smoothingStrength, SmoothingStrength.MinValue, SmoothingStrength.MaxValue, "Smoothing Strength");
                 }
 
                 EditorGUILayout.PropertyField(_lookAtMe, new GUIContent("Look-At-Me"));
                 using (new EditorGUI.IndentLevelScope())
                 {
-                    EditorGUILayout.Slider(_lookAtMeXOffset, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue,
-                        "Horizontal Offset");
-                    EditorGUILayout.Slider(_lookAtMeYOffset, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue,
-                        "Vertical Offset");
+                    EditorGUILayout.Slider(_lookAtMeXOffset, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue, "Horizontal Offset");
+                    EditorGUILayout.Slider(_lookAtMeYOffset, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue, "Vertical Offset");
                 }
 
                 EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
             }
 
             EditorGUILayout.Space();
+
             // Focus
             EditorGUILayout.LabelField("Focus", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
@@ -266,12 +300,11 @@ namespace VRCCamera.Editor
                 EditorGUILayout.PropertyField(_greenScreen, new GUIContent("Green Screen"));
                 using (new EditorGUI.IndentLevelScope())
                 {
-                    // Color picker for Green Screen (Hue/Saturation/Lightness)
                     var currentMaskColor = Color.HSVToRGB(
                         _hue.floatValue / Hue.MaxValue,
                         _saturation.floatValue / Saturation.MaxValue,
-                        _lightness.floatValue / Lightness.MaxValue
-                    );
+                        _lightness.floatValue / Lightness.MaxValue);
+
                     EditorGUI.BeginChangeCheck();
                     var newMaskColor = EditorGUILayout.ColorField("Color", currentMaskColor);
                     if (EditorGUI.EndChangeCheck())
@@ -286,20 +319,16 @@ namespace VRCCamera.Editor
                 EditorGUILayout.PropertyField(_showUIInCamera, new GUIContent("UI"));
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    // Draw like a normal PropertyField to match alignment, then append suffix
                     EditorGUILayout.PropertyField(_items, new GUIContent("Items"));
                     var last = GUILayoutUtility.GetLastRect();
                     var labelW = EditorGUIUtility.labelWidth;
                     var fieldW = last.width - labelW;
                     var fieldX = last.x + labelW;
                     var toggleW = EditorGUIUtility.singleLineHeight;
-                    var gap = 0f;
-                    var suffixRect = new Rect(fieldX + toggleW + gap, last.y, fieldW - toggleW - gap, last.height);
+                    var suffixRect = new Rect(fieldX + toggleW, last.y, fieldW - toggleW, last.height);
                     EditorGUI.LabelField(suffixRect, "(not supported)", EditorStyles.miniLabel);
                 }
             }
-
-            EditorGUILayout.Space();
 
             EditorGUILayout.Space();
 
@@ -324,11 +353,6 @@ namespace VRCCamera.Editor
             }
 
             EditorGUILayout.Space();
-
-            // Movement Parameters (merged into Flying/Behaviour)
-
-            EditorGUILayout.Space();
-
             serializedObject.ApplyModifiedProperties();
         }
     }

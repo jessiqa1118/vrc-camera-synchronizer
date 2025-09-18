@@ -21,6 +21,10 @@ namespace VRCCamera
         public ReactiveProperty<SmoothingStrength> SmoothingStrength { get; }
         public ReactiveProperty<PhotoRate> PhotoRate { get; }
         public ReactiveProperty<Duration> Duration { get; }
+        /// <summary>
+        /// Current world-space pose (position + rotation) for OSC sync
+        /// </summary>
+        public ReactiveProperty<Pose> Pose { get; }
         public ReactiveProperty<ShowUIInCameraToggle> ShowUIInCamera { get; }
         public ReactiveProperty<LockToggle> Lock { get; }
         public ReactiveProperty<LocalPlayerToggle> LocalPlayer { get; }
@@ -65,6 +69,7 @@ namespace VRCCamera
             SmoothingStrength = new ReactiveProperty<SmoothingStrength>(new SmoothingStrength(Parameters.SmoothingStrength.DefaultValue));
             PhotoRate = new ReactiveProperty<PhotoRate>(new PhotoRate(Parameters.PhotoRate.DefaultValue));
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
+            Pose = new ReactiveProperty<Pose>(new Pose(_camera.transform.position, _camera.transform.rotation));
             ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
             Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
             LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(true));
@@ -84,6 +89,7 @@ namespace VRCCamera
             RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
             Orientation = new ReactiveProperty<Orientation>(Parameters.Orientation.Landscape);
             Mode = new ReactiveProperty<Mode>(Parameters.Mode.Photo);
+            
             // Items has no OSC endpoint; keep as display-only (default true)
             Items = new ReactiveProperty<ItemsToggle>(new ItemsToggle(true));
         }
@@ -177,6 +183,14 @@ namespace VRCCamera
         public void SetDuration(Duration duration)
         {
             Duration.SetValue(duration);
+        }
+
+        /// <summary>
+        /// Sets Pose value reactively. Always applies the provided pose.
+        /// </summary>
+        public void SetPose(Pose pose)
+        {
+            Pose.SetValue(pose);
         }
 
         /// <summary>
@@ -369,6 +383,7 @@ namespace VRCCamera
             RollWhileFlying?.ClearSubscriptions();
             Orientation?.ClearSubscriptions();
             Mode?.ClearSubscriptions();
+            Pose?.ClearSubscriptions();
             Items?.ClearSubscriptions();
         }
     }

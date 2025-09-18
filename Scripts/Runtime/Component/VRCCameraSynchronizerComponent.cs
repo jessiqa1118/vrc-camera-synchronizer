@@ -9,8 +9,8 @@ namespace VRCCamera
     public class VRCCameraSynchronizerComponent : MonoBehaviour
     {
         [SerializeField] private string destination = "127.0.0.1";
-        [SerializeField] private int port = 9000;
-        
+        [SerializeField, Range(1, 65535)] private int port = 9000;
+
         [SerializeField] private float exposure = Exposure.DefaultValue;
         [SerializeField] private float hue = Hue.DefaultValue;
         [SerializeField] private float saturation = Saturation.DefaultValue;
@@ -27,7 +27,9 @@ namespace VRCCamera
         [SerializeField] private bool localPlayer = true;
         [SerializeField] private bool remotePlayer = true;
         [SerializeField] private bool environment = true;
+
         [SerializeField] private bool greenScreen = false;
+
         // Display-only (no OSC endpoint)
         [SerializeField] private bool items = true;
         [SerializeField] private bool smoothMovement = false;
@@ -43,9 +45,14 @@ namespace VRCCamera
         [SerializeField] private bool rollWhileFlying = false;
         [SerializeField] private Orientation orientation = Orientation.Landscape;
         [SerializeField] private Mode mode = Mode.Photo;
+        [SerializeField] private Transform poseTransform = null;
+        [SerializeField] private bool syncPoseFromTransform = false;
+        [SerializeField] private Vector3 posePosition = Vector3.zero;
+        [SerializeField] private Vector3 poseEuler = Vector3.zero;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
+        private bool _missingPoseTransformWarned;
 
         private void OnEnable()
         {
@@ -61,7 +68,8 @@ namespace VRCCamera
             try
             {
                 _vrcCamera = new VRCCamera(cameraComponent);
-                
+                _missingPoseTransformWarned = false;
+
                 // Set all initial values before creating synchronizer to avoid duplicate messages
                 _vrcCamera.SetExposure(new Exposure(exposure));
                 _vrcCamera.SetHue(new Hue(hue));
@@ -94,8 +102,9 @@ namespace VRCCamera
                 _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
                 _vrcCamera.SetOrientation(orientation);
                 _vrcCamera.SetMode(mode);
-                
-                transmitter = new OSCJackTransmitter(destination, port);
+                ApplyPose();
+
+                transmitter = new OSCTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
             }
             catch (Exception ex)
@@ -113,6 +122,7 @@ namespace VRCCamera
             _synchronizer = null;
             _vrcCamera?.Dispose();
             _vrcCamera = null;
+            _missingPoseTransformWarned = false;
         }
 
         // Action wrappers for Editor buttons or external callers
@@ -171,6 +181,41 @@ namespace VRCCamera
             _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
             _vrcCamera.SetOrientation(orientation);
             _vrcCamera.SetMode(mode);
+            ApplyPose();
+        }
+
+        private void ApplyPose()
+        {
+            if (_vrcCamera == null) return;
+
+            Pose nextPose;
+            if (syncPoseFromTransform)
+            {
+                var src = poseTransform;
+                if (src == null)
+                {
+                    src = transform;
+                    if (!_missingPoseTransformWarned)
+                    {
+                        Debug.LogWarning(
+                            $"[{nameof(VRCCameraSynchronizerComponent)}] Follow Object is enabled but no source transform is assigned; falling back to this component's transform.");
+                        _missingPoseTransformWarned = true;
+                    }
+                }
+
+                nextPose = new Pose(src.position, src.rotation);
+            }
+            else
+            {
+                nextPose = new Pose(posePosition, Quaternion.Euler(poseEuler));
+            }
+
+            // Keep runtime pose aligned with either the follow target or manual fields.
+            _vrcCamera?.SetPose(nextPose);
         }
     }
 }
+
+
+
+
