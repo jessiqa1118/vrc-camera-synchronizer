@@ -45,6 +45,10 @@ namespace VRCCamera
         [SerializeField] private bool rollWhileFlying = false;
         [SerializeField] private Orientation orientation = Orientation.Landscape;
         [SerializeField] private Mode mode = Mode.Photo;
+        [SerializeField] private Transform poseTransform = null;
+        [SerializeField] private bool syncPoseFromTransform = false;
+        [SerializeField] private Vector3 posePosition = Vector3.zero;
+        [SerializeField] private Vector3 poseEuler = Vector3.zero;
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
@@ -96,7 +100,15 @@ namespace VRCCamera
                 _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
                 _vrcCamera.SetOrientation(orientation);
                 _vrcCamera.SetMode(mode);
-                _vrcCamera.SetPose(new Pose(transform.position, transform.rotation));
+                if (syncPoseFromTransform)
+                {
+                    var src = poseTransform != null ? poseTransform : transform;
+                    _vrcCamera.SetPose(new Pose(src.position, src.rotation));
+                }
+                else
+                {
+                    _vrcCamera.SetPose(new Pose(posePosition, Quaternion.Euler(poseEuler)));
+                }
 
                 transmitter = new OSCTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -174,9 +186,19 @@ namespace VRCCamera
             _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
             _vrcCamera.SetOrientation(orientation);
             _vrcCamera.SetMode(mode);
-            _vrcCamera.SetPose(new Pose(transform.position, transform.rotation));
+                if (syncPoseFromTransform)
+                {
+                    var src = poseTransform != null ? poseTransform : transform;
+                    _vrcCamera.SetPose(new Pose(src.position, src.rotation));
+                }
+                else
+                {
+                    _vrcCamera.SetPose(new Pose(posePosition, Quaternion.Euler(poseEuler)));
+                }
         }
     }
 }
+
+
 
 
