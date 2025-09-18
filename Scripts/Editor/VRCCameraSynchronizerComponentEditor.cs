@@ -104,23 +104,9 @@ namespace VRCCamera.Editor
             EditorGUILayout.LabelField("Pose", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
-                var prevFollow = _syncPoseFromTransform.boolValue;
                 EditorGUILayout.PropertyField(_syncPoseFromTransform, new GUIContent("Follow Object"));
 
-                if (!prevFollow && _syncPoseFromTransform.boolValue)
-                {
-                    var src = _poseTransform.objectReferenceValue as Transform;
-                    if (src != null)
-                    {
-                        _posePosition.vector3Value = src.position;
-                        _poseEuler.vector3Value = src.rotation.eulerAngles;
-                    }
-                }
-
-                using (new EditorGUI.DisabledScope(!_syncPoseFromTransform.boolValue))
-                {
-                    EditorGUILayout.PropertyField(_poseTransform, new GUIContent("Source"));
-                }
+                EditorGUILayout.PropertyField(_poseTransform, new GUIContent("Source"));
 
                 if (_syncPoseFromTransform.boolValue)
                 {
@@ -135,7 +121,7 @@ namespace VRCCamera.Editor
                 using (new EditorGUI.DisabledScope(_syncPoseFromTransform.boolValue))
                 {
                     EditorGUILayout.PropertyField(_posePosition, new GUIContent("Position"));
-                    EditorGUILayout.PropertyField(_poseEuler, new GUIContent("Rotation"));
+                    EditorGUILayout.PropertyField(_poseEuler, new GUIContent("Rotation (Euler, degrees)"));
                 }
             }
 
@@ -371,4 +357,3 @@ namespace VRCCamera.Editor
         }
     }
 }
-

@@ -79,8 +79,19 @@ namespace VRCCamera.Tests.Unit
             Assert.AreEqual(0f, pose.rotation.eulerAngles.y);
             Assert.AreEqual(0f, pose.rotation.eulerAngles.z);
         }
+
+        [Test]
+        public void FromOSCMessage_WrongArgCount_ReturnsZeroPose()
+        {
+            var msg = new Message(OSCCameraEndpoints.Pose, new[]
+            {
+                new Argument(1f)
+            });
+
+            var pose = _converter.FromOSCMessage(msg);
+
+            Assert.AreEqual(Vector3.zero, pose.position);
+            Assert.AreEqual(Vector3.zero, pose.rotation.eulerAngles);
+        }
     }
 }
-
-
-

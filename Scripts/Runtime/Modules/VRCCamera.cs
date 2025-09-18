@@ -22,7 +22,7 @@ namespace VRCCamera
         public ReactiveProperty<PhotoRate> PhotoRate { get; }
         public ReactiveProperty<Duration> Duration { get; }
         /// <summary>
-        /// Current world-space pose (position + euler rotation) for OSC sync
+        /// Current world-space pose (position + rotation) for OSC sync
         /// </summary>
         public ReactiveProperty<Pose> Pose { get; }
         public ReactiveProperty<ShowUIInCameraToggle> ShowUIInCamera { get; }
@@ -186,10 +186,17 @@ namespace VRCCamera
         }
 
         /// <summary>
-        /// Sets Pose value reactively
+        /// Sets Pose value reactively with a small deadband to absorb jitter.
         /// </summary>
-        public void SetPose(Pose pose)
+        public void SetPose(Pose pose, float positionEpsilon = 0.001f, float angleEpsilonDeg = 0.1f)
         {
+            var current = Pose.Value;
+            if (Vector3.SqrMagnitude(pose.position - current.position) < positionEpsilon * positionEpsilon &&
+                Quaternion.Angle(pose.rotation, current.rotation) < angleEpsilonDeg)
+            {
+                return;
+            }
+
             Pose.SetValue(pose);
         }
 

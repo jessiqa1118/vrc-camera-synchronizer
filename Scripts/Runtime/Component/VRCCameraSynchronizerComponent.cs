@@ -9,7 +9,7 @@ namespace VRCCamera
     public class VRCCameraSynchronizerComponent : MonoBehaviour
     {
         [SerializeField] private string destination = "127.0.0.1";
-        [SerializeField] private int port = 9000;
+        [SerializeField, Range(1, 65535)] private int port = 9000;
 
         [SerializeField] private float exposure = Exposure.DefaultValue;
         [SerializeField] private float hue = Hue.DefaultValue;
@@ -52,6 +52,8 @@ namespace VRCCamera
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
+        private Pose _lastPose;
+        private bool _hasLastPose;
 
         private void OnEnable()
         {
@@ -67,6 +69,7 @@ namespace VRCCamera
             try
             {
                 _vrcCamera = new VRCCamera(cameraComponent);
+                _hasLastPose = false;
 
                 // Set all initial values before creating synchronizer to avoid duplicate messages
                 _vrcCamera.SetExposure(new Exposure(exposure));
@@ -100,15 +103,7 @@ namespace VRCCamera
                 _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
                 _vrcCamera.SetOrientation(orientation);
                 _vrcCamera.SetMode(mode);
-                if (syncPoseFromTransform)
-                {
-                    var src = poseTransform != null ? poseTransform : transform;
-                    _vrcCamera.SetPose(new Pose(src.position, src.rotation));
-                }
-                else
-                {
-                    _vrcCamera.SetPose(new Pose(posePosition, Quaternion.Euler(poseEuler)));
-                }
+                ApplyPose();
 
                 transmitter = new OSCTransmitter(destination, port);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -128,6 +123,7 @@ namespace VRCCamera
             _synchronizer = null;
             _vrcCamera?.Dispose();
             _vrcCamera = null;
+            _hasLastPose = false;
         }
 
         // Action wrappers for Editor buttons or external callers
@@ -186,15 +182,38 @@ namespace VRCCamera
             _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
             _vrcCamera.SetOrientation(orientation);
             _vrcCamera.SetMode(mode);
-                if (syncPoseFromTransform)
-                {
-                    var src = poseTransform != null ? poseTransform : transform;
-                    _vrcCamera.SetPose(new Pose(src.position, src.rotation));
-                }
-                else
-                {
-                    _vrcCamera.SetPose(new Pose(posePosition, Quaternion.Euler(poseEuler)));
-                }
+            ApplyPose();
+        }
+
+        private void ApplyPose()
+        {
+            if (_vrcCamera == null) return;
+
+            Pose nextPose;
+            if (syncPoseFromTransform)
+            {
+                var src = poseTransform != null ? poseTransform : transform;
+                nextPose = new Pose(src.position, src.rotation);
+            }
+            else
+            {
+                nextPose = new Pose(posePosition, Quaternion.Euler(poseEuler));
+            }
+
+            if (!_hasLastPose || ShouldUpdatePose(_lastPose, nextPose))
+            {
+                _vrcCamera.SetPose(nextPose);
+                _lastPose = nextPose;
+                _hasLastPose = true;
+            }
+        }
+
+        private static bool ShouldUpdatePose(Pose a, Pose b)
+        {
+            const float positionEpsilon = 0.001f; // 1mm
+            const float angleEpsilonDeg = 0.1f;   // 0.1°
+            return Vector3.SqrMagnitude(a.position - b.position) > positionEpsilon * positionEpsilon
+                   || Quaternion.Angle(a.rotation, b.rotation) > angleEpsilonDeg;
         }
     }
 }

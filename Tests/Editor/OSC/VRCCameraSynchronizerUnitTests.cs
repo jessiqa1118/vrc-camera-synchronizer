@@ -217,7 +217,23 @@ namespace VRCCamera.Tests.Unit
         public void ImplementsIDisposable()
         {
             // Assert
-            Assert.IsTrue(_synchronizer != null);
+            Assert.IsInstanceOf<IDisposable>(_synchronizer);
+        }
+
+        [Test]
+        public void ReactiveProperty_OnPoseChange_SendsMessage()
+        {
+            // Arrange
+            _mockTransmitter.Reset();
+
+            // Act
+            _vrcCamera.SetPose(new Pose(new Vector3(1f, 2f, 3f), Quaternion.Euler(10f, 20f, 30f)));
+
+            // Assert
+            Assert.AreEqual(1, _mockTransmitter.SendCallCount);
+            Assert.IsNotNull(_mockTransmitter.LastSentMessage);
+            var msg = _mockTransmitter.LastSentMessage.Value;
+            Assert.AreEqual(OSCCameraEndpoints.Pose.Value, msg.Address.Value);
         }
 
         [Test]
@@ -302,4 +318,3 @@ namespace VRCCamera.Tests.Unit
         }
     }
 }
-
