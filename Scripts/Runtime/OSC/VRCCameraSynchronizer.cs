@@ -196,7 +196,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
         
-        private void OnShowUIInCameraChanged(ShowUIInCameraToggle showUIInCamera)
+        private void OnShowUIInCameraChanged(bool showUIInCamera)
         {
             if (_disposed) return;
 
@@ -204,7 +204,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnLockChanged(LockToggle lockToggle)
+        private void OnLockChanged(bool lockToggle)
         {
             if (_disposed) return;
 
@@ -212,7 +212,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnLocalPlayerChanged(LocalPlayerToggle localPlayer)
+        private void OnLocalPlayerChanged(bool localPlayer)
         {
             if (_disposed) return;
 
@@ -220,7 +220,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnRemotePlayerChanged(RemotePlayerToggle remotePlayer)
+        private void OnRemotePlayerChanged(bool remotePlayer)
         {
             if (_disposed) return;
 
@@ -228,7 +228,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnEnvironmentChanged(EnvironmentToggle environment)
+        private void OnEnvironmentChanged(bool environment)
         {
             if (_disposed) return;
 
@@ -236,7 +236,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnGreenScreenChanged(GreenScreenToggle greenScreen)
+        private void OnGreenScreenChanged(bool greenScreen)
         {
             if (_disposed) return;
 
@@ -244,7 +244,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnSmoothMovementChanged(SmoothMovementToggle smoothMovement)
+        private void OnSmoothMovementChanged(bool smoothMovement)
         {
             if (_disposed) return;
 
@@ -252,7 +252,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnLookAtMeChanged(LookAtMeToggle lookAtMe)
+        private void OnLookAtMeChanged(bool lookAtMe)
         {
             if (_disposed) return;
 
@@ -260,7 +260,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnAutoLevelRollChanged(AutoLevelRollToggle autoLevelRoll)
+        private void OnAutoLevelRollChanged(bool autoLevelRoll)
         {
             if (_disposed) return;
 
@@ -268,7 +268,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnAutoLevelPitchChanged(AutoLevelPitchToggle autoLevelPitch)
+        private void OnAutoLevelPitchChanged(bool autoLevelPitch)
         {
             if (_disposed) return;
 
@@ -276,7 +276,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnFlyingChanged(FlyingToggle flying)
+        private void OnFlyingChanged(bool flying)
         {
             if (_disposed) return;
 
@@ -284,7 +284,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnTriggerTakesPhotosChanged(TriggerTakesPhotosToggle trigger)
+        private void OnTriggerTakesPhotosChanged(bool trigger)
         {
             if (_disposed) return;
 
@@ -292,7 +292,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnDollyPathsStayVisibleChanged(DollyPathsStayVisibleToggle dolly)
+        private void OnDollyPathsStayVisibleChanged(bool dolly)
         {
             if (_disposed) return;
 
@@ -300,7 +300,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnCameraEarsChanged(CameraEarsToggle cameraEars)
+        private void OnCameraEarsChanged(bool cameraEars)
         {
             if (_disposed) return;
 
@@ -308,7 +308,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnShowFocusChanged(ShowFocusToggle showFocus)
+        private void OnShowFocusChanged(bool showFocus)
         {
             if (_disposed) return;
 
@@ -316,7 +316,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnStreamingChanged(StreamingToggle streaming)
+        private void OnStreamingChanged(bool streaming)
         {
             if (_disposed) return;
 
@@ -324,7 +324,7 @@ namespace VRCCamera
             _transmitter.Send(message);
         }
 
-        private void OnRollWhileFlyingChanged(RollWhileFlyingToggle rollWhileFlying)
+        private void OnRollWhileFlyingChanged(bool rollWhileFlying)
         {
             if (_disposed) return;
 
@@ -383,7 +383,7 @@ namespace VRCCamera
             _transmitter.Send(_streamingToggleConverter.ToOSCMessage(_vrcCamera.Streaming.Value));
             _transmitter.Send(_rollWhileFlyingToggleConverter.ToOSCMessage(_vrcCamera.RollWhileFlying.Value));
             _transmitter.Send(_modeConverter.ToOSCMessage(_vrcCamera.Mode.Value));
-            var isLandscape = _vrcCamera.Orientation.Value == Parameters.Orientation.Landscape;
+            var isLandscape = _vrcCamera.Orientation.Value == Orientation.Landscape;
             _transmitter.Send(new OSC.Message(OSCCameraEndpoints.OrientationIsLandscape, new[] { new OSC.Argument(isLandscape) }));
         }
 

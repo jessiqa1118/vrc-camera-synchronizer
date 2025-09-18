@@ -25,25 +25,25 @@ namespace VRCCamera
         /// Current world-space pose (position + rotation) for OSC sync
         /// </summary>
         public ReactiveProperty<Pose> Pose { get; }
-        public ReactiveProperty<ShowUIInCameraToggle> ShowUIInCamera { get; }
-        public ReactiveProperty<LockToggle> Lock { get; }
-        public ReactiveProperty<LocalPlayerToggle> LocalPlayer { get; }
-        public ReactiveProperty<RemotePlayerToggle> RemotePlayer { get; }
-        public ReactiveProperty<EnvironmentToggle> Environment { get; }
-        public ReactiveProperty<GreenScreenToggle> GreenScreen { get; }
-        public ReactiveProperty<SmoothMovementToggle> SmoothMovement { get; }
-        public ReactiveProperty<LookAtMeToggle> LookAtMe { get; }
-        public ReactiveProperty<AutoLevelRollToggle> AutoLevelRoll { get; }
-        public ReactiveProperty<AutoLevelPitchToggle> AutoLevelPitch { get; }
-        public ReactiveProperty<FlyingToggle> Flying { get; }
-        public ReactiveProperty<TriggerTakesPhotosToggle> TriggerTakesPhotos { get; }
-        public ReactiveProperty<DollyPathsStayVisibleToggle> DollyPathsStayVisible { get; }
-        public ReactiveProperty<CameraEarsToggle> CameraEars { get; }
-        public ReactiveProperty<ShowFocusToggle> ShowFocus { get; }
-        public ReactiveProperty<StreamingToggle> Streaming { get; }
-        public ReactiveProperty<RollWhileFlyingToggle> RollWhileFlying { get; }
+        public ReactiveProperty<bool> ShowUIInCamera { get; }
+        public ReactiveProperty<bool> Lock { get; }
+        public ReactiveProperty<bool> LocalPlayer { get; }
+        public ReactiveProperty<bool> RemotePlayer { get; }
+        public ReactiveProperty<bool> Environment { get; }
+        public ReactiveProperty<bool> GreenScreen { get; }
+        public ReactiveProperty<bool> SmoothMovement { get; }
+        public ReactiveProperty<bool> LookAtMe { get; }
+        public ReactiveProperty<bool> AutoLevelRoll { get; }
+        public ReactiveProperty<bool> AutoLevelPitch { get; }
+        public ReactiveProperty<bool> Flying { get; }
+        public ReactiveProperty<bool> TriggerTakesPhotos { get; }
+        public ReactiveProperty<bool> DollyPathsStayVisible { get; }
+        public ReactiveProperty<bool> CameraEars { get; }
+        public ReactiveProperty<bool> ShowFocus { get; }
+        public ReactiveProperty<bool> Streaming { get; }
+        public ReactiveProperty<bool> RollWhileFlying { get; }
         public ReactiveProperty<Orientation> Orientation { get; }
-        public ReactiveProperty<ItemsToggle> Items { get; }
+        public ReactiveProperty<bool> Items { get; }
         /// <summary>
         /// Current camera <see cref="Mode"/>; changes are published over OSC.
         /// </summary>
@@ -70,28 +70,28 @@ namespace VRCCamera
             PhotoRate = new ReactiveProperty<PhotoRate>(new PhotoRate(Parameters.PhotoRate.DefaultValue));
             Duration = new ReactiveProperty<Duration>(new Duration(Parameters.Duration.DefaultValue));
             Pose = new ReactiveProperty<Pose>(new Pose(_camera.transform.position, _camera.transform.rotation));
-            ShowUIInCamera = new ReactiveProperty<ShowUIInCameraToggle>(new ShowUIInCameraToggle(false));
-            Lock = new ReactiveProperty<LockToggle>(new LockToggle(false));
-            LocalPlayer = new ReactiveProperty<LocalPlayerToggle>(new LocalPlayerToggle(true));
-            RemotePlayer = new ReactiveProperty<RemotePlayerToggle>(new RemotePlayerToggle(true));
-            Environment = new ReactiveProperty<EnvironmentToggle>(new EnvironmentToggle(true));
-            GreenScreen = new ReactiveProperty<GreenScreenToggle>(new GreenScreenToggle(false));
-            SmoothMovement = new ReactiveProperty<SmoothMovementToggle>(new SmoothMovementToggle(false));
-            LookAtMe = new ReactiveProperty<LookAtMeToggle>(new LookAtMeToggle(false));
-            AutoLevelRoll = new ReactiveProperty<AutoLevelRollToggle>(new AutoLevelRollToggle(false));
-            AutoLevelPitch = new ReactiveProperty<AutoLevelPitchToggle>(new AutoLevelPitchToggle(false));
-            Flying = new ReactiveProperty<FlyingToggle>(new FlyingToggle(false));
-            TriggerTakesPhotos = new ReactiveProperty<TriggerTakesPhotosToggle>(new TriggerTakesPhotosToggle(false));
-            DollyPathsStayVisible = new ReactiveProperty<DollyPathsStayVisibleToggle>(new DollyPathsStayVisibleToggle(false));
-            CameraEars = new ReactiveProperty<CameraEarsToggle>(new CameraEarsToggle(false));
-            ShowFocus = new ReactiveProperty<ShowFocusToggle>(new ShowFocusToggle(false));
-            Streaming = new ReactiveProperty<StreamingToggle>(new StreamingToggle(false));
-            RollWhileFlying = new ReactiveProperty<RollWhileFlyingToggle>(new RollWhileFlyingToggle(false));
+            ShowUIInCamera = new ReactiveProperty<bool>(false);
+            Lock = new ReactiveProperty<bool>(false);
+            LocalPlayer = new ReactiveProperty<bool>(true);
+            RemotePlayer = new ReactiveProperty<bool>(true);
+            Environment = new ReactiveProperty<bool>(true);
+            GreenScreen = new ReactiveProperty<bool>(false);
+            SmoothMovement = new ReactiveProperty<bool>(false);
+            LookAtMe = new ReactiveProperty<bool>(false);
+            AutoLevelRoll = new ReactiveProperty<bool>(false);
+            AutoLevelPitch = new ReactiveProperty<bool>(false);
+            Flying = new ReactiveProperty<bool>(false);
+            TriggerTakesPhotos = new ReactiveProperty<bool>(false);
+            DollyPathsStayVisible = new ReactiveProperty<bool>(false);
+            CameraEars = new ReactiveProperty<bool>(false);
+            ShowFocus = new ReactiveProperty<bool>(false);
+            Streaming = new ReactiveProperty<bool>(false);
+            RollWhileFlying = new ReactiveProperty<bool>(false);
             Orientation = new ReactiveProperty<Orientation>(Parameters.Orientation.Landscape);
             Mode = new ReactiveProperty<Mode>(Parameters.Mode.Photo);
             
             // Items has no OSC endpoint; keep as display-only (default true)
-            Items = new ReactiveProperty<ItemsToggle>(new ItemsToggle(true));
+            Items = new ReactiveProperty<bool>(true);
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets ShowUIInCamera toggle value reactively
         /// </summary>
-        public void SetShowUIInCamera(ShowUIInCameraToggle showUIInCamera)
+        public void SetShowUIInCamera(bool showUIInCamera)
         {
             ShowUIInCamera.SetValue(showUIInCamera);
         }
@@ -204,7 +204,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets Lock toggle value reactively
         /// </summary>
-        public void SetLock(LockToggle lockToggle)
+        public void SetLock(bool lockToggle)
         {
             Lock.SetValue(lockToggle);
         }
@@ -212,7 +212,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets LocalPlayer toggle value reactively
         /// </summary>
-        public void SetLocalPlayer(LocalPlayerToggle localPlayer)
+        public void SetLocalPlayer(bool localPlayer)
         {
             LocalPlayer.SetValue(localPlayer);
         }
@@ -220,7 +220,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets RemotePlayer toggle value reactively
         /// </summary>
-        public void SetRemotePlayer(RemotePlayerToggle remotePlayer)
+        public void SetRemotePlayer(bool remotePlayer)
         {
             RemotePlayer.SetValue(remotePlayer);
         }
@@ -228,7 +228,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets Environment toggle value reactively
         /// </summary>
-        public void SetEnvironment(EnvironmentToggle environment)
+        public void SetEnvironment(bool environment)
         {
             Environment.SetValue(environment);
         }
@@ -236,7 +236,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets GreenScreen toggle value reactively
         /// </summary>
-        public void SetGreenScreen(GreenScreenToggle greenScreen)
+        public void SetGreenScreen(bool greenScreen)
         {
             GreenScreen.SetValue(greenScreen);
         }
@@ -244,7 +244,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets SmoothMovement toggle value reactively
         /// </summary>
-        public void SetSmoothMovement(SmoothMovementToggle smoothMovement)
+        public void SetSmoothMovement(bool smoothMovement)
         {
             SmoothMovement.SetValue(smoothMovement);
         }
@@ -252,7 +252,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets LookAtMe toggle value reactively
         /// </summary>
-        public void SetLookAtMe(LookAtMeToggle lookAtMe)
+        public void SetLookAtMe(bool lookAtMe)
         {
             LookAtMe.SetValue(lookAtMe);
         }
@@ -260,7 +260,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets AutoLevelRoll toggle value reactively
         /// </summary>
-        public void SetAutoLevelRoll(AutoLevelRollToggle autoLevelRoll)
+        public void SetAutoLevelRoll(bool autoLevelRoll)
         {
             AutoLevelRoll.SetValue(autoLevelRoll);
         }
@@ -268,7 +268,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets AutoLevelPitch toggle value reactively
         /// </summary>
-        public void SetAutoLevelPitch(AutoLevelPitchToggle autoLevelPitch)
+        public void SetAutoLevelPitch(bool autoLevelPitch)
         {
             AutoLevelPitch.SetValue(autoLevelPitch);
         }
@@ -276,7 +276,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets Flying toggle value reactively
         /// </summary>
-        public void SetFlying(FlyingToggle flying)
+        public void SetFlying(bool flying)
         {
             Flying.SetValue(flying);
         }
@@ -284,7 +284,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets TriggerTakesPhotos toggle value reactively
         /// </summary>
-        public void SetTriggerTakesPhotos(TriggerTakesPhotosToggle trigger)
+        public void SetTriggerTakesPhotos(bool trigger)
         {
             TriggerTakesPhotos.SetValue(trigger);
         }
@@ -292,7 +292,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets DollyPathsStayVisible toggle value reactively
         /// </summary>
-        public void SetDollyPathsStayVisible(DollyPathsStayVisibleToggle dollyPathsStayVisible)
+        public void SetDollyPathsStayVisible(bool dollyPathsStayVisible)
         {
             DollyPathsStayVisible.SetValue(dollyPathsStayVisible);
         }
@@ -300,7 +300,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets CameraEars toggle value reactively
         /// </summary>
-        public void SetCameraEars(CameraEarsToggle cameraEars)
+        public void SetCameraEars(bool cameraEars)
         {
             CameraEars.SetValue(cameraEars);
         }
@@ -308,7 +308,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets ShowFocus toggle value reactively
         /// </summary>
-        public void SetShowFocus(ShowFocusToggle showFocus)
+        public void SetShowFocus(bool showFocus)
         {
             ShowFocus.SetValue(showFocus);
         }
@@ -316,7 +316,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets Streaming toggle value reactively
         /// </summary>
-        public void SetStreaming(StreamingToggle streaming)
+        public void SetStreaming(bool streaming)
         {
             Streaming.SetValue(streaming);
         }
@@ -324,7 +324,7 @@ namespace VRCCamera
         /// <summary>
         /// Sets RollWhileFlying toggle value reactively
         /// </summary>
-        public void SetRollWhileFlying(RollWhileFlyingToggle rollWhileFlying)
+        public void SetRollWhileFlying(bool rollWhileFlying)
         {
             RollWhileFlying.SetValue(rollWhileFlying);
         }
@@ -388,3 +388,8 @@ namespace VRCCamera
         }
     }
 }
+
+
+
+
+

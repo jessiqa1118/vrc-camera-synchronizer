@@ -1,38 +1,35 @@
 using OSC;
-using Parameters;
 
 namespace VRCCamera
 {
-    public class AutoLevelPitchToggleConverter : IOSCMessageConverter<AutoLevelPitchToggle>
+    public class AutoLevelPitchToggleConverter : IOSCMessageConverter<bool>
     {
-        public AutoLevelPitchToggle FromOSCMessage(Message message)
+        public bool FromOSCMessage(Message message)
         {
             if (message.Address != OSCCameraEndpoints.AutoLevelPitch)
             {
-                return new AutoLevelPitchToggle(false);
+                return false;
             }
 
             if (message.Arguments is not { Length: > 0 })
             {
-                return new AutoLevelPitchToggle(false);
+                return false;
             }
 
             var arg = message.Arguments[0];
-            bool value = arg.Type switch
+
+            return arg.Type switch
             {
                 Argument.ValueType.Bool => arg.AsBool(),
                 Argument.ValueType.Int32 => arg.AsInt32() != 0,
                 Argument.ValueType.Float32 => arg.AsFloat32() != 0f,
-                _ => false
+                _ => false,
             };
-
-            return new AutoLevelPitchToggle(value);
         }
 
-        public Message ToOSCMessage(AutoLevelPitchToggle toggle)
+        public Message ToOSCMessage(bool value)
         {
-            return new Message(OSCCameraEndpoints.AutoLevelPitch, new[] { new Argument(toggle.Value) });
+            return new Message(OSCCameraEndpoints.AutoLevelPitch, new[] { new Argument(value) });
         }
     }
 }
-

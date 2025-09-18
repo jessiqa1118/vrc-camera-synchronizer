@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Parameters;
 using OSC;
 
 namespace VRCCamera.Tests.Unit
@@ -18,7 +17,7 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void ToOSCMessage_WithTrueToggle_CreatesCorrectMessage()
         {
-            var message = _converter.ToOSCMessage(new LockToggle(true));
+            var message = _converter.ToOSCMessage(true);
             Assert.AreEqual(OSCCameraEndpoints.Lock.Value, message.Address.Value);
             Assert.AreEqual(1, message.Arguments.Length);
             Assert.AreEqual(true, message.Arguments[0].Value);
@@ -29,7 +28,7 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void ToOSCMessage_WithFalseToggle_CreatesCorrectMessage()
         {
-            var message = _converter.ToOSCMessage(new LockToggle(false));
+            var message = _converter.ToOSCMessage(false);
             Assert.AreEqual(OSCCameraEndpoints.Lock.Value, message.Address.Value);
             Assert.AreEqual(1, message.Arguments.Length);
             Assert.AreEqual(false, message.Arguments[0].Value);
@@ -42,7 +41,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, new[] { new Argument(true) });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsTrue(toggle.Value);
+            Assert.IsTrue(toggle);
         }
 
         [Test]
@@ -50,7 +49,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, new[] { new Argument(false) });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
 
         [Test]
@@ -58,7 +57,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, new[] { new Argument(1) });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsTrue(toggle.Value);
+            Assert.IsTrue(toggle);
         }
 
         [Test]
@@ -66,7 +65,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, new[] { new Argument(0) });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
 
         [Test]
@@ -74,7 +73,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, new[] { new Argument(1.0f) });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsTrue(toggle.Value);
+            Assert.IsTrue(toggle);
         }
 
         [Test]
@@ -82,7 +81,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, new[] { new Argument(0.0f) });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
 
         [Test]
@@ -90,7 +89,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(new Address("/some/other/address"), new[] { new Argument(true) });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
 
         [Test]
@@ -98,7 +97,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, System.Array.Empty<Argument>());
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
 
         [Test]
@@ -106,7 +105,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, new[] { new Argument(true), new Argument(false) });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsTrue(toggle.Value);
+            Assert.IsTrue(toggle);
         }
 
         [Test]
@@ -114,8 +113,7 @@ namespace VRCCamera.Tests.Unit
         {
             var message = new Message(OSCCameraEndpoints.Lock, new[] { new Argument("true") });
             var toggle = _converter.FromOSCMessage(message);
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
     }
 }
-

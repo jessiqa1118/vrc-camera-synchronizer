@@ -83,23 +83,23 @@ namespace VRCCamera
                 _vrcCamera.SetSmoothingStrength(new SmoothingStrength(smoothingStrength));
                 _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
                 _vrcCamera.SetDuration(new Duration(duration));
-                _vrcCamera.SetShowUIInCamera(new ShowUIInCameraToggle(showUIInCamera));
-                _vrcCamera.SetLock(new LockToggle(lockCamera));
-                _vrcCamera.SetLocalPlayer(new LocalPlayerToggle(localPlayer));
-                _vrcCamera.SetRemotePlayer(new RemotePlayerToggle(remotePlayer));
-                _vrcCamera.SetEnvironment(new EnvironmentToggle(environment));
-                _vrcCamera.SetGreenScreen(new GreenScreenToggle(greenScreen));
-                _vrcCamera.SetSmoothMovement(new SmoothMovementToggle(smoothMovement));
-                _vrcCamera.SetLookAtMe(new LookAtMeToggle(lookAtMe));
-                _vrcCamera.SetAutoLevelRoll(new AutoLevelRollToggle(autoLevelRoll));
-                _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
-                _vrcCamera.SetFlying(new FlyingToggle(flying));
-                _vrcCamera.SetTriggerTakesPhotos(new TriggerTakesPhotosToggle(triggerTakesPhotos));
-                _vrcCamera.SetDollyPathsStayVisible(new DollyPathsStayVisibleToggle(dollyPathsStayVisible));
-                _vrcCamera.SetCameraEars(new CameraEarsToggle(cameraEars));
-                _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
-                _vrcCamera.SetStreaming(new StreamingToggle(streaming));
-                _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
+                _vrcCamera.SetShowUIInCamera(showUIInCamera);
+                _vrcCamera.SetLock(lockCamera);
+                _vrcCamera.SetLocalPlayer(localPlayer);
+                _vrcCamera.SetRemotePlayer(remotePlayer);
+                _vrcCamera.SetEnvironment(environment);
+                _vrcCamera.SetGreenScreen(greenScreen);
+                _vrcCamera.SetSmoothMovement(smoothMovement);
+                _vrcCamera.SetLookAtMe(lookAtMe);
+                _vrcCamera.SetAutoLevelRoll(autoLevelRoll);
+                _vrcCamera.SetAutoLevelPitch(autoLevelPitch);
+                _vrcCamera.SetFlying(flying);
+                _vrcCamera.SetTriggerTakesPhotos(triggerTakesPhotos);
+                _vrcCamera.SetDollyPathsStayVisible(dollyPathsStayVisible);
+                _vrcCamera.SetCameraEars(cameraEars);
+                _vrcCamera.SetShowFocus(showFocus);
+                _vrcCamera.SetStreaming(streaming);
+                _vrcCamera.SetRollWhileFlying(rollWhileFlying);
                 _vrcCamera.SetOrientation(orientation);
                 _vrcCamera.SetMode(mode);
                 ApplyPose();
@@ -162,23 +162,23 @@ namespace VRCCamera
             _vrcCamera.SetSmoothingStrength(new SmoothingStrength(smoothingStrength));
             _vrcCamera.SetPhotoRate(new PhotoRate(photoRate));
             _vrcCamera.SetDuration(new Duration(duration));
-            _vrcCamera.SetShowUIInCamera(new ShowUIInCameraToggle(showUIInCamera));
-            _vrcCamera.SetLock(new LockToggle(lockCamera));
-            _vrcCamera.SetLocalPlayer(new LocalPlayerToggle(localPlayer));
-            _vrcCamera.SetRemotePlayer(new RemotePlayerToggle(remotePlayer));
-            _vrcCamera.SetEnvironment(new EnvironmentToggle(environment));
-            _vrcCamera.SetGreenScreen(new GreenScreenToggle(greenScreen));
-            _vrcCamera.SetSmoothMovement(new SmoothMovementToggle(smoothMovement));
-            _vrcCamera.SetLookAtMe(new LookAtMeToggle(lookAtMe));
-            _vrcCamera.SetAutoLevelRoll(new AutoLevelRollToggle(autoLevelRoll));
-            _vrcCamera.SetAutoLevelPitch(new AutoLevelPitchToggle(autoLevelPitch));
-            _vrcCamera.SetFlying(new FlyingToggle(flying));
-            _vrcCamera.SetTriggerTakesPhotos(new TriggerTakesPhotosToggle(triggerTakesPhotos));
-            _vrcCamera.SetDollyPathsStayVisible(new DollyPathsStayVisibleToggle(dollyPathsStayVisible));
-            _vrcCamera.SetCameraEars(new CameraEarsToggle(cameraEars));
-            _vrcCamera.SetShowFocus(new ShowFocusToggle(showFocus));
-            _vrcCamera.SetStreaming(new StreamingToggle(streaming));
-            _vrcCamera.SetRollWhileFlying(new RollWhileFlyingToggle(rollWhileFlying));
+            _vrcCamera.SetShowUIInCamera(showUIInCamera);
+            _vrcCamera.SetLock(lockCamera);
+            _vrcCamera.SetLocalPlayer(localPlayer);
+            _vrcCamera.SetRemotePlayer(remotePlayer);
+            _vrcCamera.SetEnvironment(environment);
+            _vrcCamera.SetGreenScreen(greenScreen);
+            _vrcCamera.SetSmoothMovement(smoothMovement);
+            _vrcCamera.SetLookAtMe(lookAtMe);
+            _vrcCamera.SetAutoLevelRoll(autoLevelRoll);
+            _vrcCamera.SetAutoLevelPitch(autoLevelPitch);
+            _vrcCamera.SetFlying(flying);
+            _vrcCamera.SetTriggerTakesPhotos(triggerTakesPhotos);
+            _vrcCamera.SetDollyPathsStayVisible(dollyPathsStayVisible);
+            _vrcCamera.SetCameraEars(cameraEars);
+            _vrcCamera.SetShowFocus(showFocus);
+            _vrcCamera.SetStreaming(streaming);
+            _vrcCamera.SetRollWhileFlying(rollWhileFlying);
             _vrcCamera.SetOrientation(orientation);
             _vrcCamera.SetMode(mode);
             ApplyPose();
@@ -215,7 +215,3 @@ namespace VRCCamera
         }
     }
 }
-
-
-
-

@@ -1,38 +1,35 @@
 using OSC;
-using Parameters;
 
 namespace VRCCamera
 {
-    public class FlyingToggleConverter : IOSCMessageConverter<FlyingToggle>
+    public class FlyingToggleConverter : IOSCMessageConverter<bool>
     {
-        public FlyingToggle FromOSCMessage(Message message)
+        public bool FromOSCMessage(Message message)
         {
             if (message.Address != OSCCameraEndpoints.Flying)
             {
-                return new FlyingToggle(false);
+                return false;
             }
 
             if (message.Arguments is not { Length: > 0 })
             {
-                return new FlyingToggle(false);
+                return false;
             }
 
             var arg = message.Arguments[0];
-            bool value = arg.Type switch
+
+            return arg.Type switch
             {
                 Argument.ValueType.Bool => arg.AsBool(),
                 Argument.ValueType.Int32 => arg.AsInt32() != 0,
                 Argument.ValueType.Float32 => arg.AsFloat32() != 0f,
-                _ => false
+                _ => false,
             };
-
-            return new FlyingToggle(value);
         }
 
-        public Message ToOSCMessage(FlyingToggle toggle)
+        public Message ToOSCMessage(bool value)
         {
-            return new Message(OSCCameraEndpoints.Flying, new[] { new Argument(toggle.Value) });
+            return new Message(OSCCameraEndpoints.Flying, new[] { new Argument(value) });
         }
     }
 }
-

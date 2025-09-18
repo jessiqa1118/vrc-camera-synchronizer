@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Parameters;
 using OSC;
 
 namespace VRCCamera.Tests.Unit
@@ -18,14 +17,14 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void ToOSCMessage_BuildsMessage_WithBool()
         {
-            var msgTrue = _converter.ToOSCMessage(new StreamingToggle(true));
+            var msgTrue = _converter.ToOSCMessage(true);
             Assert.AreEqual(OSCCameraEndpoints.Streaming.Value, msgTrue.Address.Value);
             Assert.AreEqual(1, msgTrue.Arguments.Length);
             Assert.AreEqual(true, msgTrue.Arguments[0].Value);
             Assert.AreEqual(Argument.ValueType.Bool, msgTrue.Arguments[0].Type);
             Assert.AreEqual("T", msgTrue.TypeTag.Value);
 
-            var msgFalse = _converter.ToOSCMessage(new StreamingToggle(false));
+            var msgFalse = _converter.ToOSCMessage(false);
             Assert.AreEqual(OSCCameraEndpoints.Streaming.Value, msgFalse.Address.Value);
             Assert.AreEqual(1, msgFalse.Arguments.Length);
             Assert.AreEqual(false, msgFalse.Arguments[0].Value);
@@ -36,21 +35,20 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void FromOSCMessage_ParsesVariousTypes()
         {
-            Assert.IsTrue(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(true) })).Value);
-            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(false) })).Value);
-            Assert.IsTrue(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(1) })).Value);
-            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(0) })).Value);
-            Assert.IsTrue(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(1.0f) })).Value);
-            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(0.0f) })).Value);
+            Assert.IsTrue(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(true) })));
+            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(false) })));
+            Assert.IsTrue(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(1) })));
+            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(0) })));
+            Assert.IsTrue(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(1.0f) })));
+            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument(0.0f) })));
         }
 
         [Test]
         public void FromOSCMessage_InvalidInputs_ReturnsFalse()
         {
-            Assert.IsFalse(_converter.FromOSCMessage(new Message(new Address("/other"), new[] { new Argument(true) })).Value);
-            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, System.Array.Empty<Argument>())).Value);
-            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument("true") })).Value);
+            Assert.IsFalse(_converter.FromOSCMessage(new Message(new Address("/other"), new[] { new Argument(true) })));
+            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, System.Array.Empty<Argument>())));
+            Assert.IsFalse(_converter.FromOSCMessage(new Message(OSCCameraEndpoints.Streaming, new[] { new Argument("true") })));
         }
     }
 }
-

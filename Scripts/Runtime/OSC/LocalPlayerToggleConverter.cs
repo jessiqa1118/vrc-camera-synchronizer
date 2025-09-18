@@ -1,39 +1,35 @@
 using OSC;
-using Parameters;
 
 namespace VRCCamera
 {
-    public class LocalPlayerToggleConverter : IOSCMessageConverter<LocalPlayerToggle>
+    public class LocalPlayerToggleConverter : IOSCMessageConverter<bool>
     {
-        public LocalPlayerToggle FromOSCMessage(Message message)
+        public bool FromOSCMessage(Message message)
         {
             if (message.Address != OSCCameraEndpoints.LocalPlayer)
             {
-                return new LocalPlayerToggle(false);
+                return false;
             }
 
             if (message.Arguments is not { Length: > 0 })
             {
-                return new LocalPlayerToggle(false);
+                return false;
             }
 
             var arg = message.Arguments[0];
 
-            bool value = arg.Type switch
+            return arg.Type switch
             {
                 Argument.ValueType.Bool => arg.AsBool(),
                 Argument.ValueType.Int32 => arg.AsInt32() != 0,
                 Argument.ValueType.Float32 => arg.AsFloat32() != 0f,
-                _ => false
+                _ => false,
             };
-
-            return new LocalPlayerToggle(value);
         }
 
-        public Message ToOSCMessage(LocalPlayerToggle toggle)
+        public Message ToOSCMessage(bool value)
         {
-            return new Message(OSCCameraEndpoints.LocalPlayer, new[] { new Argument(toggle.Value) });
+            return new Message(OSCCameraEndpoints.LocalPlayer, new[] { new Argument(value) });
         }
     }
 }
-

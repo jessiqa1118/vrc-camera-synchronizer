@@ -1,42 +1,35 @@
 using OSC;
-using Parameters;
 
 namespace VRCCamera
 {
-    public class LockToggleConverter : IOSCMessageConverter<LockToggle>
+    public class LockToggleConverter : IOSCMessageConverter<bool>
     {
-        public LockToggle FromOSCMessage(Message message)
+        public bool FromOSCMessage(Message message)
         {
-            // Validate OSC address
             if (message.Address != OSCCameraEndpoints.Lock)
             {
-                return new LockToggle(false);
+                return false;
             }
 
-            // Validate arguments exist and count
             if (message.Arguments is not { Length: > 0 })
             {
-                return new LockToggle(false);
+                return false;
             }
 
             var arg = message.Arguments[0];
 
-            // Handle Bool, Int32, and Float32
-            bool value = arg.Type switch
+            return arg.Type switch
             {
                 Argument.ValueType.Bool => arg.AsBool(),
                 Argument.ValueType.Int32 => arg.AsInt32() != 0,
                 Argument.ValueType.Float32 => arg.AsFloat32() != 0f,
-                _ => false
+                _ => false,
             };
-
-            return new LockToggle(value);
         }
 
-        public Message ToOSCMessage(LockToggle toggle)
+        public Message ToOSCMessage(bool value)
         {
-            return new Message(OSCCameraEndpoints.Lock, new[] { new Argument(toggle.Value) });
+            return new Message(OSCCameraEndpoints.Lock, new[] { new Argument(value) });
         }
     }
 }
-

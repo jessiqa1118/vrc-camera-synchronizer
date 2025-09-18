@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Parameters;
 using OSC;
 
 namespace VRCCamera.Tests.Unit
@@ -18,11 +17,8 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void ToOSCMessage_WithTrueToggle_CreatesCorrectMessage()
         {
-            // Arrange
-            var toggle = new ShowUIInCameraToggle(true);
-            
             // Act
-            var message = _converter.ToOSCMessage(toggle);
+            var message = _converter.ToOSCMessage(true);
             
             // Assert
             Assert.AreEqual(OSCCameraEndpoints.ShowUIInCamera.Value, message.Address.Value);
@@ -35,11 +31,8 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void ToOSCMessage_WithFalseToggle_CreatesCorrectMessage()
         {
-            // Arrange
-            var toggle = new ShowUIInCameraToggle(false);
-            
             // Act
-            var message = _converter.ToOSCMessage(toggle);
+            var message = _converter.ToOSCMessage(false);
             
             // Assert
             Assert.AreEqual(OSCCameraEndpoints.ShowUIInCamera.Value, message.Address.Value);
@@ -59,9 +52,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsTrue(toggle.Value);
+            Assert.IsTrue(toggle);
         }
         
         [Test]
@@ -74,9 +67,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
         
         [Test]
@@ -89,9 +82,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsTrue(toggle.Value);
+            Assert.IsTrue(toggle);
         }
         
         [Test]
@@ -104,9 +97,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
         
         [Test]
@@ -119,9 +112,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsTrue(toggle.Value);
+            Assert.IsTrue(toggle);
         }
         
         [Test]
@@ -134,9 +127,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
         
         [Test]
@@ -149,9 +142,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
         
         [Test]
@@ -165,7 +158,7 @@ namespace VRCCamera.Tests.Unit
             var toggle = _converter.FromOSCMessage(message);
             
             // Assert
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
         
         [Test]
@@ -178,9 +171,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsTrue(toggle.Value);
+            Assert.IsTrue(toggle);
         }
         
         [Test]
@@ -193,9 +186,9 @@ namespace VRCCamera.Tests.Unit
             
             // Act
             var toggle = _converter.FromOSCMessage(message);
-            
+
             // Assert
-            Assert.IsFalse(toggle.Value);
+            Assert.IsFalse(toggle);
         }
     }
 }
