@@ -234,6 +234,9 @@ namespace VRCCamera.Tests.Unit
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             var msg = _mockTransmitter.LastSentMessage.Value;
             Assert.AreEqual(OSCCameraEndpoints.Pose.Value, msg.Address.Value);
+            Assert.AreEqual(6, msg.Arguments.Length);
+            Assert.AreEqual(Argument.ValueType.Float32, msg.Arguments[0].Type);
+            Assert.AreEqual(Argument.ValueType.Float32, msg.Arguments[5].Type);
         }
 
         [Test]

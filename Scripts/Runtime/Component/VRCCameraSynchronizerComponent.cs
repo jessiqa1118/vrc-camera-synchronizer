@@ -52,8 +52,7 @@ namespace VRCCamera
 
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
-        private Pose _lastPose;
-        private bool _hasLastPose;
+        private bool _missingPoseTransformWarned;
 
         private void OnEnable()
         {
@@ -69,7 +68,7 @@ namespace VRCCamera
             try
             {
                 _vrcCamera = new VRCCamera(cameraComponent);
-                _hasLastPose = false;
+                _missingPoseTransformWarned = false;
 
                 // Set all initial values before creating synchronizer to avoid duplicate messages
                 _vrcCamera.SetExposure(new Exposure(exposure));
@@ -123,7 +122,7 @@ namespace VRCCamera
             _synchronizer = null;
             _vrcCamera?.Dispose();
             _vrcCamera = null;
-            _hasLastPose = false;
+            _missingPoseTransformWarned = false;
         }
 
         // Action wrappers for Editor buttons or external callers
@@ -192,7 +191,18 @@ namespace VRCCamera
             Pose nextPose;
             if (syncPoseFromTransform)
             {
-                var src = poseTransform != null ? poseTransform : transform;
+                var src = poseTransform;
+                if (src == null)
+                {
+                    src = transform;
+                    if (!_missingPoseTransformWarned)
+                    {
+                        Debug.LogWarning(
+                            $"[{nameof(VRCCameraSynchronizerComponent)}] Follow Object is enabled but no source transform is assigned; falling back to this component's transform.");
+                        _missingPoseTransformWarned = true;
+                    }
+                }
+
                 nextPose = new Pose(src.position, src.rotation);
             }
             else
@@ -200,20 +210,8 @@ namespace VRCCamera
                 nextPose = new Pose(posePosition, Quaternion.Euler(poseEuler));
             }
 
-            if (!_hasLastPose || ShouldUpdatePose(_lastPose, nextPose))
-            {
-                _vrcCamera.SetPose(nextPose);
-                _lastPose = nextPose;
-                _hasLastPose = true;
-            }
-        }
-
-        private static bool ShouldUpdatePose(Pose a, Pose b)
-        {
-            const float positionEpsilon = 0.001f; // 1mm
-            const float angleEpsilonDeg = 0.1f;   // 0.1°
-            return Vector3.SqrMagnitude(a.position - b.position) > positionEpsilon * positionEpsilon
-                   || Quaternion.Angle(a.rotation, b.rotation) > angleEpsilonDeg;
+            // Keep runtime pose aligned with either the follow target or manual fields.
+            _vrcCamera?.SetPose(nextPose);
         }
     }
 }

@@ -186,17 +186,10 @@ namespace VRCCamera
         }
 
         /// <summary>
-        /// Sets Pose value reactively with a small deadband to absorb jitter.
+        /// Sets Pose value reactively. Always applies the provided pose.
         /// </summary>
-        public void SetPose(Pose pose, float positionEpsilon = 0.001f, float angleEpsilonDeg = 0.1f)
+        public void SetPose(Pose pose)
         {
-            var current = Pose.Value;
-            if (Vector3.SqrMagnitude(pose.position - current.position) < positionEpsilon * positionEpsilon &&
-                Quaternion.Angle(pose.rotation, current.rotation) < angleEpsilonDeg)
-            {
-                return;
-            }
-
             Pose.SetValue(pose);
         }
 
@@ -395,5 +388,3 @@ namespace VRCCamera
         }
     }
 }
-
-
