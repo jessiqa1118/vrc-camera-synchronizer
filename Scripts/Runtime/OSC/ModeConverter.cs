@@ -1,7 +1,6 @@
-using OSC;
-using Parameters;
+using Astearium.Osc;
 
-namespace VRCCamera
+namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Converts OSC messages to/from <see cref="Mode"/> for the /usercamera/Mode endpoint.

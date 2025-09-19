@@ -1,7 +1,6 @@
-using OSC;
-using Parameters;
+using Astearium.Osc;
 
-namespace VRCCamera
+namespace Astearium.VRChat.Camera
 {
     public class SmoothingStrengthConverter : IOSCMessageConverter<SmoothingStrength>
     {

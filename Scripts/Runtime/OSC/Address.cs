@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace OSC
+namespace Astearium.Osc
 {
     public readonly struct Address : IEquatable<Address>
     {

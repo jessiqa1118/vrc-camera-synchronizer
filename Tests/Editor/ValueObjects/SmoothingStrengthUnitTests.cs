@@ -1,9 +1,9 @@
 using NUnit.Framework;
-using Parameters;
-using OSC;
+using Astearium.VRChat.Camera;
+using Astearium.Osc;
 using UnityEngine;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class SmoothingStrengthUnitTests

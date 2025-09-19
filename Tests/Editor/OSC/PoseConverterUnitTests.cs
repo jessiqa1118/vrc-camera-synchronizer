@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using OSC;
+using Astearium.Osc;
 using UnityEngine;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class PoseConverterUnitTests

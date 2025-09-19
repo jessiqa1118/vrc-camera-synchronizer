@@ -3,9 +3,8 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using OSC;
 
-namespace VRCCamera
+namespace Astearium.Osc
 {
     // Transmitter that encodes OSC packets generically, allowing arbitrary argument lists
     public sealed class OSCTransmitter : IOSCTransmitter

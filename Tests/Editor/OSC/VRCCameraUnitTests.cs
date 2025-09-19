@@ -1,10 +1,10 @@
 using System;
-using Parameters;
-using OSC;
+using Astearium.VRChat.Camera;
+using Astearium.Osc;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class VRCCameraSynchronizerUnitTests
@@ -37,7 +37,7 @@ namespace VRCCamera.Tests.Unit
         }
         
         private MockTransmitter _mockTransmitter;
-        private Camera _camera;
+        private UnityEngine.Camera _camera;
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
         
@@ -48,7 +48,7 @@ namespace VRCCamera.Tests.Unit
             
             // Create a test camera GameObject
             var gameObject = new GameObject("TestCamera");
-            _camera = gameObject.AddComponent<Camera>();
+            _camera = gameObject.AddComponent<UnityEngine.Camera>();
             _camera.fieldOfView = 60f;
             _camera.focusDistance = 2.5f; // Set focus distance for testing
             
@@ -95,7 +95,7 @@ namespace VRCCamera.Tests.Unit
         {
             // Arrange
             var mockTransmitter = new MockTransmitter();
-            var camera = new GameObject("TestCamera").AddComponent<Camera>();
+            var camera = new GameObject("TestCamera").AddComponent<UnityEngine.Camera>();
             var vrcCamera = new VRCCamera(camera);
             
             // Act

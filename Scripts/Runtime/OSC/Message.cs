@@ -1,6 +1,6 @@
 using System;
 
-namespace OSC
+namespace Astearium.Osc
 {
     public readonly struct Message
     {

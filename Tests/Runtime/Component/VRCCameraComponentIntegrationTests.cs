@@ -1,12 +1,11 @@
 using System;
-using Parameters;
-using OSC;
+using Astearium.Osc;
 using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace VRCCamera.Tests.Integration
+namespace Astearium.VRChat.Camera.Tests.Integration
 {
     [TestFixture]
     public class VRCCameraSynchronizerComponentIntegrationTests
@@ -28,8 +27,8 @@ namespace VRCCamera.Tests.Integration
         }
         
         private GameObject _testGameObject;
-        private Camera _camera;
-        private VRCCameraSynchronizerComponent _component;
+        private UnityEngine.Camera _camera;
+        private VRCCameraComponent _component;
         private MockOSCTransmitter _mockTransmitter;
         
         [SetUp]
@@ -37,7 +36,7 @@ namespace VRCCamera.Tests.Integration
         {
             // Create test GameObject with Camera
             _testGameObject = new GameObject("TestCamera");
-            _camera = _testGameObject.AddComponent<Camera>();
+            _camera = _testGameObject.AddComponent<UnityEngine.Camera>();
             _camera.fieldOfView = 60f;
             _camera.focalLength = 50f;
         }
@@ -56,17 +55,17 @@ namespace VRCCamera.Tests.Integration
         public void Component_RequiresCamera()
         {
             // Act
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             
             // Assert
-            Assert.IsNotNull(_component.GetComponent<Camera>());
+            Assert.IsNotNull(_component.GetComponent<UnityEngine.Camera>());
         }
         
         [UnityTest]
         public IEnumerator Component_InitializesOnEnable()
         {
             // Arrange
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             _component.enabled = false;
             
             // Act
@@ -83,7 +82,7 @@ namespace VRCCamera.Tests.Integration
         public IEnumerator Component_SendsMessagesInFixedUpdate()
         {
             // Arrange
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             
             // Wait for initialization
             yield return null;
@@ -104,7 +103,7 @@ namespace VRCCamera.Tests.Integration
         public IEnumerator Component_DisposesOnDisable()
         {
             // Arrange
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             yield return null;
             
             // Act
@@ -120,7 +119,7 @@ namespace VRCCamera.Tests.Integration
         public IEnumerator Component_HandlesMultipleEnableDisableCycles()
         {
             // Arrange
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             
             // Act - Multiple enable/disable cycles
             for (var i = 0; i < 3; i++)
@@ -142,10 +141,10 @@ namespace VRCCamera.Tests.Integration
         public void Component_HasCorrectDefaultValues()
         {
             // Act
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             
             // Assert - Using reflection to check serialized fields
-            var type = typeof(VRCCameraSynchronizerComponent);
+            var type = typeof(VRCCameraComponent);
             var destinationField = type.GetField("destination", 
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             var portField = type.GetField("port", 
@@ -166,7 +165,7 @@ namespace VRCCamera.Tests.Integration
         public IEnumerator Component_UpdatesCameraValuesOverTime()
         {
             // Arrange
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             yield return null;
             
             // Act - Change camera values
@@ -186,7 +185,7 @@ namespace VRCCamera.Tests.Integration
         public IEnumerator Component_ContinuesRunningInFixedUpdate()
         {
             // Arrange
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             yield return null;
             
             // Act - Run for several fixed updates
@@ -209,7 +208,7 @@ namespace VRCCamera.Tests.Integration
         public void Component_HasAddComponentMenuAttribute()
         {
             // Assert
-            var type = typeof(VRCCameraSynchronizerComponent);
+            var type = typeof(VRCCameraComponent);
             var attributes = type.GetCustomAttributes(typeof(AddComponentMenu), false);
             
             Assert.IsTrue(attributes.Length > 0);
@@ -224,14 +223,14 @@ namespace VRCCamera.Tests.Integration
         public void Component_HasRequireComponentAttribute()
         {
             // Assert
-            var type = typeof(VRCCameraSynchronizerComponent);
+            var type = typeof(VRCCameraComponent);
             var attributes = type.GetCustomAttributes(typeof(RequireComponent), false);
             
             Assert.IsTrue(attributes.Length > 0);
             
             if (attributes[0] is RequireComponent requireAttribute)
             {
-                Assert.AreEqual(typeof(Camera), requireAttribute.m_Type0);
+                Assert.AreEqual(typeof(UnityEngine.Camera), requireAttribute.m_Type0);
             }
         }
         
@@ -239,7 +238,7 @@ namespace VRCCamera.Tests.Integration
         public IEnumerator Component_WorksWithDifferentCameraSettings()
         {
             // Arrange
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             yield return null;
             
             // Act - Test various camera settings
@@ -259,7 +258,7 @@ namespace VRCCamera.Tests.Integration
         public IEnumerator Component_HandlesRapidCameraChanges()
         {
             // Arrange
-            _component = _testGameObject.AddComponent<VRCCameraSynchronizerComponent>();
+            _component = _testGameObject.AddComponent<VRCCameraComponent>();
             yield return null;
             
             // Act - Rapidly change camera values

@@ -1,10 +1,9 @@
 using UnityEditor;
 using UnityEngine;
-using Parameters;
 
-namespace VRCCamera.Editor
+namespace Astearium.VRChat.Camera.Editor
 {
-    [CustomEditor(typeof(VRCCameraSynchronizerComponent))]
+    [CustomEditor(typeof(VRCCameraComponent))]
     public class VRCCameraSynchronizerComponentEditor : UnityEditor.Editor
     {
         private SerializedProperty _destination;
@@ -135,21 +134,21 @@ namespace VRCCamera.Editor
                 if (GUILayout.Button("Close Camera"))
                 {
                     serializedObject.ApplyModifiedProperties();
-                    var targetComponent = (VRCCameraSynchronizerComponent)target;
+                    var targetComponent = (VRCCameraComponent)target;
                     targetComponent.Action_CloseCamera();
                 }
 
                 if (GUILayout.Button("Take Photo"))
                 {
                     serializedObject.ApplyModifiedProperties();
-                    var targetComponent = (VRCCameraSynchronizerComponent)target;
+                    var targetComponent = (VRCCameraComponent)target;
                     targetComponent.Action_Capture();
                 }
 
                 if (GUILayout.Button("Timed (5s)"))
                 {
                     serializedObject.ApplyModifiedProperties();
-                    var targetComponent = (VRCCameraSynchronizerComponent)target;
+                    var targetComponent = (VRCCameraComponent)target;
                     targetComponent.Action_CaptureDelayed();
                 }
             }
@@ -189,8 +188,8 @@ namespace VRCCamera.Editor
                 EditorGUILayout.PropertyField(_orientation, new GUIContent("Orientation"));
                 EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
 
-                var pComponent = (VRCCameraSynchronizerComponent)target;
-                var pCamera = pComponent.GetComponent<Camera>();
+                var pComponent = (VRCCameraComponent)target;
+                var pCamera = pComponent.GetComponent<UnityEngine.Camera>();
                 if (pCamera != null)
                 {
                     EditorGUI.BeginDisabledGroup(true);
@@ -265,8 +264,8 @@ namespace VRCCamera.Editor
             EditorGUILayout.LabelField("Focus", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
-                var pComponent = (VRCCameraSynchronizerComponent)target;
-                var pCamera = pComponent.GetComponent<Camera>();
+                var pComponent = (VRCCameraComponent)target;
+                var pCamera = pComponent.GetComponent<UnityEngine.Camera>();
                 if (pCamera)
                 {
 #if UNITY_2021_2_OR_NEWER

@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using Parameters;
-using OSC;
+using Astearium.VRChat.Camera;
+using Astearium.Osc;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class TurnSpeedConverterUnitTests

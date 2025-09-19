@@ -1,10 +1,9 @@
 using System;
-using NUnit.Framework;
 using UnityEngine;
-using VRCCamera;
-using OSC;
+using NUnit.Framework;
+using Astearium.Osc;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class CameraActionsUnitTests
@@ -32,7 +31,7 @@ namespace VRCCamera.Tests.Unit
             // Arrange
             var transmitter = new MockTransmitter();
             var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<Camera>();
+            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
             var vrcCamera = new VRCCamera(camera);
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
 
@@ -58,7 +57,7 @@ namespace VRCCamera.Tests.Unit
             // Arrange
             var transmitter = new MockTransmitter();
             var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<Camera>();
+            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
             var vrcCamera = new VRCCamera(camera);
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
             synchronizer.Dispose();
@@ -77,7 +76,7 @@ namespace VRCCamera.Tests.Unit
             // Arrange
             var transmitter = new MockTransmitter();
             var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<Camera>();
+            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
             var vrcCamera = new VRCCamera(camera);
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
 
@@ -103,7 +102,7 @@ namespace VRCCamera.Tests.Unit
             // Arrange
             var transmitter = new MockTransmitter();
             var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<Camera>();
+            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
             var vrcCamera = new VRCCamera(camera);
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
             synchronizer.Dispose();
@@ -122,7 +121,7 @@ namespace VRCCamera.Tests.Unit
             // Arrange
             var transmitter = new MockTransmitter();
             var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<Camera>();
+            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
             var vrcCamera = new VRCCamera(camera);
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
 
@@ -148,7 +147,7 @@ namespace VRCCamera.Tests.Unit
             // Arrange
             var transmitter = new MockTransmitter();
             var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<Camera>();
+            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
             var vrcCamera = new VRCCamera(camera);
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
             synchronizer.Dispose();

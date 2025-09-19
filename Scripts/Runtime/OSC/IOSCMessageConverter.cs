@@ -1,7 +1,4 @@
-using OSC;
-using Parameters;
-
-namespace VRCCamera
+namespace Astearium.Osc
 {
     public interface IOSCMessageConverter<T>
     {

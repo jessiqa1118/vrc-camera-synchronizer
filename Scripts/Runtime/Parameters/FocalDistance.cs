@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Parameters
+namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents camera focal distance value for VRChat OSC control

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Parameters
+namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents camera smoothing strength value for VRChat OSC control

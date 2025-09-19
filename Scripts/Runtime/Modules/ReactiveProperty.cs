@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VRCCamera
+namespace Astearium
 {
     /// <summary>
     /// Reactive property that notifies when value changes

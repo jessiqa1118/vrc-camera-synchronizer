@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Parameters
+namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents LookAtMe offset values for VRChat OSC control

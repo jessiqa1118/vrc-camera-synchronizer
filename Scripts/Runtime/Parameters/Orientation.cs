@@ -1,4 +1,4 @@
-namespace Parameters
+namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Camera orientation modes.

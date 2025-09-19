@@ -1,7 +1,6 @@
 using System;
-using OSC;
 
-namespace VRCCamera
+namespace Astearium.Osc
 {
     public interface IOSCTransmitter : IDisposable
     {

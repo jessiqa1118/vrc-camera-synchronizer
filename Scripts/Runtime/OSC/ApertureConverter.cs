@@ -1,7 +1,6 @@
-using OSC;
-using Parameters;
+using Astearium.Osc;
 
-namespace VRCCamera
+namespace Astearium.VRChat.Camera
 {
     public class ApertureConverter : IOSCMessageConverter<Aperture>
     {
@@ -12,7 +11,7 @@ namespace VRCCamera
             {
                 return new Aperture(Aperture.DefaultValue);
             }
-            
+
             // Validate arguments exist and count
             if (message.Arguments is not { Length: 1 })
             {
@@ -20,13 +19,13 @@ namespace VRCCamera
             }
 
             var arg = message.Arguments[0];
-            
+
             // Validate argument type
             if (arg.Type != Argument.ValueType.Float32)
             {
                 return new Aperture(Aperture.DefaultValue);
             }
-            
+
             // Extract value with automatic clamping in Aperture constructor
             var value = arg.AsFloat32();
             return new Aperture(value);

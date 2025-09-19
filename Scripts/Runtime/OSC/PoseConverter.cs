@@ -1,7 +1,7 @@
-using OSC;
 using UnityEngine;
+using Astearium.Osc;
 
-namespace VRCCamera
+namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Converts OSC messages to/from Pose for the /usercamera/Pose endpoint.

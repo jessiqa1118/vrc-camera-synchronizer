@@ -1,8 +1,7 @@
 using System;
-using OSC;
-using Parameters;
+using Astearium.Osc;
 
-namespace VRCCamera
+namespace Astearium.VRChat.Camera
 {
     public class VRCCameraSynchronizer : IDisposable
     {
@@ -47,7 +46,7 @@ namespace VRCCamera
         {
             _transmitter = transmitter ?? throw new ArgumentNullException(nameof(transmitter));
             _vrcCamera = vrcCamera ?? throw new ArgumentNullException(nameof(vrcCamera));
-            
+
             // Subscribe to value changes
             _vrcCamera.Zoom.OnValueChanged += OnZoomChanged;
             _vrcCamera.Exposure.OnValueChanged += OnExposureChanged;
@@ -82,120 +81,120 @@ namespace VRCCamera
             _vrcCamera.Streaming.OnValueChanged += OnStreamingChanged;
             _vrcCamera.RollWhileFlying.OnValueChanged += OnRollWhileFlyingChanged;
             _vrcCamera.Orientation.OnValueChanged += OnOrientationChanged;
-            
+
             // Send initial values
             Sync();
         }
-        
+
         private void OnZoomChanged(Zoom zoom)
         {
             if (_disposed) return;
-            
+
             var message = _zoomConverter.ToOSCMessage(zoom);
             _transmitter.Send(message);
         }
-        
+
         private void OnExposureChanged(Exposure exposure)
         {
             if (_disposed) return;
-            
+
             var message = _exposureConverter.ToOSCMessage(exposure);
             _transmitter.Send(message);
         }
-        
+
         private void OnFocalDistanceChanged(FocalDistance focalDistance)
         {
             if (_disposed) return;
-            
+
             var message = _focalDistanceConverter.ToOSCMessage(focalDistance);
             _transmitter.Send(message);
         }
-        
+
         private void OnApertureChanged(Aperture aperture)
         {
             if (_disposed) return;
-            
+
             var message = _apertureConverter.ToOSCMessage(aperture);
             _transmitter.Send(message);
         }
-        
+
         private void OnHueChanged(Hue hue)
         {
             if (_disposed) return;
-            
+
             var message = _hueConverter.ToOSCMessage(hue);
             _transmitter.Send(message);
         }
-        
+
         private void OnSaturationChanged(Saturation saturation)
         {
             if (_disposed) return;
-            
+
             var message = _saturationConverter.ToOSCMessage(saturation);
             _transmitter.Send(message);
         }
-        
+
         private void OnLightnessChanged(Lightness lightness)
         {
             if (_disposed) return;
-            
+
             var message = _lightnessConverter.ToOSCMessage(lightness);
             _transmitter.Send(message);
         }
-        
+
         private void OnLookAtMeOffsetChanged(LookAtMeOffset lookAtMeOffset)
         {
             if (_disposed) return;
-            
+
             // Send X offset
             var xMessage = _lookAtMeXOffsetConverter.ToOSCMessage(lookAtMeOffset.X);
             _transmitter.Send(xMessage);
-            
+
             // Send Y offset
             var yMessage = _lookAtMeYOffsetConverter.ToOSCMessage(lookAtMeOffset.Y);
             _transmitter.Send(yMessage);
         }
-        
+
         private void OnFlySpeedChanged(FlySpeed flySpeed)
         {
             if (_disposed) return;
-            
+
             var message = _flySpeedConverter.ToOSCMessage(flySpeed);
             _transmitter.Send(message);
         }
-        
+
         private void OnTurnSpeedChanged(TurnSpeed turnSpeed)
         {
             if (_disposed) return;
-            
+
             var message = _turnSpeedConverter.ToOSCMessage(turnSpeed);
             _transmitter.Send(message);
         }
-        
+
         private void OnSmoothingStrengthChanged(SmoothingStrength smoothingStrength)
         {
             if (_disposed) return;
-            
+
             var message = _smoothingStrengthConverter.ToOSCMessage(smoothingStrength);
             _transmitter.Send(message);
         }
-        
+
         private void OnPhotoRateChanged(PhotoRate photoRate)
         {
             if (_disposed) return;
-            
+
             var message = _photoRateConverter.ToOSCMessage(photoRate);
             _transmitter.Send(message);
         }
-        
+
         private void OnDurationChanged(Duration duration)
         {
             if (_disposed) return;
-            
+
             var message = _durationConverter.ToOSCMessage(duration);
             _transmitter.Send(message);
         }
-        
+
         private void OnShowUIInCameraChanged(bool showUIInCamera)
         {
             if (_disposed) return;
@@ -336,15 +335,16 @@ namespace VRCCamera
         {
             if (_disposed) return;
 
-            bool isLandscape = orientation == Parameters.Orientation.Landscape;
-            var message = new OSC.Message(OSCCameraEndpoints.OrientationIsLandscape, new[] { new OSC.Argument(isLandscape) });
+            bool isLandscape = orientation == Orientation.Landscape;
+            var message = new Message(OSCCameraEndpoints.OrientationIsLandscape,
+                new[] { new Argument(isLandscape) });
             _transmitter.Send(message);
         }
 
         public void Sync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
-            
+
             // Send all current values directly (used for initial sync)
             _transmitter.Send(_zoomConverter.ToOSCMessage(_vrcCamera.Zoom.Value));
             _transmitter.Send(_exposureConverter.ToOSCMessage(_vrcCamera.Exposure.Value));
@@ -353,12 +353,12 @@ namespace VRCCamera
             _transmitter.Send(_hueConverter.ToOSCMessage(_vrcCamera.Hue.Value));
             _transmitter.Send(_saturationConverter.ToOSCMessage(_vrcCamera.Saturation.Value));
             _transmitter.Send(_lightnessConverter.ToOSCMessage(_vrcCamera.Lightness.Value));
-            
+
             // LookAtMeOffset needs special handling
             var lookAtMeOffset = _vrcCamera.LookAtMeOffset.Value;
             _transmitter.Send(_lookAtMeXOffsetConverter.ToOSCMessage(lookAtMeOffset.X));
             _transmitter.Send(_lookAtMeYOffsetConverter.ToOSCMessage(lookAtMeOffset.Y));
-            
+
             _transmitter.Send(_flySpeedConverter.ToOSCMessage(_vrcCamera.FlySpeed.Value));
             _transmitter.Send(_turnSpeedConverter.ToOSCMessage(_vrcCamera.TurnSpeed.Value));
             _transmitter.Send(_smoothingStrengthConverter.ToOSCMessage(_vrcCamera.SmoothingStrength.Value));
@@ -377,14 +377,16 @@ namespace VRCCamera
             _transmitter.Send(_autoLevelPitchToggleConverter.ToOSCMessage(_vrcCamera.AutoLevelPitch.Value));
             _transmitter.Send(_flyingToggleConverter.ToOSCMessage(_vrcCamera.Flying.Value));
             _transmitter.Send(_triggerTakesPhotosToggleConverter.ToOSCMessage(_vrcCamera.TriggerTakesPhotos.Value));
-            _transmitter.Send(_dollyPathsStayVisibleToggleConverter.ToOSCMessage(_vrcCamera.DollyPathsStayVisible.Value));
+            _transmitter.Send(
+                _dollyPathsStayVisibleToggleConverter.ToOSCMessage(_vrcCamera.DollyPathsStayVisible.Value));
             _transmitter.Send(_cameraEarsToggleConverter.ToOSCMessage(_vrcCamera.CameraEars.Value));
             _transmitter.Send(_showFocusToggleConverter.ToOSCMessage(_vrcCamera.ShowFocus.Value));
             _transmitter.Send(_streamingToggleConverter.ToOSCMessage(_vrcCamera.Streaming.Value));
             _transmitter.Send(_rollWhileFlyingToggleConverter.ToOSCMessage(_vrcCamera.RollWhileFlying.Value));
             _transmitter.Send(_modeConverter.ToOSCMessage(_vrcCamera.Mode.Value));
             var isLandscape = _vrcCamera.Orientation.Value == Orientation.Landscape;
-            _transmitter.Send(new OSC.Message(OSCCameraEndpoints.OrientationIsLandscape, new[] { new OSC.Argument(isLandscape) }));
+            _transmitter.Send(new Message(OSCCameraEndpoints.OrientationIsLandscape,
+                new[] { new Argument(isLandscape) }));
         }
 
         public void Dispose()
@@ -461,4 +463,3 @@ namespace VRCCamera
         }
     }
 }
-

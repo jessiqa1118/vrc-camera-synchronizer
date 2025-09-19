@@ -1,6 +1,6 @@
-using OSC;
+using Astearium.Osc;
 
-namespace VRCCamera
+namespace Astearium.VRChat.Camera
 {
     public static class OSCCameraEndpoints
     {
