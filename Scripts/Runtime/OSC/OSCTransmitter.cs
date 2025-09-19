@@ -33,7 +33,7 @@ namespace Astearium.Osc
             _socket = null;
         }
 
-        public void Send(Message message)
+        public void Send(IOSCMessage message)
         {
             if (_disposed) throw new ObjectDisposedException(nameof(OSCTransmitter));
 

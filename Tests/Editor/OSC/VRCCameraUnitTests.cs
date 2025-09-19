@@ -1,5 +1,4 @@
 using System;
-using Astearium.VRChat.Camera;
 using Astearium.Osc;
 using NUnit.Framework;
 using UnityEngine;
@@ -11,11 +10,11 @@ namespace Astearium.VRChat.Camera.Tests.Unit
     {
         private class MockTransmitter : IOSCTransmitter
         {
-            public Message? LastSentMessage { get; private set; }
+            public IOSCMessage LastSentMessage { get; private set; }
             public int SendCallCount { get; private set; }
             public bool IsDisposed { get; private set; }
             
-            public void Send(Message message)
+            public void Send(IOSCMessage message)
             {
                 if (IsDisposed)
                     throw new ObjectDisposedException(nameof(MockTransmitter));
@@ -143,7 +142,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
             
             // Last message is OrientationIsLandscape which has Bool type
-            var message = _mockTransmitter.LastSentMessage.Value;
+            var message = _mockTransmitter.LastSentMessage;
             Assert.AreEqual(Argument.ValueType.Bool, message.Arguments[0].Type);
         }
         
@@ -174,7 +173,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
 
             // Assert
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
-            var message = _mockTransmitter.LastSentMessage.Value;
+            var message = _mockTransmitter.LastSentMessage;
             Assert.AreEqual(OSCCameraEndpoints.OrientationIsLandscape.Value, message.Address.Value);
             Assert.AreEqual(1, message.Arguments.Length);
             Assert.AreEqual(Argument.ValueType.Bool, message.Arguments[0].Type);
@@ -232,7 +231,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             // Assert
             Assert.AreEqual(1, _mockTransmitter.SendCallCount);
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
-            var msg = _mockTransmitter.LastSentMessage.Value;
+            var msg = _mockTransmitter.LastSentMessage;
             Assert.AreEqual(OSCCameraEndpoints.Pose.Value, msg.Address.Value);
             Assert.AreEqual(6, msg.Arguments.Length);
             Assert.AreEqual(Argument.ValueType.Float32, msg.Arguments[0].Type);
@@ -250,7 +249,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
 
             // Assert
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
-            var msg = _mockTransmitter.LastSentMessage.Value;
+            var msg = _mockTransmitter.LastSentMessage;
             Assert.AreEqual(OSCCameraEndpoints.OrientationIsLandscape.Value, msg.Address.Value);
             Assert.AreEqual(1, msg.Arguments.Length);
             Assert.AreEqual(Argument.ValueType.Bool, msg.Arguments[0].Type);
@@ -270,7 +269,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
 
             // Assert
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
-            var msg = _mockTransmitter.LastSentMessage.Value;
+            var msg = _mockTransmitter.LastSentMessage;
             Assert.AreEqual(OSCCameraEndpoints.OrientationIsLandscape.Value, msg.Address.Value);
             Assert.AreEqual(1, msg.Arguments.Length);
             Assert.AreEqual(Argument.ValueType.Bool, msg.Arguments[0].Type);

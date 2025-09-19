@@ -21,5 +21,15 @@ namespace Astearium.Osc
                 _ => throw new InvalidOperationException($"Unsupported argument type: {arg.Type}")
             }));
         }
+
+        public TypeTag(string typeTag)
+        {
+            if (typeTag.Any(c => !"ifsbTF".Contains(c)))
+            {
+                throw new ArgumentException("Type tag contains invalid characters.", nameof(typeTag));
+            }
+
+            Value = typeTag;
+        }
     }
 }

@@ -2,11 +2,12 @@ using System;
 
 namespace Astearium.Osc
 {
-    public readonly struct Message
+    public readonly struct Message : IOSCMessage
+
     {
-        public readonly Address Address;
-        public readonly Argument[] Arguments;
-        public readonly TypeTag TypeTag;
+        public Address Address { get; }
+        public Argument[] Arguments { get; }
+        public TypeTag TypeTag { get; }
 
         public Message(Address address, Argument[] arguments)
         {

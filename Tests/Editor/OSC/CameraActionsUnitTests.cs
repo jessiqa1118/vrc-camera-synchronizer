@@ -10,10 +10,10 @@ namespace Astearium.VRChat.Camera.Tests.Unit
     {
         private class MockTransmitter : IOSCTransmitter
         {
-            public Message? LastSentMessage { get; private set; }
+            public IOSCMessage LastSentMessage { get; private set; }
             public bool IsDisposed { get; private set; }
 
-            public void Send(Message message)
+            public void Send(IOSCMessage message)
             {
                 if (IsDisposed) throw new ObjectDisposedException(nameof(MockTransmitter));
                 LastSentMessage = message;
@@ -39,8 +39,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             synchronizer.Close();
 
             // Assert
-            Assert.IsTrue(transmitter.LastSentMessage.HasValue);
-            var msg = transmitter.LastSentMessage.Value;
+            var msg = transmitter.LastSentMessage;
             Assert.AreEqual(OSCCameraEndpoints.Close.Value, msg.Address.Value);
             Assert.AreEqual(0, msg.Arguments.Length);
             Assert.AreEqual(string.Empty, msg.TypeTag.Value);
@@ -84,8 +83,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             synchronizer.Capture();
 
             // Assert
-            Assert.IsTrue(transmitter.LastSentMessage.HasValue);
-            var msg = transmitter.LastSentMessage.Value;
+            var msg = transmitter.LastSentMessage;
             Assert.AreEqual(OSCCameraEndpoints.Capture.Value, msg.Address.Value);
             Assert.AreEqual(0, msg.Arguments.Length);
             Assert.AreEqual(string.Empty, msg.TypeTag.Value);
@@ -129,8 +127,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             synchronizer.CaptureDelayed();
 
             // Assert
-            Assert.IsTrue(transmitter.LastSentMessage.HasValue);
-            var msg = transmitter.LastSentMessage.Value;
+            var msg = transmitter.LastSentMessage;
             Assert.AreEqual(OSCCameraEndpoints.CaptureDelayed.Value, msg.Address.Value);
             Assert.AreEqual(0, msg.Arguments.Length);
             Assert.AreEqual(string.Empty, msg.TypeTag.Value);

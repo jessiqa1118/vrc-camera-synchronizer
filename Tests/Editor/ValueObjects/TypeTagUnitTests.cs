@@ -1,5 +1,4 @@
 using System;
-using Astearium.VRChat.Camera;
 using Astearium.Osc;
 using NUnit.Framework;
 
@@ -8,13 +7,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
     [TestFixture]
     public class TypeTagUnitTests
     {
-        [Test]
-        public void Constructor_WithNullArguments_ThrowsException()
-        {
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _ = new TypeTag(null));
-        }
-
         [Test]
         public void Constructor_WithEmptyArguments_GeneratesEmptyString()
         {

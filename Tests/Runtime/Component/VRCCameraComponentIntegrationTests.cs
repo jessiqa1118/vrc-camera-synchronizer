@@ -14,7 +14,7 @@ namespace Astearium.VRChat.Camera.Tests.Integration
         {
             private bool _isDisposed;
             
-            public void Send(Message message)
+            public void Send(IOSCMessage message)
             {
                 if (_isDisposed)
                     throw new ObjectDisposedException(nameof(MockOSCTransmitter));
