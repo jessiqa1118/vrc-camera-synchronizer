@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Astearium.Osc;
+using Astearium.Network.Osc;
 using UnityEngine;
 using Astearium.VRChat.Camera.Tests.Utility;
 

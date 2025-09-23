@@ -1,5 +1,5 @@
 using System;
-using Astearium.Osc;
+using Astearium.Network.Osc;
 using NUnit.Framework;
 using UnityEngine;
 

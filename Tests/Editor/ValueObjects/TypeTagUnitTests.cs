@@ -1,5 +1,5 @@
 using System;
-using Astearium.Osc;
+using Astearium.Network.Osc;
 using NUnit.Framework;
 
 namespace Astearium.VRChat.Camera.Tests.Unit

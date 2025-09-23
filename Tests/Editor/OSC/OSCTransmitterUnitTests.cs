@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using NUnit.Framework;
-using Astearium.Osc;
+using Astearium.Network.Osc;
 
 namespace Astearium.VRChat.Camera.Tests.Unit
 {

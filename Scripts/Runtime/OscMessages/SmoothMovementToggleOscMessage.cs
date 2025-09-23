@@ -1,4 +1,4 @@
-﻿using Astearium.Osc;
+using Astearium.Network.Osc;
 
 namespace Astearium.VRChat.Camera
 {

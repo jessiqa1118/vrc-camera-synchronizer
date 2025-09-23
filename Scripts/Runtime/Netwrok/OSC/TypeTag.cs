@@ -1,0 +1,35 @@
+using System;
+using System.Linq;
+
+namespace Astearium.Network.Osc
+{
+    public readonly struct TypeTag
+    {
+        public readonly string Value;
+
+        public TypeTag(Argument[] arguments)
+        {
+            if (arguments == null) throw new ArgumentNullException(nameof(arguments));
+
+            Value = string.Concat(arguments.Select(arg => arg.Type switch
+            {
+                Argument.ValueType.Int32 => 'i',
+                Argument.ValueType.Float32 => 'f',
+                Argument.ValueType.String => 's',
+                Argument.ValueType.Blob => 'b',
+                Argument.ValueType.Bool => (bool)arg.Value ? 'T' : 'F',
+                _ => throw new InvalidOperationException($"Unsupported argument type: {arg.Type}")
+            }));
+        }
+
+        public TypeTag(string typeTag)
+        {
+            if (typeTag.Any(c => !"ifsbTF".Contains(c)))
+            {
+                throw new ArgumentException("Type tag contains invalid characters.", nameof(typeTag));
+            }
+
+            Value = typeTag;
+        }
+    }
+}

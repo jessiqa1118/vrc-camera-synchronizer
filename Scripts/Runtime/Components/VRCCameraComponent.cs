@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using Astearium.Osc;
+using Astearium.Network.Osc;
 
 namespace Astearium.VRChat.Camera
 {
@@ -9,7 +9,7 @@ namespace Astearium.VRChat.Camera
     public class VRCCameraComponent : MonoBehaviour
     {
         [SerializeField] private string destination = "127.0.0.1";
-        [SerializeField, Range(1, 65535)] private int port = 9000;
+        [SerializeField] private PortNumber port = new(9000);
 
         [SerializeField] private float exposure = Exposure.DefaultValue;
         [SerializeField] private float hue = Hue.DefaultValue;
@@ -104,7 +104,7 @@ namespace Astearium.VRChat.Camera
                 _vrcCamera.SetMode(mode);
                 ApplyPose();
 
-                transmitter = new OSCTransmitter(destination, port);
+                transmitter = new OSCTransmitter(destination, port.Value);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
             }
             catch (Exception ex)
@@ -213,5 +213,6 @@ namespace Astearium.VRChat.Camera
             // Keep runtime pose aligned with either the follow target or manual fields.
             _vrcCamera?.SetPose(nextPose);
         }
+
     }
 }

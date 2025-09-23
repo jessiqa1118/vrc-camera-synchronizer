@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Astearium.VRChat.Camera;
-using Astearium.Osc;
+using Astearium.Network.Osc;
 using UnityEngine;
 
 namespace Astearium.VRChat.Camera.Tests.Unit

@@ -8,6 +8,9 @@ namespace Astearium.VRChat.Camera.Editor
     {
         private SerializedProperty _destination;
         private SerializedProperty _port;
+        private SerializedProperty _portValue;
+        private int _lastValidPort;
+
         private SerializedProperty _exposure;
         private SerializedProperty _hue;
         private SerializedProperty _saturation;
@@ -46,8 +49,12 @@ namespace Astearium.VRChat.Camera.Editor
 
         private void OnEnable()
         {
+            serializedObject.Update();
+
             _destination = serializedObject.FindProperty("destination");
             _port = serializedObject.FindProperty("port");
+            _portValue = _port?.FindPropertyRelative("value");
+
             _exposure = serializedObject.FindProperty("exposure");
             _hue = serializedObject.FindProperty("hue");
             _saturation = serializedObject.FindProperty("saturation");
@@ -83,6 +90,8 @@ namespace Astearium.VRChat.Camera.Editor
             _syncPoseFromTransform = serializedObject.FindProperty("syncPoseFromTransform");
             _posePosition = serializedObject.FindProperty("posePosition");
             _poseEuler = serializedObject.FindProperty("poseEuler");
+
+            InitializePortDefaults();
         }
 
         public override void OnInspectorGUI()
@@ -94,7 +103,7 @@ namespace Astearium.VRChat.Camera.Editor
             using (new EditorGUI.IndentLevelScope())
             {
                 EditorGUILayout.PropertyField(_destination, new GUIContent("IP Address"));
-                EditorGUILayout.PropertyField(_port);
+                DrawPortField();
             }
 
             EditorGUILayout.Space();
@@ -353,6 +362,56 @@ namespace Astearium.VRChat.Camera.Editor
 
             EditorGUILayout.Space();
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void InitializePortDefaults()
+        {
+            if (_portValue == null)
+            {
+                _lastValidPort = 9000;
+                return;
+            }
+
+            var currentValue = _portValue.intValue;
+            if (currentValue < PortNumber.MinValue || currentValue > PortNumber.MaxValue)
+            {
+                currentValue = 9000;
+                _portValue.intValue = currentValue;
+                serializedObject.ApplyModifiedPropertiesWithoutUndo();
+                serializedObject.Update();
+            }
+
+            _lastValidPort = currentValue;
+        }
+
+        private void DrawPortField()
+        {
+            if (_portValue == null)
+            {
+                EditorGUILayout.PropertyField(_port);
+                return;
+            }
+
+            if (_portValue.intValue >= PortNumber.MinValue && _portValue.intValue <= PortNumber.MaxValue)
+            {
+                _lastValidPort = _portValue.intValue;
+            }
+
+            EditorGUI.BeginChangeCheck();
+            var newValue = EditorGUILayout.DelayedIntField(new GUIContent("Port"), _portValue.intValue);
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (newValue < PortNumber.MinValue || newValue > PortNumber.MaxValue)
+                {
+                    _portValue.intValue = _lastValidPort;
+                    Debug.LogWarning($"[{nameof(VRCCameraComponent)}] Port must be between {PortNumber.MinValue} and {PortNumber.MaxValue}. Reverting to {_lastValidPort}.");
+                }
+                else
+                {
+                    _portValue.intValue = newValue;
+                    _lastValidPort = newValue;
+                }
+            }
         }
     }
 }
