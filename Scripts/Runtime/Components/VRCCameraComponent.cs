@@ -4,7 +4,7 @@ using Astearium.Osc;
 
 namespace Astearium.VRChat.Camera
 {
-    [AddComponentMenu("Astearium/VRChat/VRC Camera")]
+    [AddComponentMenu("VRCCamera/VRC Camera Synchronizer")]
     [RequireComponent(typeof(UnityEngine.Camera))]
     public class VRCCameraComponent : MonoBehaviour
     {

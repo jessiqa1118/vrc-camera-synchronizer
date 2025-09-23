@@ -9,6 +9,8 @@ namespace Astearium.VRChat.Camera
     /// </summary>
     public class PoseConverter : IOSCMessageConverter<Pose>
     {
+        private const float AngleQuantization = 1000f; // millidegree precision to dampen float noise
+
         public Pose FromOSCMessage(Message message)
         {
             if (message.Address != OSCCameraEndpoints.Pose || message.Arguments is not { Length: 6 })
@@ -19,9 +21,9 @@ namespace Astearium.VRChat.Camera
             var px = Read(0);
             var py = Read(1);
             var pz = Read(2);
-            var rx = Read(3);
-            var ry = Read(4);
-            var rz = Read(5);
+            var rx = QuantizeAngle(Read(3));
+            var ry = QuantizeAngle(Read(4));
+            var rz = QuantizeAngle(Read(5));
 
             return new Pose(new Vector3(px, py, pz), Quaternion.Euler(rx, ry, rz));
 
@@ -39,16 +41,21 @@ namespace Astearium.VRChat.Camera
 
         public Message ToOSCMessage(Pose pose)
         {
+            var euler = pose.rotation.eulerAngles;
             return new Message(OSCCameraEndpoints.Pose, new[]
             {
                 new Argument(pose.position.x),
                 new Argument(pose.position.y),
                 new Argument(pose.position.z),
-                new Argument(pose.rotation.eulerAngles.x),
-                new Argument(pose.rotation.eulerAngles.y),
-                new Argument(pose.rotation.eulerAngles.z)
+                new Argument(QuantizeAngle(euler.x)),
+                new Argument(QuantizeAngle(euler.y)),
+                new Argument(QuantizeAngle(euler.z))
             });
+        }
+
+        private static float QuantizeAngle(float value)
+        {
+            return Mathf.Round(value * AngleQuantization) / AngleQuantization;
         }
     }
 }
-

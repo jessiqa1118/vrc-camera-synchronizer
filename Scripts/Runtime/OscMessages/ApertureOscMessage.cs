@@ -1,10 +1,10 @@
-using Astearium.Osc;
+﻿using Astearium.Osc;
 
 namespace Astearium.VRChat.Camera
 {
     public struct ApertureOscMessage : IOSCMessage
     {
-        public Address Address => OSCCameraEndpoints.Exposure;
+        public Address Address => OSCCameraEndpoints.Aperture;
         public Argument[] Arguments { get; }
         public TypeTag TypeTag { get; }
 

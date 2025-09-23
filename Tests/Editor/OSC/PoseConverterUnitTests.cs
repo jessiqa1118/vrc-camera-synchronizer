@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Astearium.Osc;
 using UnityEngine;
+using Astearium.VRChat.Camera.Tests.Utility;
 
 namespace Astearium.VRChat.Camera.Tests.Unit
 {
@@ -26,7 +27,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             Assert.AreEqual(Argument.ValueType.Float32, msg.Arguments[0].Type);
             Assert.AreEqual(Argument.ValueType.Float32, msg.Arguments[5].Type);
             Assert.AreEqual(1f, msg.Arguments[0].AsFloat32());
-            Assert.AreEqual(30f, msg.Arguments[5].AsFloat32());
+            MathAssert.AreApproximatelyEqual(30f, msg.Arguments[5].AsFloat32());
         }
 
         [Test]
@@ -41,9 +42,9 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             Assert.AreEqual(1f, pose.position.x);
             Assert.AreEqual(2f, pose.position.y);
             Assert.AreEqual(3f, pose.position.z);
-            Assert.AreEqual(10f, pose.rotation.eulerAngles.x);
-            Assert.AreEqual(20f, pose.rotation.eulerAngles.y);
-            Assert.AreEqual(30f, pose.rotation.eulerAngles.z);
+            MathAssert.AreApproximatelyEqual(10f, pose.rotation.eulerAngles.x);
+            MathAssert.AreApproximatelyEqual(20f, pose.rotation.eulerAngles.y);
+            MathAssert.AreApproximatelyEqual(30f, pose.rotation.eulerAngles.z);
         }
 
         [Test]
@@ -58,9 +59,9 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             Assert.AreEqual(1f, pose.position.x);
             Assert.AreEqual(2f, pose.position.y);
             Assert.AreEqual(3f, pose.position.z);
-            Assert.AreEqual(10f, pose.rotation.eulerAngles.x);
-            Assert.AreEqual(20f, pose.rotation.eulerAngles.y);
-            Assert.AreEqual(30f, pose.rotation.eulerAngles.z);
+            MathAssert.AreApproximatelyEqual(10f, pose.rotation.eulerAngles.x);
+            MathAssert.AreApproximatelyEqual(20f, pose.rotation.eulerAngles.y);
+            MathAssert.AreApproximatelyEqual(30f, pose.rotation.eulerAngles.z);
         }
 
         [Test]
