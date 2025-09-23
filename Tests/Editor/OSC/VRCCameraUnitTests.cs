@@ -36,7 +36,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         }
         
         private MockTransmitter _mockTransmitter;
-        private UnityEngine.Camera _camera;
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
         
@@ -44,14 +43,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         public void SetUp()
         {
             _mockTransmitter = new MockTransmitter();
-            
-            // Create a test camera GameObject
-            var gameObject = new GameObject("TestCamera");
-            _camera = gameObject.AddComponent<UnityEngine.Camera>();
-            _camera.fieldOfView = 60f;
-            _camera.focusDistance = 2.5f; // Set focus distance for testing
-            
-            _vrcCamera = new VRCCamera(_camera);
+            _vrcCamera = new VRCCamera();
             _synchronizer = new VRCCameraSynchronizer(_mockTransmitter, _vrcCamera);
         }
         
@@ -60,10 +52,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             _synchronizer?.Dispose();
             _vrcCamera?.Dispose();
-            if (_camera)
-            {
-                UnityEngine.Object.DestroyImmediate(_camera.gameObject);
-            }
         }
         
         [Test]
@@ -94,8 +82,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             var mockTransmitter = new MockTransmitter();
-            var camera = new GameObject("TestCamera").AddComponent<UnityEngine.Camera>();
-            var vrcCamera = new VRCCamera(camera);
+            var vrcCamera = new VRCCamera();
             
             // Act
             var synchronizer = new VRCCameraSynchronizer(mockTransmitter, vrcCamera);
@@ -106,7 +93,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             // Cleanup
             synchronizer.Dispose();
             vrcCamera.Dispose();
-            UnityEngine.Object.DestroyImmediate(camera.gameObject);
         }
         
         [Test]
@@ -114,7 +100,8 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             _mockTransmitter.Reset(); // Reset to clear initial sync messages
-            _camera.focalLength = 50f;
+            _vrcCamera.SetZoom(new Zoom(50f, true));
+            _mockTransmitter.Reset();
             _vrcCamera.SetExposure(new Exposure(-2.5f));
             
             // Act
@@ -131,7 +118,8 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             _mockTransmitter.Reset(); // Reset to clear initial sync messages
-            _camera.focalLength = 35f;
+            _vrcCamera.SetZoom(new Zoom(35f, true));
+            _mockTransmitter.Reset();
             
             // Act
             _synchronizer.Sync();
@@ -153,11 +141,13 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             _mockTransmitter.Reset(); // Reset to clear initial sync messages
             
             // Act
-            _camera.focalLength = 20f;
+            _vrcCamera.SetZoom(new Zoom(20f, true));
+            _mockTransmitter.Reset();
             _synchronizer.Sync();
             _mockTransmitter.Reset(); // Reset mock state
             
-            _camera.focalLength = 80f;
+            _vrcCamera.SetZoom(new Zoom(80f, true));
+            _mockTransmitter.Reset();
             _synchronizer.Sync();
             var secondCallCount = _mockTransmitter.SendCallCount;
             
@@ -283,8 +273,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             _mockTransmitter.Reset();
             
             // Act - Change camera focal length and update
-            _camera.focalLength = 85f;
-            _vrcCamera.UpdateFromCamera();
+            _vrcCamera.SetZoom(new Zoom(85f, true));
             
             // Assert - Should send only one message for the zoom change
             Assert.AreEqual(1, _mockTransmitter.SendCallCount);

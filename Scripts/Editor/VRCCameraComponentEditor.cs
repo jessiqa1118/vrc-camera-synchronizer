@@ -46,6 +46,11 @@ namespace Astearium.VRChat.Camera.Editor
         private SerializedProperty _syncPoseFromTransform;
         private SerializedProperty _posePosition;
         private SerializedProperty _poseEuler;
+        private SerializedProperty _syncUnityCamera;
+        private SerializedProperty _unityCameraOverride;
+        private SerializedProperty _zoomValue;
+        private SerializedProperty _focalDistanceValue;
+        private SerializedProperty _apertureValue;
 
         private void OnEnable()
         {
@@ -86,10 +91,15 @@ namespace Astearium.VRChat.Camera.Editor
             _rollWhileFlying = serializedObject.FindProperty("rollWhileFlying");
             _orientation = serializedObject.FindProperty("orientation");
             _mode = serializedObject.FindProperty("mode");
-            _poseTransform = serializedObject.FindProperty("poseTransform");
+            _poseTransform = serializedObject.FindProperty("poseSource");
             _syncPoseFromTransform = serializedObject.FindProperty("syncPoseFromTransform");
             _posePosition = serializedObject.FindProperty("posePosition");
             _poseEuler = serializedObject.FindProperty("poseEuler");
+            _syncUnityCamera = serializedObject.FindProperty("syncUnityCamera");
+            _unityCameraOverride = serializedObject.FindProperty("unityCamera");
+            _zoomValue = serializedObject.FindProperty("zoom");
+            _focalDistanceValue = serializedObject.FindProperty("focalDistance");
+            _apertureValue = serializedObject.FindProperty("aperture");
 
             InitializePortDefaults();
         }
@@ -107,6 +117,18 @@ namespace Astearium.VRChat.Camera.Editor
             }
 
             EditorGUILayout.Space();
+
+            if (_syncUnityCamera != null)
+            {
+                EditorGUILayout.LabelField("Unity Link", EditorStyles.boldLabel);
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    EditorGUILayout.PropertyField(_syncUnityCamera, new GUIContent("Sync Unity Camera"));
+                    EditorGUILayout.PropertyField(_unityCameraOverride, new GUIContent("Source"));
+                }
+
+                EditorGUILayout.Space();
+            }
 
             // Pose (manual input or follow object)
             EditorGUILayout.LabelField("Pose", EditorStyles.boldLabel);
@@ -197,14 +219,30 @@ namespace Astearium.VRChat.Camera.Editor
                 EditorGUILayout.PropertyField(_orientation, new GUIContent("Orientation"));
                 EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
 
-                var pComponent = (VRCCameraComponent)target;
-                var pCamera = pComponent.GetComponent<UnityEngine.Camera>();
-                if (pCamera != null)
+                var targetComponent = (VRCCameraComponent)target;
+                var sourceCamera = (_unityCameraOverride != null ? _unityCameraOverride.objectReferenceValue : null) as UnityEngine.Camera;
+                if (sourceCamera == null)
                 {
-                    EditorGUI.BeginDisabledGroup(true);
-                    var pZoom = Mathf.Clamp(pCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
-                    EditorGUILayout.Slider("Zoom (Focal Length)", pZoom, Zoom.MinValue, Zoom.MaxValue);
-                    EditorGUI.EndDisabledGroup();
+                    sourceCamera = targetComponent != null ? targetComponent.GetComponent<UnityEngine.Camera>() : null;
+                }
+
+                var isSyncing = _syncUnityCamera != null && _syncUnityCamera.boolValue;
+                if (isSyncing && sourceCamera != null)
+                {
+                    var syncedZoom = Mathf.Clamp(sourceCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
+                    if (!Mathf.Approximately(_zoomValue.floatValue, syncedZoom))
+                    {
+                        _zoomValue.floatValue = syncedZoom;
+                    }
+
+                    using (new EditorGUI.DisabledScope(true))
+                    {
+                        EditorGUILayout.Slider("Zoom (Focal Length)", syncedZoom, Zoom.MinValue, Zoom.MaxValue);
+                    }
+                }
+                else
+                {
+                    EditorGUILayout.Slider(_zoomValue, Zoom.MinValue, Zoom.MaxValue, "Zoom (Focal Length)");
                 }
             }
 
@@ -265,6 +303,7 @@ namespace Astearium.VRChat.Camera.Editor
                 }
 
                 EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
+                EditorGUILayout.PropertyField(_autoLevelRoll, new GUIContent("Auto Level Roll"));
             }
 
             EditorGUILayout.Space();
@@ -273,25 +312,47 @@ namespace Astearium.VRChat.Camera.Editor
             EditorGUILayout.LabelField("Focus", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
-                var pComponent = (VRCCameraComponent)target;
-                var pCamera = pComponent.GetComponent<UnityEngine.Camera>();
-                if (pCamera)
+                var targetComponent = (VRCCameraComponent)target;
+                var sourceCamera = (_unityCameraOverride != null ? _unityCameraOverride.objectReferenceValue : null) as UnityEngine.Camera;
+                if (sourceCamera == null && targetComponent != null)
                 {
+                    sourceCamera = targetComponent.GetComponent<UnityEngine.Camera>();
+                }
+
 #if UNITY_2021_2_OR_NEWER
-                    EditorGUI.BeginDisabledGroup(true);
-                    var fFocal = Mathf.Clamp(pCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
-                    EditorGUILayout.Slider("Focal Distance", fFocal, FocalDistance.MinValue, FocalDistance.MaxValue);
-                    var fAperture = Mathf.Clamp(pCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
-                    EditorGUILayout.Slider("Aperture", fAperture, Aperture.MinValue, Aperture.MaxValue);
-                    EditorGUI.EndDisabledGroup();
-#else
+                var isSyncing = _syncUnityCamera != null && _syncUnityCamera.boolValue;
+                if (isSyncing && sourceCamera != null)
+                {
+                    var focal = Mathf.Clamp(sourceCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
+                    if (!Mathf.Approximately(_focalDistanceValue.floatValue, focal))
+                    {
+                        _focalDistanceValue.floatValue = focal;
+                    }
+
+                    var aperture = Mathf.Clamp(sourceCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
+                    if (!Mathf.Approximately(_apertureValue.floatValue, aperture))
+                    {
+                        _apertureValue.floatValue = aperture;
+                    }
+
                     using (new EditorGUI.DisabledScope(true))
                     {
-                        EditorGUILayout.LabelField("Focal Distance", "(not supported on this Unity version)");
-                        EditorGUILayout.LabelField("Aperture", "(not supported on this Unity version)");
+                        EditorGUILayout.Slider("Focal Distance", focal, FocalDistance.MinValue, FocalDistance.MaxValue);
+                        EditorGUILayout.Slider("Aperture", aperture, Aperture.MinValue, Aperture.MaxValue);
                     }
-#endif
                 }
+                else
+                {
+                    EditorGUILayout.Slider(_focalDistanceValue, FocalDistance.MinValue, FocalDistance.MaxValue, "Focal Distance");
+                    EditorGUILayout.Slider(_apertureValue, Aperture.MinValue, Aperture.MaxValue, "Aperture");
+                }
+#else
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.LabelField("Focal Distance", "(not supported on this Unity version)");
+                    EditorGUILayout.LabelField("Aperture", "(not supported on this Unity version)");
+                }
+#endif
 
                 EditorGUILayout.PropertyField(_showFocus, new GUIContent("Show"));
             }
@@ -355,7 +416,6 @@ namespace Astearium.VRChat.Camera.Editor
             using (new EditorGUI.IndentLevelScope())
             {
                 EditorGUILayout.PropertyField(_lockCamera, new GUIContent("Lock"));
-                EditorGUILayout.PropertyField(_autoLevelRoll, new GUIContent("Auto Level Roll"));
                 EditorGUILayout.PropertyField(_triggerTakesPhotos, new GUIContent("Trigger Takes Photos"));
                 EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Dolly Paths Stay Visible"));
             }

@@ -1,16 +1,14 @@
 using System;
 using UnityEngine;
 using Astearium.Network.Osc;
-
 namespace Astearium.VRChat.Camera
 {
-    [AddComponentMenu("VRCCamera/VRC Camera Synchronizer")]
+    [AddComponentMenu("Astearium/VRChat/VRC Camera")]
     [RequireComponent(typeof(UnityEngine.Camera))]
     public class VRCCameraComponent : MonoBehaviour
     {
         [SerializeField] private string destination = "127.0.0.1";
         [SerializeField] private PortNumber port = new(9000);
-
         [SerializeField] private float exposure = Exposure.DefaultValue;
         [SerializeField] private float hue = Hue.DefaultValue;
         [SerializeField] private float saturation = Saturation.DefaultValue;
@@ -22,20 +20,21 @@ namespace Astearium.VRChat.Camera
         [SerializeField] private float smoothingStrength = SmoothingStrength.DefaultValue;
         [SerializeField] private float photoRate = PhotoRate.DefaultValue;
         [SerializeField] private float duration = Duration.DefaultValue;
+        [SerializeField] private float zoom = Zoom.DefaultValue;
+        [SerializeField] private float focalDistance = FocalDistance.DefaultValue;
+        [SerializeField] private float aperture = Aperture.DefaultValue;
         [SerializeField] private bool showUIInCamera = false;
         [SerializeField] private bool lockCamera = false;
         [SerializeField] private bool localPlayer = true;
         [SerializeField] private bool remotePlayer = true;
         [SerializeField] private bool environment = true;
-
         [SerializeField] private bool greenScreen = false;
-
         // Display-only (no OSC endpoint)
         [SerializeField] private bool items = true;
         [SerializeField] private bool smoothMovement = false;
         [SerializeField] private bool lookAtMe = false;
-        [SerializeField] private bool autoLevelRoll = false;
         [SerializeField] private bool autoLevelPitch = false;
+        [SerializeField] private bool autoLevelRoll = false;
         [SerializeField] private bool flying = false;
         [SerializeField] private bool triggerTakesPhotos = false;
         [SerializeField] private bool dollyPathsStayVisible = false;
@@ -45,31 +44,21 @@ namespace Astearium.VRChat.Camera
         [SerializeField] private bool rollWhileFlying = false;
         [SerializeField] private Orientation orientation = Orientation.Landscape;
         [SerializeField] private Mode mode = Mode.Photo;
-        [SerializeField] private Transform poseTransform = null;
+        [SerializeField] private Transform poseSource = null;
         [SerializeField] private bool syncPoseFromTransform = false;
         [SerializeField] private Vector3 posePosition = Vector3.zero;
         [SerializeField] private Vector3 poseEuler = Vector3.zero;
-
+        [SerializeField] private bool syncUnityCamera = false;
+        [SerializeField] private UnityEngine.Camera unityCamera = null;
+        private UnityEngine.Camera _unityCamera;
         private VRCCamera _vrcCamera;
         private VRCCameraSynchronizer _synchronizer;
-        private bool _missingPoseTransformWarned;
-
         private void OnEnable()
         {
-            var cameraComponent = GetComponent<UnityEngine.Camera>();
-            if (!cameraComponent)
-            {
-                Debug.LogError($"[{nameof(VRCCameraComponent)}] Camera component is missing");
-                enabled = false;
-                return;
-            }
-
             IOSCTransmitter transmitter = null;
             try
             {
-                _vrcCamera = new VRCCamera(cameraComponent);
-                _missingPoseTransformWarned = false;
-
+                _vrcCamera = new VRCCamera();
                 // Set all initial values before creating synchronizer to avoid duplicate messages
                 _vrcCamera.SetExposure(new Exposure(exposure));
                 _vrcCamera.SetHue(new Hue(hue));
@@ -91,8 +80,8 @@ namespace Astearium.VRChat.Camera
                 _vrcCamera.SetGreenScreen(greenScreen);
                 _vrcCamera.SetSmoothMovement(smoothMovement);
                 _vrcCamera.SetLookAtMe(lookAtMe);
-                _vrcCamera.SetAutoLevelRoll(autoLevelRoll);
                 _vrcCamera.SetAutoLevelPitch(autoLevelPitch);
+                _vrcCamera.SetAutoLevelRoll(autoLevelRoll);
                 _vrcCamera.SetFlying(flying);
                 _vrcCamera.SetTriggerTakesPhotos(triggerTakesPhotos);
                 _vrcCamera.SetDollyPathsStayVisible(dollyPathsStayVisible);
@@ -102,8 +91,12 @@ namespace Astearium.VRChat.Camera
                 _vrcCamera.SetRollWhileFlying(rollWhileFlying);
                 _vrcCamera.SetOrientation(orientation);
                 _vrcCamera.SetMode(mode);
-                ApplyPose();
-
+                SyncUnityCamera();
+                _vrcCamera.SetZoom(new Zoom(zoom, true));
+                _vrcCamera.SetFocalDistance(new FocalDistance(focalDistance));
+                _vrcCamera.SetAperture(new Aperture(aperture));
+                SyncPose();
+                _vrcCamera?.SetPose(new Pose(posePosition, Quaternion.Euler(poseEuler)));
                 transmitter = new OSCTransmitter(destination, port.Value);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
             }
@@ -115,40 +108,33 @@ namespace Astearium.VRChat.Camera
                 enabled = false;
             }
         }
-
         private void OnDisable()
         {
             _synchronizer?.Dispose();
             _synchronizer = null;
             _vrcCamera?.Dispose();
             _vrcCamera = null;
-            _missingPoseTransformWarned = false;
+            _unityCamera = null;
         }
-
         // Action wrappers for Editor buttons or external callers
         public void Action_CloseCamera()
         {
             _synchronizer?.Close();
         }
-
         public void Action_Capture()
         {
             _synchronizer?.Capture();
         }
-
         public void Action_CaptureDelayed()
         {
             _synchronizer?.CaptureDelayed();
         }
-
         private void FixedUpdate()
         {
-            // NOTE: Use FixedUpdate to reduce the frequency of updates
-            if (_vrcCamera == null) return;
-
-            // Update camera-tracked values (Zoom, FocalDistance, Aperture)
-            _vrcCamera.UpdateFromCamera();
-
+            SyncUnityCamera();
+            _vrcCamera.SetZoom(new Zoom(zoom, true));
+            _vrcCamera.SetFocalDistance(new FocalDistance(focalDistance));
+            _vrcCamera.SetAperture(new Aperture(aperture));
             // Update other parameters via setter methods
             _vrcCamera.SetExposure(new Exposure(exposure));
             _vrcCamera.SetHue(new Hue(hue));
@@ -170,8 +156,8 @@ namespace Astearium.VRChat.Camera
             _vrcCamera.SetGreenScreen(greenScreen);
             _vrcCamera.SetSmoothMovement(smoothMovement);
             _vrcCamera.SetLookAtMe(lookAtMe);
-            _vrcCamera.SetAutoLevelRoll(autoLevelRoll);
             _vrcCamera.SetAutoLevelPitch(autoLevelPitch);
+            _vrcCamera.SetAutoLevelRoll(autoLevelRoll);
             _vrcCamera.SetFlying(flying);
             _vrcCamera.SetTriggerTakesPhotos(triggerTakesPhotos);
             _vrcCamera.SetDollyPathsStayVisible(dollyPathsStayVisible);
@@ -181,38 +167,21 @@ namespace Astearium.VRChat.Camera
             _vrcCamera.SetRollWhileFlying(rollWhileFlying);
             _vrcCamera.SetOrientation(orientation);
             _vrcCamera.SetMode(mode);
-            ApplyPose();
+            SyncPose();
+            _vrcCamera?.SetPose(new Pose(posePosition, Quaternion.Euler(poseEuler)));
         }
-
-        private void ApplyPose()
+        private void SyncUnityCamera()
         {
-            if (_vrcCamera == null) return;
-
-            Pose nextPose;
-            if (syncPoseFromTransform)
-            {
-                var src = poseTransform;
-                if (src == null)
-                {
-                    src = transform;
-                    if (!_missingPoseTransformWarned)
-                    {
-                        Debug.LogWarning(
-                            $"[{nameof(VRCCameraComponent)}] Follow Object is enabled but no source transform is assigned; falling back to this component's transform.");
-                        _missingPoseTransformWarned = true;
-                    }
-                }
-
-                nextPose = new Pose(src.position, src.rotation);
-            }
-            else
-            {
-                nextPose = new Pose(posePosition, Quaternion.Euler(poseEuler));
-            }
-
-            // Keep runtime pose aligned with either the follow target or manual fields.
-            _vrcCamera?.SetPose(nextPose);
+            if (!syncUnityCamera || !_unityCamera) return;
+            zoom = Mathf.Clamp(_unityCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
+            focalDistance = Mathf.Clamp(_unityCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
+            aperture = Mathf.Clamp(_unityCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
         }
-
+        private void SyncPose()
+        {
+            if (!syncPoseFromTransform || !poseSource) return;
+            posePosition = poseSource.transform.position;
+            poseEuler = poseSource.transform.rotation.eulerAngles;
+        }
     }
 }

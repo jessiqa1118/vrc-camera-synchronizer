@@ -5,110 +5,76 @@ namespace Astearium.VRChat.Camera
 {
     public class VRCCamera : IDisposable
     {
-        private readonly UnityEngine.Camera _camera;
+        public ReactiveProperty<Zoom> Zoom { get; } = new(new Zoom(Astearium.VRChat.Camera.Zoom.DefaultValue, true));
 
-        public ReactiveProperty<Zoom> Zoom { get; }
-        public ReactiveProperty<Exposure> Exposure { get; }
-        public ReactiveProperty<FocalDistance> FocalDistance { get; }
-        public ReactiveProperty<Aperture> Aperture { get; }
-        public ReactiveProperty<Hue> Hue { get; }
-        public ReactiveProperty<Saturation> Saturation { get; }
-        public ReactiveProperty<Lightness> Lightness { get; }
-        public ReactiveProperty<LookAtMeOffset> LookAtMeOffset { get; }
-        public ReactiveProperty<FlySpeed> FlySpeed { get; }
-        public ReactiveProperty<TurnSpeed> TurnSpeed { get; }
-        public ReactiveProperty<SmoothingStrength> SmoothingStrength { get; }
-        public ReactiveProperty<PhotoRate> PhotoRate { get; }
-        public ReactiveProperty<Duration> Duration { get; }
+        public ReactiveProperty<Exposure> Exposure { get; } =
+            new(new Exposure(Astearium.VRChat.Camera.Exposure.DefaultValue));
+
+        public ReactiveProperty<FocalDistance> FocalDistance { get; } = new(
+            new FocalDistance(Astearium.VRChat.Camera.FocalDistance.DefaultValue));
+
+        public ReactiveProperty<Aperture> Aperture { get; } =
+            new(new Aperture(Astearium.VRChat.Camera.Aperture.DefaultValue));
+
+        public ReactiveProperty<Hue> Hue { get; } = new(new Hue(Astearium.VRChat.Camera.Hue.DefaultValue));
+
+        public ReactiveProperty<Saturation> Saturation { get; } =
+            new(new Saturation(Astearium.VRChat.Camera.Saturation.DefaultValue));
+
+        public ReactiveProperty<Lightness> Lightness { get; } =
+            new(new Lightness(Astearium.VRChat.Camera.Lightness.DefaultValue));
+
+        public ReactiveProperty<LookAtMeOffset> LookAtMeOffset { get; } = new(new LookAtMeOffset(
+            new LookAtMeXOffset(LookAtMeXOffset.DefaultValue),
+            new LookAtMeYOffset(LookAtMeYOffset.DefaultValue)));
+
+        public ReactiveProperty<FlySpeed> FlySpeed { get; } =
+            new(new FlySpeed(Astearium.VRChat.Camera.FlySpeed.DefaultValue));
+
+        public ReactiveProperty<TurnSpeed> TurnSpeed { get; } =
+            new(new TurnSpeed(Astearium.VRChat.Camera.TurnSpeed.DefaultValue));
+
+        public ReactiveProperty<SmoothingStrength> SmoothingStrength { get; } = new(
+            new SmoothingStrength(Astearium.VRChat.Camera.SmoothingStrength.DefaultValue));
+
+        public ReactiveProperty<PhotoRate> PhotoRate { get; } =
+            new(new PhotoRate(Astearium.VRChat.Camera.PhotoRate.DefaultValue));
+
+        public ReactiveProperty<Duration> Duration { get; } =
+            new(new Duration(Astearium.VRChat.Camera.Duration.DefaultValue));
 
         /// <summary>
         /// Current world-space pose (position + rotation) for OSC sync
         /// </summary>
-        public ReactiveProperty<Pose> Pose { get; }
+        public ReactiveProperty<Pose> Pose { get; } = new(UnityEngine.Pose.identity);
 
-        public ReactiveProperty<bool> ShowUIInCamera { get; }
-        public ReactiveProperty<bool> Lock { get; }
-        public ReactiveProperty<bool> LocalPlayer { get; }
-        public ReactiveProperty<bool> RemotePlayer { get; }
-        public ReactiveProperty<bool> Environment { get; }
-        public ReactiveProperty<bool> GreenScreen { get; }
-        public ReactiveProperty<bool> SmoothMovement { get; }
-        public ReactiveProperty<bool> LookAtMe { get; }
-        public ReactiveProperty<bool> AutoLevelRoll { get; }
-        public ReactiveProperty<bool> AutoLevelPitch { get; }
-        public ReactiveProperty<bool> Flying { get; }
-        public ReactiveProperty<bool> TriggerTakesPhotos { get; }
-        public ReactiveProperty<bool> DollyPathsStayVisible { get; }
-        public ReactiveProperty<bool> CameraEars { get; }
-        public ReactiveProperty<bool> ShowFocus { get; }
-        public ReactiveProperty<bool> Streaming { get; }
-        public ReactiveProperty<bool> RollWhileFlying { get; }
-        public ReactiveProperty<Orientation> Orientation { get; }
-        public ReactiveProperty<bool> Items { get; }
+        public ReactiveProperty<bool> ShowUIInCamera { get; } = new(false);
+        public ReactiveProperty<bool> Lock { get; } = new(false);
+        public ReactiveProperty<bool> LocalPlayer { get; } = new(true);
+        public ReactiveProperty<bool> RemotePlayer { get; } = new(true);
+        public ReactiveProperty<bool> Environment { get; } = new(true);
+        public ReactiveProperty<bool> GreenScreen { get; } = new(false);
+        public ReactiveProperty<bool> SmoothMovement { get; } = new(false);
+        public ReactiveProperty<bool> LookAtMe { get; } = new(false);
+        public ReactiveProperty<bool> AutoLevelRoll { get; } = new(false);
+        public ReactiveProperty<bool> AutoLevelPitch { get; } = new(false);
+        public ReactiveProperty<bool> Flying { get; } = new(false);
+        public ReactiveProperty<bool> TriggerTakesPhotos { get; } = new(false);
+        public ReactiveProperty<bool> DollyPathsStayVisible { get; } = new(false);
+        public ReactiveProperty<bool> CameraEars { get; } = new(false);
+        public ReactiveProperty<bool> ShowFocus { get; } = new(false);
+        public ReactiveProperty<bool> Streaming { get; } = new(false);
+        public ReactiveProperty<bool> RollWhileFlying { get; } = new(false);
+        public ReactiveProperty<Orientation> Orientation { get; } = new(Astearium.VRChat.Camera.Orientation.Landscape);
+        public ReactiveProperty<bool> Items { get; } = new(true);
 
         /// <summary>
         /// Current camera <see cref="Mode"/>; changes are published over OSC.
         /// </summary>
-        public ReactiveProperty<Mode> Mode { get; }
+        public ReactiveProperty<Mode> Mode { get; } = new(Astearium.VRChat.Camera.Mode.Photo);
 
-        public VRCCamera(UnityEngine.Camera camera)
-        {
-            _camera = camera ?? throw new ArgumentNullException(nameof(camera));
-
-            // Initialize reactive properties
-            Zoom = new ReactiveProperty<Zoom>(new Zoom(_camera.focalLength, true));
-            Exposure = new ReactiveProperty<Exposure>(new Exposure(Astearium.VRChat.Camera.Exposure.DefaultValue));
-            FocalDistance = new ReactiveProperty<FocalDistance>(new FocalDistance(_camera.focusDistance));
-            Aperture = new ReactiveProperty<Aperture>(new Aperture(_camera.aperture));
-            Hue = new ReactiveProperty<Hue>(new Hue(Astearium.VRChat.Camera.Hue.DefaultValue));
-            Saturation =
-                new ReactiveProperty<Saturation>(new Saturation(Astearium.VRChat.Camera.Saturation.DefaultValue));
-            Lightness = new ReactiveProperty<Lightness>(new Lightness(Astearium.VRChat.Camera.Lightness.DefaultValue));
-            LookAtMeOffset = new ReactiveProperty<LookAtMeOffset>(new LookAtMeOffset(
-                new LookAtMeXOffset(LookAtMeXOffset.DefaultValue),
-                new LookAtMeYOffset(LookAtMeYOffset.DefaultValue)));
-            FlySpeed = new ReactiveProperty<FlySpeed>(new FlySpeed(Astearium.VRChat.Camera.FlySpeed.DefaultValue));
-            TurnSpeed = new ReactiveProperty<TurnSpeed>(new TurnSpeed(Astearium.VRChat.Camera.TurnSpeed.DefaultValue));
-            SmoothingStrength =
-                new ReactiveProperty<SmoothingStrength>(
-                    new SmoothingStrength(Astearium.VRChat.Camera.SmoothingStrength.DefaultValue));
-            PhotoRate = new ReactiveProperty<PhotoRate>(new PhotoRate(Astearium.VRChat.Camera.PhotoRate.DefaultValue));
-            Duration = new ReactiveProperty<Duration>(new Duration(Astearium.VRChat.Camera.Duration.DefaultValue));
-            Pose = new ReactiveProperty<Pose>(new Pose(_camera.transform.position, _camera.transform.rotation));
-            ShowUIInCamera = new ReactiveProperty<bool>(false);
-            Lock = new ReactiveProperty<bool>(false);
-            LocalPlayer = new ReactiveProperty<bool>(true);
-            RemotePlayer = new ReactiveProperty<bool>(true);
-            Environment = new ReactiveProperty<bool>(true);
-            GreenScreen = new ReactiveProperty<bool>(false);
-            SmoothMovement = new ReactiveProperty<bool>(false);
-            LookAtMe = new ReactiveProperty<bool>(false);
-            AutoLevelRoll = new ReactiveProperty<bool>(false);
-            AutoLevelPitch = new ReactiveProperty<bool>(false);
-            Flying = new ReactiveProperty<bool>(false);
-            TriggerTakesPhotos = new ReactiveProperty<bool>(false);
-            DollyPathsStayVisible = new ReactiveProperty<bool>(false);
-            CameraEars = new ReactiveProperty<bool>(false);
-            ShowFocus = new ReactiveProperty<bool>(false);
-            Streaming = new ReactiveProperty<bool>(false);
-            RollWhileFlying = new ReactiveProperty<bool>(false);
-            Orientation = new ReactiveProperty<Orientation>(Astearium.VRChat.Camera.Orientation.Landscape);
-            Mode = new ReactiveProperty<Mode>(Astearium.VRChat.Camera.Mode.Photo);
-
-            // Items has no OSC endpoint; keep as display-only (default true)
-            Items = new ReactiveProperty<bool>(true);
-        }
-
-        /// <summary>
-        /// Updates camera-related values from Camera component
-        /// </summary>
-        public void UpdateFromCamera()
-        {
-            // ReactiveProperty will check for equality internally
-            Zoom.SetValue(new Zoom(_camera.focalLength, true));
-            FocalDistance.SetValue(new FocalDistance(_camera.focusDistance));
-            Aperture.SetValue(new Aperture(_camera.aperture));
-        }
+        // Initialize reactive properties
+        // Items has no OSC endpoint; keep as display-only (default true)
 
         /// <summary>
         /// Sets Exposure value reactively
@@ -188,6 +154,21 @@ namespace Astearium.VRChat.Camera
         public void SetDuration(Duration duration)
         {
             Duration.SetValue(duration);
+        }
+
+        public void SetZoom(Zoom zoom)
+        {
+            Zoom.SetValue(zoom);
+        }
+
+        public void SetFocalDistance(FocalDistance focalDistance)
+        {
+            FocalDistance.SetValue(focalDistance);
+        }
+
+        public void SetAperture(Aperture aperture)
+        {
+            Aperture.SetValue(aperture);
         }
 
         /// <summary>

@@ -30,9 +30,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             var transmitter = new MockTransmitter();
-            var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
-            var vrcCamera = new VRCCamera(camera);
+            var vrcCamera = new VRCCamera();
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
 
             // Act
@@ -47,7 +45,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             // Cleanup
             synchronizer.Dispose();
             vrcCamera.Dispose();
-            UnityEngine.Object.DestroyImmediate(cameraGo);
         }
 
         [Test]
@@ -55,9 +52,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             var transmitter = new MockTransmitter();
-            var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
-            var vrcCamera = new VRCCamera(camera);
+            var vrcCamera = new VRCCamera();
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
             synchronizer.Dispose();
 
@@ -66,7 +61,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
 
             // Cleanup
             vrcCamera.Dispose();
-            UnityEngine.Object.DestroyImmediate(cameraGo);
         }
 
         [Test]
@@ -74,9 +68,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             var transmitter = new MockTransmitter();
-            var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
-            var vrcCamera = new VRCCamera(camera);
+            var vrcCamera = new VRCCamera();
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
 
             // Act
@@ -91,7 +83,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             // Cleanup
             synchronizer.Dispose();
             vrcCamera.Dispose();
-            UnityEngine.Object.DestroyImmediate(cameraGo);
         }
 
         [Test]
@@ -99,9 +90,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             var transmitter = new MockTransmitter();
-            var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
-            var vrcCamera = new VRCCamera(camera);
+            var vrcCamera = new VRCCamera();
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
             synchronizer.Dispose();
 
@@ -110,7 +99,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
 
             // Cleanup
             vrcCamera.Dispose();
-            UnityEngine.Object.DestroyImmediate(cameraGo);
         }
 
         [Test]
@@ -118,9 +106,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             var transmitter = new MockTransmitter();
-            var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
-            var vrcCamera = new VRCCamera(camera);
+            var vrcCamera = new VRCCamera();
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
 
             // Act
@@ -135,7 +121,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             // Cleanup
             synchronizer.Dispose();
             vrcCamera.Dispose();
-            UnityEngine.Object.DestroyImmediate(cameraGo);
         }
 
         [Test]
@@ -143,9 +128,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             var transmitter = new MockTransmitter();
-            var cameraGo = new GameObject("TestCamera");
-            var camera = cameraGo.AddComponent<UnityEngine.Camera>();
-            var vrcCamera = new VRCCamera(camera);
+            var vrcCamera = new VRCCamera();
             var synchronizer = new VRCCameraSynchronizer(transmitter, vrcCamera);
             synchronizer.Dispose();
 
@@ -154,7 +137,6 @@ namespace Astearium.VRChat.Camera.Tests.Unit
 
             // Cleanup
             vrcCamera.Dispose();
-            UnityEngine.Object.DestroyImmediate(cameraGo);
         }
     }
 }

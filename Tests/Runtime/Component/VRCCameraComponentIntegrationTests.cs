@@ -157,7 +157,15 @@ namespace Astearium.VRChat.Camera.Tests.Integration
             
             if (portField != null)
             {
-                Assert.AreEqual(9000, portField.GetValue(_component));
+                var portValue = portField.GetValue(_component);
+                if (portValue is PortNumber portNumber)
+                {
+                    Assert.AreEqual(9000, portNumber.Value);
+                }
+                else
+                {
+                    Assert.AreEqual(9000, portValue);
+                }
             }
         }
         
@@ -215,7 +223,7 @@ namespace Astearium.VRChat.Camera.Tests.Integration
             
             if (attributes[0] is AddComponentMenu menuAttribute)
             {
-                Assert.AreEqual("VRCCamera/VRC Camera Synchronizer", menuAttribute.componentMenu);
+                Assert.AreEqual("Astearium/VRChat/VRC Camera", menuAttribute.componentMenu);
             }
         }
         
