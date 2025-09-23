@@ -7,8 +7,6 @@ namespace Astearium.VRChat.Camera
     {
         private readonly IOSCTransmitter _transmitter;
         private readonly VRCCamera _vrcCamera;
-        private readonly PoseConverter _poseConverter = new();
-        private readonly ModeConverter _modeConverter = new();
         private bool _disposed = false;
 
         public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
@@ -314,7 +312,7 @@ namespace Astearium.VRChat.Camera
             _transmitter.Send(new SmoothingStrengthOscMessage(_vrcCamera.SmoothingStrength.Value));
             _transmitter.Send(new PhotoRateOscMessage(_vrcCamera.PhotoRate.Value));
             _transmitter.Send(new DurationOscMessage(_vrcCamera.Duration.Value));
-            _transmitter.Send(_poseConverter.ToOSCMessage(_vrcCamera.Pose.Value));
+            _transmitter.Send(new PoseOscMessage(_vrcCamera.Pose.Value));
             _transmitter.Send(new ShowUIInCameraToggleOscMessage(_vrcCamera.ShowUIInCamera.Value));
             _transmitter.Send(new LockToggleOscMessage(_vrcCamera.Lock.Value));
             _transmitter.Send(new LocalPlayerToggleOscMessage(_vrcCamera.LocalPlayer.Value));
@@ -333,7 +331,7 @@ namespace Astearium.VRChat.Camera
             _transmitter.Send(new ShowFocusToggleOscMessage(_vrcCamera.ShowFocus.Value));
             _transmitter.Send(new StreamingToggleOscMessage(_vrcCamera.Streaming.Value));
             _transmitter.Send(new RollWhileFlyingToggleOscMessage(_vrcCamera.RollWhileFlying.Value));
-            _transmitter.Send(_modeConverter.ToOSCMessage(_vrcCamera.Mode.Value));
+            _transmitter.Send(new ModeOscMessage(_vrcCamera.Mode.Value));
             var isLandscape = _vrcCamera.Orientation.Value == Orientation.Landscape;
             _transmitter.Send(new Message(OSCCameraEndpoints.OrientationIsLandscape,
                 new[] { new Argument(isLandscape) }));
@@ -400,16 +398,14 @@ namespace Astearium.VRChat.Camera
         private void OnPoseChanged(UnityEngine.Pose pose)
         {
             if (_disposed) return;
-            var message = _poseConverter.ToOSCMessage(pose);
-            _transmitter.Send(message);
+            _transmitter.Send(new PoseOscMessage(pose));
         }
 
         private void OnModeChanged(Mode mode)
         {
             if (_disposed) return;
 
-            var message = _modeConverter.ToOSCMessage(mode);
-            _transmitter.Send(message);
+            _transmitter.Send(new ModeOscMessage(mode));
         }
     }
 }
