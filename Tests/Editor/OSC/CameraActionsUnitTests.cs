@@ -1,7 +1,7 @@
 using System;
+using Astearium.Osc;
 using UnityEngine;
 using NUnit.Framework;
-using Astearium.Osc;
 
 namespace Astearium.VRChat.Camera.Tests.Unit
 {

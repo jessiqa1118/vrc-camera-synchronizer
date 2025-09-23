@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Astearium.Osc;
 
 namespace Astearium.VRChat.Camera
@@ -7,23 +7,6 @@ namespace Astearium.VRChat.Camera
     {
         private readonly IOSCTransmitter _transmitter;
         private readonly VRCCamera _vrcCamera;
-        private readonly ShowUIInCameraToggleConverter _showUIInCameraToggleConverter = new();
-        private readonly LockToggleConverter _lockToggleConverter = new();
-        private readonly LocalPlayerToggleConverter _localPlayerToggleConverter = new();
-        private readonly RemotePlayerToggleConverter _remotePlayerToggleConverter = new();
-        private readonly EnvironmentToggleConverter _environmentToggleConverter = new();
-        private readonly GreenScreenToggleConverter _greenScreenToggleConverter = new();
-        private readonly SmoothMovementToggleConverter _smoothMovementToggleConverter = new();
-        private readonly LookAtMeToggleConverter _lookAtMeToggleConverter = new();
-        private readonly AutoLevelRollToggleConverter _autoLevelRollToggleConverter = new();
-        private readonly AutoLevelPitchToggleConverter _autoLevelPitchToggleConverter = new();
-        private readonly FlyingToggleConverter _flyingToggleConverter = new();
-        private readonly TriggerTakesPhotosToggleConverter _triggerTakesPhotosToggleConverter = new();
-        private readonly DollyPathsStayVisibleToggleConverter _dollyPathsStayVisibleToggleConverter = new();
-        private readonly CameraEarsToggleConverter _cameraEarsToggleConverter = new();
-        private readonly ShowFocusToggleConverter _showFocusToggleConverter = new();
-        private readonly StreamingToggleConverter _streamingToggleConverter = new();
-        private readonly RollWhileFlyingToggleConverter _rollWhileFlyingToggleConverter = new();
         private readonly PoseConverter _poseConverter = new();
         private readonly ModeConverter _modeConverter = new();
         private bool _disposed = false;
@@ -168,7 +151,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _showUIInCameraToggleConverter.ToOSCMessage(showUIInCamera);
+            var message = new ShowUIInCameraToggleOscMessage(showUIInCamera);
             _transmitter.Send(message);
         }
 
@@ -176,7 +159,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _lockToggleConverter.ToOSCMessage(lockToggle);
+            var message = new LockToggleOscMessage(lockToggle);
             _transmitter.Send(message);
         }
 
@@ -184,7 +167,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _localPlayerToggleConverter.ToOSCMessage(localPlayer);
+            var message = new LocalPlayerToggleOscMessage(localPlayer);
             _transmitter.Send(message);
         }
 
@@ -192,7 +175,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _remotePlayerToggleConverter.ToOSCMessage(remotePlayer);
+            var message = new RemotePlayerToggleOscMessage(remotePlayer);
             _transmitter.Send(message);
         }
 
@@ -200,7 +183,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _environmentToggleConverter.ToOSCMessage(environment);
+            var message = new EnvironmentToggleOscMessage(environment);
             _transmitter.Send(message);
         }
 
@@ -208,7 +191,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _greenScreenToggleConverter.ToOSCMessage(greenScreen);
+            var message = new GreenScreenToggleOscMessage(greenScreen);
             _transmitter.Send(message);
         }
 
@@ -216,7 +199,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _smoothMovementToggleConverter.ToOSCMessage(smoothMovement);
+            var message = new SmoothMovementToggleOscMessage(smoothMovement);
             _transmitter.Send(message);
         }
 
@@ -224,7 +207,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _lookAtMeToggleConverter.ToOSCMessage(lookAtMe);
+            var message = new LookAtMeToggleOscMessage(lookAtMe);
             _transmitter.Send(message);
         }
 
@@ -232,7 +215,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _autoLevelRollToggleConverter.ToOSCMessage(autoLevelRoll);
+            var message = new AutoLevelRollToggleOscMessage(autoLevelRoll);
             _transmitter.Send(message);
         }
 
@@ -240,15 +223,14 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _autoLevelPitchToggleConverter.ToOSCMessage(autoLevelPitch);
-            _transmitter.Send(message);
+            _transmitter.Send(new AutoLevelPitchToggleOscMessage(autoLevelPitch));
         }
 
         private void OnFlyingChanged(bool flying)
         {
             if (_disposed) return;
 
-            var message = _flyingToggleConverter.ToOSCMessage(flying);
+            var message = new FlyingToggleOscMessage(flying);
             _transmitter.Send(message);
         }
 
@@ -256,7 +238,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _triggerTakesPhotosToggleConverter.ToOSCMessage(trigger);
+            var message = new TriggerTakesPhotosToggleOscMessage(trigger);
             _transmitter.Send(message);
         }
 
@@ -264,7 +246,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _dollyPathsStayVisibleToggleConverter.ToOSCMessage(dolly);
+            var message = new DollyPathsStayVisibleToggleOscMessage(dolly);
             _transmitter.Send(message);
         }
 
@@ -272,7 +254,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _cameraEarsToggleConverter.ToOSCMessage(cameraEars);
+            var message = new CameraEarsToggleOscMessage(cameraEars);
             _transmitter.Send(message);
         }
 
@@ -280,7 +262,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _showFocusToggleConverter.ToOSCMessage(showFocus);
+            var message = new ShowFocusToggleOscMessage(showFocus);
             _transmitter.Send(message);
         }
 
@@ -288,7 +270,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _streamingToggleConverter.ToOSCMessage(streaming);
+            var message = new StreamingToggleOscMessage(streaming);
             _transmitter.Send(message);
         }
 
@@ -296,7 +278,7 @@ namespace Astearium.VRChat.Camera
         {
             if (_disposed) return;
 
-            var message = _rollWhileFlyingToggleConverter.ToOSCMessage(rollWhileFlying);
+            var message = new RollWhileFlyingToggleOscMessage(rollWhileFlying);
             _transmitter.Send(message);
         }
 
@@ -333,24 +315,24 @@ namespace Astearium.VRChat.Camera
             _transmitter.Send(new PhotoRateOscMessage(_vrcCamera.PhotoRate.Value));
             _transmitter.Send(new DurationOscMessage(_vrcCamera.Duration.Value));
             _transmitter.Send(_poseConverter.ToOSCMessage(_vrcCamera.Pose.Value));
-            _transmitter.Send(_showUIInCameraToggleConverter.ToOSCMessage(_vrcCamera.ShowUIInCamera.Value));
-            _transmitter.Send(_lockToggleConverter.ToOSCMessage(_vrcCamera.Lock.Value));
-            _transmitter.Send(_localPlayerToggleConverter.ToOSCMessage(_vrcCamera.LocalPlayer.Value));
-            _transmitter.Send(_remotePlayerToggleConverter.ToOSCMessage(_vrcCamera.RemotePlayer.Value));
-            _transmitter.Send(_environmentToggleConverter.ToOSCMessage(_vrcCamera.Environment.Value));
-            _transmitter.Send(_greenScreenToggleConverter.ToOSCMessage(_vrcCamera.GreenScreen.Value));
-            _transmitter.Send(_smoothMovementToggleConverter.ToOSCMessage(_vrcCamera.SmoothMovement.Value));
-            _transmitter.Send(_lookAtMeToggleConverter.ToOSCMessage(_vrcCamera.LookAtMe.Value));
-            _transmitter.Send(_autoLevelRollToggleConverter.ToOSCMessage(_vrcCamera.AutoLevelRoll.Value));
-            _transmitter.Send(_autoLevelPitchToggleConverter.ToOSCMessage(_vrcCamera.AutoLevelPitch.Value));
-            _transmitter.Send(_flyingToggleConverter.ToOSCMessage(_vrcCamera.Flying.Value));
-            _transmitter.Send(_triggerTakesPhotosToggleConverter.ToOSCMessage(_vrcCamera.TriggerTakesPhotos.Value));
+            _transmitter.Send(new ShowUIInCameraToggleOscMessage(_vrcCamera.ShowUIInCamera.Value));
+            _transmitter.Send(new LockToggleOscMessage(_vrcCamera.Lock.Value));
+            _transmitter.Send(new LocalPlayerToggleOscMessage(_vrcCamera.LocalPlayer.Value));
+            _transmitter.Send(new RemotePlayerToggleOscMessage(_vrcCamera.RemotePlayer.Value));
+            _transmitter.Send(new EnvironmentToggleOscMessage(_vrcCamera.Environment.Value));
+            _transmitter.Send(new GreenScreenToggleOscMessage(_vrcCamera.GreenScreen.Value));
+            _transmitter.Send(new SmoothMovementToggleOscMessage(_vrcCamera.SmoothMovement.Value));
+            _transmitter.Send(new LookAtMeToggleOscMessage(_vrcCamera.LookAtMe.Value));
+            _transmitter.Send(new AutoLevelRollToggleOscMessage(_vrcCamera.AutoLevelRoll.Value));
+            _transmitter.Send(new AutoLevelPitchToggleOscMessage(_vrcCamera.AutoLevelPitch.Value));
+            _transmitter.Send(new FlyingToggleOscMessage(_vrcCamera.Flying.Value));
+            _transmitter.Send(new TriggerTakesPhotosToggleOscMessage(_vrcCamera.TriggerTakesPhotos.Value));
             _transmitter.Send(
-                _dollyPathsStayVisibleToggleConverter.ToOSCMessage(_vrcCamera.DollyPathsStayVisible.Value));
-            _transmitter.Send(_cameraEarsToggleConverter.ToOSCMessage(_vrcCamera.CameraEars.Value));
-            _transmitter.Send(_showFocusToggleConverter.ToOSCMessage(_vrcCamera.ShowFocus.Value));
-            _transmitter.Send(_streamingToggleConverter.ToOSCMessage(_vrcCamera.Streaming.Value));
-            _transmitter.Send(_rollWhileFlyingToggleConverter.ToOSCMessage(_vrcCamera.RollWhileFlying.Value));
+                new DollyPathsStayVisibleToggleOscMessage(_vrcCamera.DollyPathsStayVisible.Value));
+            _transmitter.Send(new CameraEarsToggleOscMessage(_vrcCamera.CameraEars.Value));
+            _transmitter.Send(new ShowFocusToggleOscMessage(_vrcCamera.ShowFocus.Value));
+            _transmitter.Send(new StreamingToggleOscMessage(_vrcCamera.Streaming.Value));
+            _transmitter.Send(new RollWhileFlyingToggleOscMessage(_vrcCamera.RollWhileFlying.Value));
             _transmitter.Send(_modeConverter.ToOSCMessage(_vrcCamera.Mode.Value));
             var isLandscape = _vrcCamera.Orientation.Value == Orientation.Landscape;
             _transmitter.Send(new Message(OSCCameraEndpoints.OrientationIsLandscape,
