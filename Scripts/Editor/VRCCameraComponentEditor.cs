@@ -110,31 +110,31 @@ namespace Astearium.VRChat.Camera.Editor
         {
             var changed = false;
 
-            if (_mode != null && _mode.intValue == (int)Mode.Off)
+            if (_mode is { intValue: (int)Mode.Off })
             {
                 _mode.intValue = (int)Mode.Photo;
                 changed = true;
             }
 
-            if (_localPlayer != null && !_localPlayer.boolValue)
+            if (_localPlayer is { boolValue: false })
             {
                 _localPlayer.boolValue = true;
                 changed = true;
             }
 
-            if (_remotePlayer != null && !_remotePlayer.boolValue)
+            if (_remotePlayer is { boolValue: false })
             {
                 _remotePlayer.boolValue = true;
                 changed = true;
             }
 
-            if (_environment != null && !_environment.boolValue)
+            if (_environment is { boolValue: false })
             {
                 _environment.boolValue = true;
                 changed = true;
             }
 
-            if (_items != null && !_items.boolValue)
+            if (_items is { boolValue: false })
             {
                 _items.boolValue = true;
                 changed = true;
@@ -206,7 +206,7 @@ namespace Astearium.VRChat.Camera.Editor
                 if (_syncPoseFromTransform.boolValue)
                 {
                     var src = _poseTransform.objectReferenceValue as Transform;
-                    if (src != null)
+                    if (src)
                     {
                         if (posePosition != null)
                         {
@@ -301,20 +301,20 @@ namespace Astearium.VRChat.Camera.Editor
                     _mode.intValue = (int)modeOrder[newIndex];
                 }
 
-                var currentOrientation = _orientationIsLandscape.boolValue ? Orientation.Landscape : Orientation.Portrait;
+                var currentOrientation =
+                    _orientationIsLandscape.boolValue ? Orientation.Landscape : Orientation.Portrait;
                 EditorGUI.BeginChangeCheck();
                 var newOrientation = (Orientation)EditorGUILayout.EnumPopup("Orientation", currentOrientation);
                 if (EditorGUI.EndChangeCheck())
                 {
                     _orientationIsLandscape.boolValue = newOrientation == Orientation.Landscape;
                 }
+
                 EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
 
-                var sourceCamera = (_unityCameraOverride != null
-                        ? _unityCameraOverride.objectReferenceValue
-                        : null) as UnityEngine.Camera;
+                var sourceCamera = _unityCameraOverride?.objectReferenceValue as UnityEngine.Camera;
 
-                var isSyncing = _syncUnityCamera != null && _syncUnityCamera.boolValue;
+                var isSyncing = _syncUnityCamera is { boolValue: true };
                 using (new EditorGUI.DisabledScope(isSyncing))
                 {
                     if (isSyncing && sourceCamera != null)
@@ -403,17 +403,16 @@ namespace Astearium.VRChat.Camera.Editor
             EditorGUILayout.LabelField("Focus", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
-                var sourceCamera =
-                    (_unityCameraOverride != null ? _unityCameraOverride.objectReferenceValue : null) as
-                    UnityEngine.Camera;
+                var sourceCamera = _unityCameraOverride?.objectReferenceValue as UnityEngine.Camera;
 
 #if UNITY_2021_2_OR_NEWER
-                var isSyncing = _syncUnityCamera != null && _syncUnityCamera.boolValue;
+                var isSyncing = _syncUnityCamera is { boolValue: true };
                 using (new EditorGUI.DisabledScope(isSyncing))
                 {
-                    if (isSyncing && sourceCamera != null)
+                    if (isSyncing && sourceCamera)
                     {
-                        var focal = Mathf.Clamp(sourceCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
+                        var focal = Mathf.Clamp(sourceCamera.focusDistance, FocalDistance.MinValue,
+                            FocalDistance.MaxValue);
                         if (!Mathf.Approximately(_focalDistance.floatValue, focal))
                         {
                             _focalDistance.floatValue = focal;
@@ -467,7 +466,7 @@ namespace Astearium.VRChat.Camera.Editor
                     var newMaskColor = EditorGUILayout.ColorField("Color", currentMaskColor);
                     if (EditorGUI.EndChangeCheck())
                     {
-                        Color.RGBToHSV(newMaskColor, out float h, out float s, out float v);
+                        Color.RGBToHSV(newMaskColor, out var h, out var s, out var v);
                         _hue.floatValue = h * Hue.MaxValue;
                         _saturation.floatValue = s * Saturation.MaxValue;
                         _lightness.floatValue = v * Lightness.MaxValue;
@@ -522,7 +521,7 @@ namespace Astearium.VRChat.Camera.Editor
             }
 
             var currentValue = _portValue.intValue;
-            if (currentValue < PortNumber.MinValue || currentValue > PortNumber.MaxValue)
+            if (currentValue is < PortNumber.MinValue or > PortNumber.MaxValue)
             {
                 currentValue = 9000;
                 _portValue.intValue = currentValue;
@@ -541,26 +540,25 @@ namespace Astearium.VRChat.Camera.Editor
                 return;
             }
 
-            if (_portValue.intValue >= PortNumber.MinValue && _portValue.intValue <= PortNumber.MaxValue)
+            if (_portValue.intValue is >= PortNumber.MinValue and <= PortNumber.MaxValue)
             {
                 _lastValidPort = _portValue.intValue;
             }
 
             EditorGUI.BeginChangeCheck();
             var newValue = EditorGUILayout.DelayedIntField(new GUIContent("Port"), _portValue.intValue);
-            if (EditorGUI.EndChangeCheck())
+            if (!EditorGUI.EndChangeCheck()) return;
+
+            if (newValue is < PortNumber.MinValue or > PortNumber.MaxValue)
             {
-                if (newValue < PortNumber.MinValue || newValue > PortNumber.MaxValue)
-                {
-                    _portValue.intValue = _lastValidPort;
-                    Debug.LogWarning(
-                        $"[{nameof(VRCCameraComponent)}] Port must be between {PortNumber.MinValue} and {PortNumber.MaxValue}. Reverting to {_lastValidPort}.");
-                }
-                else
-                {
-                    _portValue.intValue = newValue;
-                    _lastValidPort = newValue;
-                }
+                _portValue.intValue = _lastValidPort;
+                Debug.LogWarning(
+                    $"[{nameof(VRCCameraComponent)}] Port must be between {PortNumber.MinValue} and {PortNumber.MaxValue}. Reverting to {_lastValidPort}.");
+            }
+            else
+            {
+                _portValue.intValue = newValue;
+                _lastValidPort = newValue;
             }
         }
     }

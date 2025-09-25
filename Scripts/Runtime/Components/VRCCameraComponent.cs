@@ -57,6 +57,8 @@ namespace Astearium.VRChat.Camera
         public const string PoseSourceFieldName = nameof(poseSource);
 #endif
 
+        #region Serialized Fields
+
         // OSC Endpoint
         [SerializeField] private string destination = "127.0.0.1";
         [SerializeField] private PortNumber port = new(9000);
@@ -111,6 +113,8 @@ namespace Astearium.VRChat.Camera
 
         [SerializeField] private bool syncPoseFromTransform = false;
         [SerializeField] private Transform poseSource = null;
+
+        #endregion
 
         private UnityEngine.Camera _unityCamera;
         private VRCCamera _vrcCamera;
@@ -339,44 +343,11 @@ namespace Astearium.VRChat.Camera
             {
                 _vrcCamera = new VRCCamera();
 
-                // Set all initial values before creating synchronizer to avoid duplicate messages
-                _vrcCamera.SetExposure(Exposure);
-                _vrcCamera.SetHue(Hue);
-                _vrcCamera.SetSaturation(Saturation);
-                _vrcCamera.SetLightness(Lightness);
-                _vrcCamera.SetLookAtMeOffset(new LookAtMeOffset(LookAtMeXOffset, LookAtMeYOffset));
-                _vrcCamera.SetFlySpeed(FlySpeed);
-                _vrcCamera.SetTurnSpeed(TurnSpeed);
-                _vrcCamera.SetSmoothingStrength(SmoothingStrength);
-                _vrcCamera.SetPhotoRate(PhotoRate);
-                _vrcCamera.SetDuration(Duration);
-                _vrcCamera.SetShowUIInCamera(ShowUIInCamera);
-                _vrcCamera.SetLock(Lock);
-                _vrcCamera.SetLocalPlayer(LocalPlayer);
-                _vrcCamera.SetRemotePlayer(RemotePlayer);
-                _vrcCamera.SetEnvironment(Environment);
-                _vrcCamera.SetGreenScreen(GreenScreen);
-                _vrcCamera.SetSmoothMovement(SmoothMovement);
-                _vrcCamera.SetLookAtMe(LookAtMe);
-                _vrcCamera.SetAutoLevelPitch(AutoLevelPitch);
-                _vrcCamera.SetAutoLevelRoll(AutoLevelRoll);
-                _vrcCamera.SetFlying(Flying);
-                _vrcCamera.SetTriggerTakesPhotos(TriggerTakesPhotos);
-                _vrcCamera.SetDollyPathsStayVisible(DollyPathsStayVisible);
-                _vrcCamera.SetCameraEars(CameraEars);
-                _vrcCamera.SetShowFocus(ShowFocus);
-                _vrcCamera.SetStreaming(Streaming);
-                _vrcCamera.SetRollWhileFlying(RollWhileFlying);
-                _vrcCamera.SetOrientation(OrientationIsLandscape ? Orientation.Landscape : Orientation.Portrait);
-                _vrcCamera.SetMode(Mode);
-
                 SyncUnityCamera();
-                _vrcCamera.SetZoom(Zoom);
-                _vrcCamera.SetFocalDistance(FocalDistance);
-                _vrcCamera.SetAperture(Aperture);
+                ApplyCameraSettings();
 
                 SyncPose();
-                _vrcCamera?.SetPose(Pose);
+                _vrcCamera.Pose.SetValue(Pose);
 
                 var transmitter = new OSCTransmitter(destination, port.Value);
                 _synchronizer = new VRCCameraSynchronizer(transmitter, _vrcCamera);
@@ -393,71 +364,61 @@ namespace Astearium.VRChat.Camera
         {
             _synchronizer?.Dispose();
             _synchronizer = null;
+
             _vrcCamera?.Dispose();
             _vrcCamera = null;
-            _unityCamera = null;
-        }
-
-        // Action wrappers for Editor buttons or external callers
-        public void Action_CloseCamera()
-        {
-            _synchronizer?.Close();
-        }
-
-        public void Action_Capture()
-        {
-            _synchronizer?.Capture();
-        }
-
-        public void Action_CaptureDelayed()
-        {
-            _synchronizer?.CaptureDelayed();
         }
 
         private void FixedUpdate()
         {
             SyncUnityCamera();
-
-            _vrcCamera.SetZoom(Zoom);
-            _vrcCamera.SetFocalDistance(FocalDistance);
-            _vrcCamera.SetAperture(Aperture);
-            _vrcCamera.SetExposure(Exposure);
-            _vrcCamera.SetHue(Hue);
-            _vrcCamera.SetSaturation(Saturation);
-            _vrcCamera.SetLightness(Lightness);
-            _vrcCamera.SetLookAtMeOffset(new LookAtMeOffset(LookAtMeXOffset, LookAtMeYOffset));
-            _vrcCamera.SetFlySpeed(FlySpeed);
-            _vrcCamera.SetTurnSpeed(TurnSpeed);
-            _vrcCamera.SetSmoothingStrength(SmoothingStrength);
-            _vrcCamera.SetPhotoRate(PhotoRate);
-            _vrcCamera.SetDuration(Duration);
-            _vrcCamera.SetShowUIInCamera(ShowUIInCamera);
-            _vrcCamera.SetLock(Lock);
-            _vrcCamera.SetLocalPlayer(LocalPlayer);
-            _vrcCamera.SetRemotePlayer(RemotePlayer);
-            _vrcCamera.SetEnvironment(Environment);
-            _vrcCamera.SetGreenScreen(GreenScreen);
-            _vrcCamera.SetSmoothMovement(SmoothMovement);
-            _vrcCamera.SetLookAtMe(LookAtMe);
-            _vrcCamera.SetAutoLevelPitch(AutoLevelPitch);
-            _vrcCamera.SetAutoLevelRoll(AutoLevelRoll);
-            _vrcCamera.SetFlying(Flying);
-            _vrcCamera.SetTriggerTakesPhotos(TriggerTakesPhotos);
-            _vrcCamera.SetDollyPathsStayVisible(DollyPathsStayVisible);
-            _vrcCamera.SetCameraEars(CameraEars);
-            _vrcCamera.SetShowFocus(ShowFocus);
-            _vrcCamera.SetStreaming(Streaming);
-            _vrcCamera.SetRollWhileFlying(RollWhileFlying);
-            _vrcCamera.SetOrientation(OrientationIsLandscape ? Orientation.Landscape : Orientation.Portrait);
-            _vrcCamera.SetMode(Mode);
-
             SyncPose();
-            _vrcCamera?.SetPose(Pose);
+
+            ApplyCameraSettings();
+        }
+
+        private void ApplyCameraSettings()
+        {
+            _vrcCamera?.Pose.SetValue(Pose);
+            _vrcCamera?.Mode.SetValue(Mode);
+
+            _vrcCamera?.Zoom.SetValue(Zoom);
+            _vrcCamera?.FocalDistance.SetValue(FocalDistance);
+            _vrcCamera?.Aperture.SetValue(Aperture);
+            _vrcCamera?.Exposure.SetValue(Exposure);
+            _vrcCamera?.Hue.SetValue(Hue);
+            _vrcCamera?.Saturation.SetValue(Saturation);
+            _vrcCamera?.Lightness.SetValue(Lightness);
+            _vrcCamera?.LookAtMeOffset.SetValue(new LookAtMeOffset(LookAtMeXOffset, LookAtMeYOffset));
+            _vrcCamera?.FlySpeed.SetValue(FlySpeed);
+            _vrcCamera?.TurnSpeed.SetValue(TurnSpeed);
+            _vrcCamera?.SmoothingStrength.SetValue(SmoothingStrength);
+            _vrcCamera?.PhotoRate.SetValue(PhotoRate);
+            _vrcCamera?.Duration.SetValue(Duration);
+            _vrcCamera?.ShowUIInCamera.SetValue(ShowUIInCamera);
+            _vrcCamera?.Lock.SetValue(Lock);
+            _vrcCamera?.LocalPlayer.SetValue(LocalPlayer);
+            _vrcCamera?.RemotePlayer.SetValue(RemotePlayer);
+            _vrcCamera?.Environment.SetValue(Environment);
+            _vrcCamera?.GreenScreen.SetValue(GreenScreen);
+            _vrcCamera?.SmoothMovement.SetValue(SmoothMovement);
+            _vrcCamera?.LookAtMe.SetValue(LookAtMe);
+            _vrcCamera?.AutoLevelPitch.SetValue(AutoLevelPitch);
+            _vrcCamera?.AutoLevelRoll.SetValue(AutoLevelRoll);
+            _vrcCamera?.Flying.SetValue(Flying);
+            _vrcCamera?.TriggerTakesPhotos.SetValue(TriggerTakesPhotos);
+            _vrcCamera?.DollyPathsStayVisible.SetValue(DollyPathsStayVisible);
+            _vrcCamera?.CameraEars.SetValue(CameraEars);
+            _vrcCamera?.ShowFocus.SetValue(ShowFocus);
+            _vrcCamera?.Streaming.SetValue(Streaming);
+            _vrcCamera?.RollWhileFlying.SetValue(RollWhileFlying);
+            _vrcCamera?.Orientation.SetValue(OrientationIsLandscape ? Orientation.Landscape : Orientation.Portrait);
         }
 
         private void SyncUnityCamera()
         {
             if (!syncUnityCamera || !_unityCamera) return;
+
             Zoom = new Zoom(_unityCamera.focalLength);
             FocalDistance = new FocalDistance(_unityCamera.focusDistance);
             Aperture = new Aperture(_unityCamera.aperture);
