@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace Astearium.VRChat.Camera
 {
@@ -13,42 +12,26 @@ namespace Astearium.VRChat.Camera
         public const float MaxValue = 360f;
         public const float DefaultValue = 120f;
 
-        public readonly float Value;
+        private readonly float _value;
 
         public Hue(float value)
         {
-            // Clamp value to valid range
-            Value = Mathf.Clamp(value, MinValue, MaxValue);
+            if (value is < MinValue or > MaxValue)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, $"Hue value must be between {MinValue} and {MaxValue}.");
+            }
+
+            _value = value;
         }
 
-        public bool Equals(Hue other)
-        {
-            return Mathf.Approximately(Value, other.Value);
-        }
+        public bool Equals(Hue other) => _value.Equals(other._value);
+        public override bool Equals(object obj) => obj is Hue other && Equals(other);
+        public override int GetHashCode() => _value.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is Hue other && Equals(other);
-        }
+        public static bool operator ==(Hue left, Hue right) => left.Equals(right);
+        public static bool operator !=(Hue left, Hue right) => !left.Equals(right);
 
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public static bool operator ==(Hue left, Hue right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Hue left, Hue right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static implicit operator float(Hue hue)
-        {
-            return hue.Value;
-        }
+        public static implicit operator float(Hue hue) => hue._value;
     }
 }

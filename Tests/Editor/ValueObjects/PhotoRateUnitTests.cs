@@ -1,7 +1,6 @@
-using NUnit.Framework;
+using System;
 using Astearium.VRChat.Camera;
-using Astearium.Network.Osc;
-using UnityEngine;
+using NUnit.Framework;
 
 namespace Astearium.VRChat.Camera.Tests.Unit
 {
@@ -9,141 +8,72 @@ namespace Astearium.VRChat.Camera.Tests.Unit
     public class PhotoRateUnitTests
     {
         [Test]
-        public void Constructor_WithDefaultValue_UsesPhotoRateDefaultValue()
+        public void Constructor_WithValidValue_StoresValue()
         {
-            // Act
-            var photoRate = new PhotoRate(PhotoRate.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(PhotoRate.DefaultValue, photoRate.Value);
+            var photoRate = new PhotoRate(1.5f);
+
+            Assert.AreEqual(1.5f, (float)photoRate);
         }
-        
+
         [Test]
-        public void Constructor_WithValue_StoresValue()
+        public void Constructor_WithMinValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 1.5f;
-            
-            // Act
-            var photoRate = new PhotoRate(testValue);
-            
-            // Assert
-            Assert.AreEqual(testValue, photoRate.Value);
+            var photoRate = new PhotoRate(PhotoRate.MinValue);
+
+            Assert.AreEqual(PhotoRate.MinValue, (float)photoRate);
         }
-        
+
         [Test]
-        public void Constructor_WithValueBelowMin_ClampsToMin()
+        public void Constructor_WithMaxValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 0.05f;
-            
-            // Act
-            var photoRate = new PhotoRate(testValue);
-            
-            // Assert
-            Assert.AreEqual(PhotoRate.MinValue, photoRate.Value);
+            var photoRate = new PhotoRate(PhotoRate.MaxValue);
+
+            Assert.AreEqual(PhotoRate.MaxValue, (float)photoRate);
         }
-        
+
         [Test]
-        public void Constructor_WithValueAboveMax_ClampsToMax()
+        public void Constructor_WithValueBelowMin_Throws()
         {
-            // Arrange
-            const float testValue = 3f;
-            
-            // Act
-            var photoRate = new PhotoRate(testValue);
-            
-            // Assert
-            Assert.AreEqual(PhotoRate.MaxValue, photoRate.Value);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new PhotoRate(PhotoRate.MinValue - 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithSameValue_ReturnsTrue()
+        public void Constructor_WithValueAboveMax_Throws()
         {
-            // Arrange
-            var photoRate1 = new PhotoRate(1.2f);
-            var photoRate2 = new PhotoRate(1.2f);
-            
-            // Act & Assert
-            Assert.IsTrue(photoRate1.Equals(photoRate2));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new PhotoRate(PhotoRate.MaxValue + 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithDifferentValue_ReturnsFalse()
+        public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var photoRate1 = new PhotoRate(1.2f);
-            var photoRate2 = new PhotoRate(1.5f);
-            
-            // Act & Assert
-            Assert.IsFalse(photoRate1.Equals(photoRate2));
+            var left = new PhotoRate(0.5f);
+            var right = new PhotoRate(0.5f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
-        public void EqualsOperator_WithSameValue_ReturnsTrue()
+        public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var photoRate1 = new PhotoRate(1.2f);
-            var photoRate2 = new PhotoRate(1.2f);
-            
-            // Act & Assert
-            Assert.IsTrue(photoRate1 == photoRate2);
+            var left = new PhotoRate(0.5f);
+            var right = new PhotoRate(1.5f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void NotEqualsOperator_WithDifferentValue_ReturnsTrue()
+        public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            // Arrange
-            var photoRate1 = new PhotoRate(1.2f);
-            var photoRate2 = new PhotoRate(1.5f);
-            
-            // Act & Assert
-            Assert.IsTrue(photoRate1 != photoRate2);
-        }
-        
-        [Test]
-        public void ImplicitOperator_ToFloat_ReturnsValue()
-        {
-            // Arrange
-            var photoRate = new PhotoRate(1.8f);
-            
-            // Act
+            var photoRate = new PhotoRate(0.75f);
+
             float value = photoRate;
-            
-            // Assert
-            Assert.AreEqual(1.8f, value);
-        }
-        
-        [Test]
-        public void GetHashCode_WithSameValue_ReturnsSameHash()
-        {
-            // Arrange
-            var photoRate1 = new PhotoRate(1.3f);
-            var photoRate2 = new PhotoRate(1.3f);
-            
-            // Act & Assert
-            Assert.AreEqual(photoRate1.GetHashCode(), photoRate2.GetHashCode());
-        }
-        
-        [Test]
-        public void MinValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(0.1f, PhotoRate.MinValue);
-        }
-        
-        [Test]
-        public void MaxValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(2f, PhotoRate.MaxValue);
-        }
-        
-        [Test]
-        public void DefaultValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(1f, PhotoRate.DefaultValue);
+
+            Assert.AreEqual(0.75f, value);
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace Astearium.VRChat.Camera
 {
@@ -13,42 +12,26 @@ namespace Astearium.VRChat.Camera
         public const float MaxValue = 10f;
         public const float DefaultValue = 1.5f;
 
-        public readonly float Value;
+        private readonly float _value;
 
         public FocalDistance(float value)
         {
-            // Clamp value to valid range
-            Value = Mathf.Clamp(value, MinValue, MaxValue);
+            if (value is < MinValue or > MaxValue)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, $"FocalDistance value must be between {MinValue} and {MaxValue}.");
+            }
+
+            _value = value;
         }
 
-        public bool Equals(FocalDistance other)
-        {
-            return Mathf.Approximately(Value, other.Value);
-        }
+        public bool Equals(FocalDistance other) => _value.Equals(other._value);
+        public override bool Equals(object obj) => obj is FocalDistance other && Equals(other);
+        public override int GetHashCode() => _value.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is FocalDistance other && Equals(other);
-        }
+        public static bool operator ==(FocalDistance left, FocalDistance right) => left.Equals(right);
+        public static bool operator !=(FocalDistance left, FocalDistance right) => !left.Equals(right);
 
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public static bool operator ==(FocalDistance left, FocalDistance right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(FocalDistance left, FocalDistance right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static implicit operator float(FocalDistance focalDistance)
-        {
-            return focalDistance.Value;
-        }
+        public static implicit operator float(FocalDistance focalDistance) => focalDistance._value;
     }
 }

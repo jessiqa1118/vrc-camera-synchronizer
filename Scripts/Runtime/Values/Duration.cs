@@ -1,54 +1,37 @@
 using System;
-using UnityEngine;
 
 namespace Astearium.VRChat.Camera
 {
     /// <summary>
-    /// Represents duration value for VRChat OSC control
-    /// Range: 0.1-60, Default: 2
+    /// Represents camera duration value for VRChat OSC control
+    /// Range: 0-10, Default: 2
     /// </summary>
     public readonly struct Duration : IEquatable<Duration>
     {
-        public const float MinValue = 0.1f;
-        public const float MaxValue = 60f;
+        public const float MinValue = 0f;
+        public const float MaxValue = 10f;
         public const float DefaultValue = 2f;
 
-        public readonly float Value;
+        private readonly float _value;
 
         public Duration(float value)
         {
-            // Clamp value to valid range
-            Value = Mathf.Clamp(value, MinValue, MaxValue);
+            if (value is < MinValue or > MaxValue)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, $"Duration value must be between {MinValue} and {MaxValue}.");
+            }
+
+            _value = value;
         }
 
-        public bool Equals(Duration other)
-        {
-            return Mathf.Approximately(Value, other.Value);
-        }
+        public bool Equals(Duration other) => _value.Equals(other._value);
+        public override bool Equals(object obj) => obj is Duration other && Equals(other);
+        public override int GetHashCode() => _value.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is Duration other && Equals(other);
-        }
+        public static bool operator ==(Duration left, Duration right) => left.Equals(right);
+        public static bool operator !=(Duration left, Duration right) => !left.Equals(right);
 
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public static bool operator ==(Duration left, Duration right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Duration left, Duration right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static implicit operator float(Duration duration)
-        {
-            return duration.Value;
-        }
+        public static implicit operator float(Duration duration) => duration._value;
     }
 }

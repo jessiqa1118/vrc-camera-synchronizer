@@ -5,7 +5,7 @@ namespace Astearium.VRChat.Camera
 {
     public class VRCCamera : IDisposable
     {
-        public ReactiveProperty<Zoom> Zoom { get; } = new(new Zoom(Astearium.VRChat.Camera.Zoom.DefaultValue, true));
+        public ReactiveProperty<Zoom> Zoom { get; } = new(new Zoom(Astearium.VRChat.Camera.Zoom.DefaultValue));
 
         public ReactiveProperty<Exposure> Exposure { get; } =
             new(new Exposure(Astearium.VRChat.Camera.Exposure.DefaultValue));

@@ -1,6 +1,6 @@
-using NUnit.Framework;
+using System;
 using Astearium.VRChat.Camera;
-using Astearium.Network.Osc;
+using NUnit.Framework;
 
 namespace Astearium.VRChat.Camera.Tests.Unit
 {
@@ -8,178 +8,72 @@ namespace Astearium.VRChat.Camera.Tests.Unit
     public class LightnessUnitTests
     {
         [Test]
-        public void Constructor_WithDefaultValue_UsesLightnessDefaultValue()
-        {
-            // Act
-            var lightness = new Lightness(Lightness.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(Lightness.DefaultValue, lightness.Value);
-        }
-        
-        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
-            // Arrange
-            const float expectedValue = 30f;
-            
-            // Act
-            var lightness = new Lightness(expectedValue);
-            
-            // Assert
-            Assert.AreEqual(expectedValue, lightness.Value);
+            var lightness = new Lightness(0.4f);
+
+            Assert.AreEqual(0.4f, (float)lightness);
         }
-        
+
         [Test]
-        public void Constructor_WithValueBelowMin_ClampsToMinValue()
+        public void Constructor_WithMinValue_AllowsValue()
         {
-            // Arrange
-            const float inputValue = -10f;
-            
-            // Act
-            var lightness = new Lightness(inputValue);
-            
-            // Assert
-            Assert.AreEqual(Lightness.MinValue, lightness.Value);
+            var lightness = new Lightness(Lightness.MinValue);
+
+            Assert.AreEqual(Lightness.MinValue, (float)lightness);
         }
-        
+
         [Test]
-        public void Constructor_WithValueAboveMax_ClampsToMaxValue()
+        public void Constructor_WithMaxValue_AllowsValue()
         {
-            // Arrange
-            const float inputValue = 120f;
-            
-            // Act
-            var lightness = new Lightness(inputValue);
-            
-            // Assert
-            Assert.AreEqual(Lightness.MaxValue, lightness.Value);
+            var lightness = new Lightness(Lightness.MaxValue);
+
+            Assert.AreEqual(Lightness.MaxValue, (float)lightness);
         }
-        
+
         [Test]
-        public void Constructor_WithDefaultParameter_UsesDefaultValue()
+        public void Constructor_WithValueBelowMin_Throws()
         {
-            // Act
-            var lightness = new Lightness(Lightness.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(Lightness.DefaultValue, lightness.Value);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Lightness(Lightness.MinValue - 0.1f));
         }
-        
+
         [Test]
-        public void MinValue_Is_Zero()
+        public void Constructor_WithValueAboveMax_Throws()
         {
-            // Assert
-            Assert.AreEqual(0f, Lightness.MinValue);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Lightness(Lightness.MaxValue + 0.1f));
         }
-        
-        [Test]
-        public void MaxValue_Is_Fifty()
-        {
-            // Assert
-            Assert.AreEqual(50f, Lightness.MaxValue);
-        }
-        
-        [Test]
-        public void DefaultValue_Is_Fifty()
-        {
-            // Assert
-            Assert.AreEqual(50f, Lightness.DefaultValue);
-        }
-        
+
         [Test]
         public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var lightness1 = new Lightness(40f);
-            var lightness2 = new Lightness(40f);
-            
-            // Act & Assert
-            Assert.AreEqual(lightness1, lightness2);
-            Assert.IsTrue(lightness1.Equals(lightness2));
-            Assert.IsTrue(lightness1 == lightness2);
-            Assert.IsFalse(lightness1 != lightness2);
-            Assert.AreEqual(lightness1.GetHashCode(), lightness2.GetHashCode());
+            var left = new Lightness(0.2f);
+            var right = new Lightness(0.2f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
         public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var lightness1 = new Lightness(20f);
-            var lightness2 = new Lightness(80f);
-            
-            // Act & Assert
-            Assert.AreNotEqual(lightness1, lightness2);
-            Assert.IsFalse(lightness1.Equals(lightness2));
-            Assert.IsFalse(lightness1 == lightness2);
-            Assert.IsTrue(lightness1 != lightness2);
+            var left = new Lightness(-0.4f);
+            var right = new Lightness(0.4f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void Equality_WithSmallDifference_AreEqual()
+        public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            // Arrange
-            var lightness1 = new Lightness(30.0f);
-            var lightness2 = new Lightness(30.0f + UnityEngine.Mathf.Epsilon);
-            
-            // Act & Assert
-            Assert.AreEqual(lightness1, lightness2);
-            Assert.IsTrue(lightness1 == lightness2);
-        }
-        
-        [Test]
-        public void Equality_WithLargerDifference_AreNotEqual()
-        {
-            // Arrange
-            var lightness1 = new Lightness(30.0f);
-            var lightness2 = new Lightness(30.01f);
-            
-            // Act & Assert
-            Assert.AreNotEqual(lightness1, lightness2);
-            Assert.IsTrue(lightness1 != lightness2);
-        }
-        
-        [Test]
-        public void ImplicitFloatConversion_ReturnsValue()
-        {
-            // Arrange
-            var lightness = new Lightness(35f);
-            
-            // Act
+            var lightness = new Lightness(-0.2f);
+
             float value = lightness;
-            
-            // Assert
-            Assert.AreEqual(35f, value);
-        }
-        
-        [Test]
-        public void Equality_WithBoxedObject_WorksCorrectly()
-        {
-            // Arrange
-            var lightness = new Lightness(45f);
-            object boxedLightness = new Lightness(45f);
-            object differentObject = "not a lightness";
-            
-            // Act & Assert
-            Assert.IsTrue(lightness.Equals(boxedLightness));
-            Assert.IsFalse(lightness.Equals(differentObject));
-            Assert.IsFalse(lightness.Equals(null));
-        }
-        
-        [TestCase(0f)]
-        [TestCase(10f)]
-        [TestCase(20f)]
-        [TestCase(30f)]
-        [TestCase(40f)]
-        [TestCase(50f)]
-        public void Constructor_WithValidRangeValues_StoresCorrectly(float value)
-        {
-            // Act
-            var lightness = new Lightness(value);
-            
-            // Assert
-            Assert.AreEqual(value, lightness.Value);
+
+            Assert.AreEqual(-0.2f, value);
         }
     }
 }

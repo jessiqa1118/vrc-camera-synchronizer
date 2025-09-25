@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace Astearium.VRChat.Camera
 {
@@ -13,42 +12,26 @@ namespace Astearium.VRChat.Camera
         public const float MaxValue = 32f;
         public const float DefaultValue = 15f;
 
-        public readonly float Value;
+        private readonly float _value;
 
         public Aperture(float value)
         {
-            // Clamp value to valid range
-            Value = Mathf.Clamp(value, MinValue, MaxValue);
+            if (value is < MinValue or > MaxValue)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, $"Aperture value must be between {MinValue} and {MaxValue}.");
+            }
+
+            _value = value;
         }
 
-        public bool Equals(Aperture other)
-        {
-            return Mathf.Approximately(Value, other.Value);
-        }
+        public bool Equals(Aperture other) => _value.Equals(other._value);
+        public override bool Equals(object obj) => obj is Aperture other && Equals(other);
+        public override int GetHashCode() => _value.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is Aperture other && Equals(other);
-        }
+        public static bool operator ==(Aperture left, Aperture right) => left.Equals(right);
+        public static bool operator !=(Aperture left, Aperture right) => !left.Equals(right);
 
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public static bool operator ==(Aperture left, Aperture right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Aperture left, Aperture right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static implicit operator float(Aperture aperture)
-        {
-            return aperture.Value;
-        }
+        public static implicit operator float(Aperture aperture) => aperture._value;
     }
 }

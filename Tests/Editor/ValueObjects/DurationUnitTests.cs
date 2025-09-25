@@ -1,7 +1,6 @@
-using NUnit.Framework;
+using System;
 using Astearium.VRChat.Camera;
-using Astearium.Network.Osc;
-using UnityEngine;
+using NUnit.Framework;
 
 namespace Astearium.VRChat.Camera.Tests.Unit
 {
@@ -9,141 +8,72 @@ namespace Astearium.VRChat.Camera.Tests.Unit
     public class DurationUnitTests
     {
         [Test]
-        public void Constructor_WithDefaultValue_UsesDurationDefaultValue()
+        public void Constructor_WithValidValue_StoresValue()
         {
-            // Act
-            var duration = new Duration(Duration.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(Duration.DefaultValue, duration.Value);
+            var duration = new Duration(5f);
+
+            Assert.AreEqual(5f, (float)duration);
         }
-        
+
         [Test]
-        public void Constructor_WithValue_StoresValue()
+        public void Constructor_WithMinValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 10f;
-            
-            // Act
-            var duration = new Duration(testValue);
-            
-            // Assert
-            Assert.AreEqual(testValue, duration.Value);
+            var duration = new Duration(Duration.MinValue);
+
+            Assert.AreEqual(Duration.MinValue, (float)duration);
         }
-        
+
         [Test]
-        public void Constructor_WithValueBelowMin_ClampsToMin()
+        public void Constructor_WithMaxValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 0.05f;
-            
-            // Act
-            var duration = new Duration(testValue);
-            
-            // Assert
-            Assert.AreEqual(Duration.MinValue, duration.Value);
+            var duration = new Duration(Duration.MaxValue);
+
+            Assert.AreEqual(Duration.MaxValue, (float)duration);
         }
-        
+
         [Test]
-        public void Constructor_WithValueAboveMax_ClampsToMax()
+        public void Constructor_WithValueBelowMin_Throws()
         {
-            // Arrange
-            const float testValue = 100f;
-            
-            // Act
-            var duration = new Duration(testValue);
-            
-            // Assert
-            Assert.AreEqual(Duration.MaxValue, duration.Value);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Duration(Duration.MinValue - 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithSameValue_ReturnsTrue()
+        public void Constructor_WithValueAboveMax_Throws()
         {
-            // Arrange
-            var duration1 = new Duration(30f);
-            var duration2 = new Duration(30f);
-            
-            // Act & Assert
-            Assert.IsTrue(duration1.Equals(duration2));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Duration(Duration.MaxValue + 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithDifferentValue_ReturnsFalse()
+        public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var duration1 = new Duration(30f);
-            var duration2 = new Duration(45f);
-            
-            // Act & Assert
-            Assert.IsFalse(duration1.Equals(duration2));
+            var left = new Duration(2f);
+            var right = new Duration(2f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
-        public void EqualsOperator_WithSameValue_ReturnsTrue()
+        public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var duration1 = new Duration(30f);
-            var duration2 = new Duration(30f);
-            
-            // Act & Assert
-            Assert.IsTrue(duration1 == duration2);
+            var left = new Duration(2f);
+            var right = new Duration(4f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void NotEqualsOperator_WithDifferentValue_ReturnsTrue()
+        public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            // Arrange
-            var duration1 = new Duration(30f);
-            var duration2 = new Duration(45f);
-            
-            // Act & Assert
-            Assert.IsTrue(duration1 != duration2);
-        }
-        
-        [Test]
-        public void ImplicitOperator_ToFloat_ReturnsValue()
-        {
-            // Arrange
-            var duration = new Duration(15f);
-            
-            // Act
+            var duration = new Duration(1.5f);
+
             float value = duration;
-            
-            // Assert
-            Assert.AreEqual(15f, value);
-        }
-        
-        [Test]
-        public void GetHashCode_WithSameValue_ReturnsSameHash()
-        {
-            // Arrange
-            var duration1 = new Duration(5f);
-            var duration2 = new Duration(5f);
-            
-            // Act & Assert
-            Assert.AreEqual(duration1.GetHashCode(), duration2.GetHashCode());
-        }
-        
-        [Test]
-        public void MinValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(0.1f, Duration.MinValue);
-        }
-        
-        [Test]
-        public void MaxValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(60f, Duration.MaxValue);
-        }
-        
-        [Test]
-        public void DefaultValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(2f, Duration.DefaultValue);
+
+            Assert.AreEqual(1.5f, value);
         }
     }
 }

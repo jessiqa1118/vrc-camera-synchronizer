@@ -1,6 +1,6 @@
-using NUnit.Framework;
+using System;
 using Astearium.VRChat.Camera;
-using Astearium.Network.Osc;
+using NUnit.Framework;
 
 namespace Astearium.VRChat.Camera.Tests.Unit
 {
@@ -8,177 +8,72 @@ namespace Astearium.VRChat.Camera.Tests.Unit
     public class FocalDistanceUnitTests
     {
         [Test]
-        public void Constructor_WithDefaultValue_UsesFocalDistanceDefaultValue()
-        {
-            // Act
-            var focalDistance = new FocalDistance(FocalDistance.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(FocalDistance.DefaultValue, focalDistance.Value);
-        }
-        
-        [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
-            // Arrange
-            const float expectedValue = 3.5f;
-            
-            // Act
-            var focalDistance = new FocalDistance(expectedValue);
-            
-            // Assert
-            Assert.AreEqual(expectedValue, focalDistance.Value);
+            var focalDistance = new FocalDistance(5f);
+
+            Assert.AreEqual(5f, (float)focalDistance);
         }
-        
+
         [Test]
-        public void Constructor_WithValueBelowMin_ClampsToMinValue()
+        public void Constructor_WithMinValue_AllowsValue()
         {
-            // Arrange
-            const float inputValue = -1f;
-            
-            // Act
-            var focalDistance = new FocalDistance(inputValue);
-            
-            // Assert
-            Assert.AreEqual(FocalDistance.MinValue, focalDistance.Value);
+            var focalDistance = new FocalDistance(FocalDistance.MinValue);
+
+            Assert.AreEqual(FocalDistance.MinValue, (float)focalDistance);
         }
-        
+
         [Test]
-        public void Constructor_WithValueAboveMax_ClampsToMaxValue()
+        public void Constructor_WithMaxValue_AllowsValue()
         {
-            // Arrange
-            const float inputValue = 15f;
-            
-            // Act
-            var focalDistance = new FocalDistance(inputValue);
-            
-            // Assert
-            Assert.AreEqual(FocalDistance.MaxValue, focalDistance.Value);
+            var focalDistance = new FocalDistance(FocalDistance.MaxValue);
+
+            Assert.AreEqual(FocalDistance.MaxValue, (float)focalDistance);
         }
-        
+
         [Test]
-        public void Constructor_WithDefaultParameter_UsesDefaultValue()
+        public void Constructor_WithValueBelowMin_Throws()
         {
-            // Act
-            var focalDistance = new FocalDistance(FocalDistance.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(FocalDistance.DefaultValue, focalDistance.Value);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new FocalDistance(FocalDistance.MinValue - 0.01f));
         }
-        
+
         [Test]
-        public void MinValue_Is_Zero()
+        public void Constructor_WithValueAboveMax_Throws()
         {
-            // Assert
-            Assert.AreEqual(0f, FocalDistance.MinValue);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new FocalDistance(FocalDistance.MaxValue + 0.01f));
         }
-        
-        [Test]
-        public void MaxValue_Is_Ten()
-        {
-            // Assert
-            Assert.AreEqual(10f, FocalDistance.MaxValue);
-        }
-        
-        [Test]
-        public void DefaultValue_Is_OnePointFive()
-        {
-            // Assert
-            Assert.AreEqual(1.5f, FocalDistance.DefaultValue);
-        }
-        
+
         [Test]
         public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var fd1 = new FocalDistance(5f);
-            var fd2 = new FocalDistance(5f);
-            
-            // Act & Assert
-            Assert.AreEqual(fd1, fd2);
-            Assert.IsTrue(fd1.Equals(fd2));
-            Assert.IsTrue(fd1 == fd2);
-            Assert.IsFalse(fd1 != fd2);
-            Assert.AreEqual(fd1.GetHashCode(), fd2.GetHashCode());
+            var left = new FocalDistance(3f);
+            var right = new FocalDistance(3f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
         public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var fd1 = new FocalDistance(2f);
-            var fd2 = new FocalDistance(8f);
-            
-            // Act & Assert
-            Assert.AreNotEqual(fd1, fd2);
-            Assert.IsFalse(fd1.Equals(fd2));
-            Assert.IsFalse(fd1 == fd2);
-            Assert.IsTrue(fd1 != fd2);
+            var left = new FocalDistance(3f);
+            var right = new FocalDistance(4f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void Equality_WithSmallDifference_AreEqual()
+        public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            // Arrange
-            var fd1 = new FocalDistance(5.0f);
-            var fd2 = new FocalDistance(5.0f + UnityEngine.Mathf.Epsilon);
-            
-            // Act & Assert
-            Assert.AreEqual(fd1, fd2);
-            Assert.IsTrue(fd1 == fd2);
-        }
-        
-        [Test]
-        public void Equality_WithLargerDifference_AreNotEqual()
-        {
-            // Arrange
-            var fd1 = new FocalDistance(5.0f);
-            var fd2 = new FocalDistance(5.01f);
-            
-            // Act & Assert
-            Assert.AreNotEqual(fd1, fd2);
-            Assert.IsTrue(fd1 != fd2);
-        }
-        
-        [Test]
-        public void ImplicitFloatConversion_ReturnsValue()
-        {
-            // Arrange
-            var focalDistance = new FocalDistance(7.5f);
-            
-            // Act
+            var focalDistance = new FocalDistance(2f);
+
             float value = focalDistance;
-            
-            // Assert
-            Assert.AreEqual(7.5f, value);
-        }
-        
-        [Test]
-        public void Equality_WithBoxedObject_WorksCorrectly()
-        {
-            // Arrange
-            var focalDistance = new FocalDistance(3f);
-            object boxedFocalDistance = new FocalDistance(3f);
-            object differentObject = "not a focal distance";
-            
-            // Act & Assert
-            Assert.IsTrue(focalDistance.Equals(boxedFocalDistance));
-            Assert.IsFalse(focalDistance.Equals(differentObject));
-            Assert.IsFalse(focalDistance.Equals(null));
-        }
-        
-        [TestCase(0f)]
-        [TestCase(1.5f)]
-        [TestCase(5f)]
-        [TestCase(7.5f)]
-        [TestCase(10f)]
-        public void Constructor_WithValidRangeValues_StoresCorrectly(float value)
-        {
-            // Act
-            var focalDistance = new FocalDistance(value);
-            
-            // Assert
-            Assert.AreEqual(value, focalDistance.Value);
+
+            Assert.AreEqual(2f, value);
         }
     }
 }

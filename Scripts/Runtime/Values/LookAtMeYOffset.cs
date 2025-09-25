@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace Astearium.VRChat.Camera
 {
@@ -13,42 +12,26 @@ namespace Astearium.VRChat.Camera
         public const float MaxValue = 25f;
         public const float DefaultValue = 0f;
 
-        public readonly float Value;
+        private readonly float _value;
 
         public LookAtMeYOffset(float value)
         {
-            // Clamp value to valid range
-            Value = Mathf.Clamp(value, MinValue, MaxValue);
+            if (value is < MinValue or > MaxValue)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, $"LookAtMeYOffset value must be between {MinValue} and {MaxValue}.");
+            }
+
+            _value = value;
         }
 
-        public bool Equals(LookAtMeYOffset other)
-        {
-            return Mathf.Approximately(Value, other.Value);
-        }
+        public bool Equals(LookAtMeYOffset other) => _value.Equals(other._value);
+        public override bool Equals(object obj) => obj is LookAtMeYOffset other && Equals(other);
+        public override int GetHashCode() => _value.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is LookAtMeYOffset other && Equals(other);
-        }
+        public static bool operator ==(LookAtMeYOffset left, LookAtMeYOffset right) => left.Equals(right);
+        public static bool operator !=(LookAtMeYOffset left, LookAtMeYOffset right) => !left.Equals(right);
 
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public static bool operator ==(LookAtMeYOffset left, LookAtMeYOffset right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(LookAtMeYOffset left, LookAtMeYOffset right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static implicit operator float(LookAtMeYOffset offset)
-        {
-            return offset.Value;
-        }
+        public static implicit operator float(LookAtMeYOffset offset) => offset._value;
     }
 }

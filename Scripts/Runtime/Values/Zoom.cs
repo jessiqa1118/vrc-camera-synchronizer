@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace Astearium.VRChat.Camera
 {
@@ -13,48 +12,26 @@ namespace Astearium.VRChat.Camera
         public const float MaxValue = 150f;
         public const float DefaultValue = 45f;
 
-        public readonly float Value;
+        private readonly float _value;
 
-        public Zoom(float value, bool clamp)
+        public Zoom(float value)
         {
-            Value = clamp switch
+            if (value is < MinValue or > MaxValue)
             {
-                true => Mathf.Clamp(value, MinValue, MaxValue),
-                false when value is < MinValue or > MaxValue =>
-                    throw new ArgumentOutOfRangeException(
-                        nameof(value), $"Zoom value must be between {MinValue} and {MaxValue}."),
-                _ => value
-            };
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, $"Zoom value must be between {MinValue} and {MaxValue}.");
+            }
+
+            _value = value;
         }
 
-        public bool Equals(Zoom other)
-        {
-            return Mathf.Approximately(Value, other.Value);
-        }
+        public bool Equals(Zoom other) => _value.Equals(other._value);
+        public override bool Equals(object obj) => obj is Zoom other && Equals(other);
+        public override int GetHashCode() => _value.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is Zoom other && Equals(other);
-        }
+        public static bool operator ==(Zoom left, Zoom right) => left.Equals(right);
+        public static bool operator !=(Zoom left, Zoom right) => !left.Equals(right);
 
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public static bool operator ==(Zoom left, Zoom right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Zoom left, Zoom right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static implicit operator float(Zoom zoom)
-        {
-            return zoom.Value;
-        }
+        public static implicit operator float(Zoom zoom) => zoom._value;
     }
 }

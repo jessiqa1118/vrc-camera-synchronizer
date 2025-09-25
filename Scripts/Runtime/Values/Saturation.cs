@@ -1,54 +1,37 @@
 using System;
-using UnityEngine;
 
 namespace Astearium.VRChat.Camera
 {
     /// <summary>
-    /// Represents camera saturation value for VRChat OSC control (GreenScreen)
-    /// Range: 0-100, Default: 100
+    /// Represents camera saturation value for VRChat OSC control
+    /// Range: 0 to 2, Default: 1
     /// </summary>
     public readonly struct Saturation : IEquatable<Saturation>
     {
         public const float MinValue = 0f;
-        public const float MaxValue = 100f;
-        public const float DefaultValue = 100f;
+        public const float MaxValue = 2f;
+        public const float DefaultValue = 1f;
 
-        public readonly float Value;
+        private readonly float _value;
 
         public Saturation(float value)
         {
-            // Clamp value to valid range
-            Value = Mathf.Clamp(value, MinValue, MaxValue);
+            if (value is < MinValue or > MaxValue)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, $"Saturation value must be between {MinValue} and {MaxValue}.");
+            }
+
+            _value = value;
         }
 
-        public bool Equals(Saturation other)
-        {
-            return Mathf.Approximately(Value, other.Value);
-        }
+        public bool Equals(Saturation other) => _value.Equals(other._value);
+        public override bool Equals(object obj) => obj is Saturation other && Equals(other);
+        public override int GetHashCode() => _value.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is Saturation other && Equals(other);
-        }
+        public static bool operator ==(Saturation left, Saturation right) => left.Equals(right);
+        public static bool operator !=(Saturation left, Saturation right) => !left.Equals(right);
 
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public static bool operator ==(Saturation left, Saturation right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Saturation left, Saturation right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static implicit operator float(Saturation saturation)
-        {
-            return saturation.Value;
-        }
+        public static implicit operator float(Saturation saturation) => saturation._value;
     }
 }
