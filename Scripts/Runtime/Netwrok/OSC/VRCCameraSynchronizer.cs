@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Astearium.Network.Osc;
 
 namespace Astearium.VRChat.Camera
@@ -7,12 +8,17 @@ namespace Astearium.VRChat.Camera
     {
         private readonly IOSCTransmitter _transmitter;
         private readonly VRCCamera _vrcCamera;
+        private readonly IVRCCameraMessageFactory _messageFactory;
         private bool _disposed = false;
 
-        public VRCCameraSynchronizer(IOSCTransmitter transmitter, VRCCamera vrcCamera)
+        public VRCCameraSynchronizer(
+            IOSCTransmitter transmitter,
+            VRCCamera vrcCamera,
+            IVRCCameraMessageFactory messageFactory = null)
         {
             _transmitter = transmitter ?? throw new ArgumentNullException(nameof(transmitter));
             _vrcCamera = vrcCamera ?? throw new ArgumentNullException(nameof(vrcCamera));
+            _messageFactory = messageFactory ?? new VRCCameraMessageFactory();
 
             // Subscribe to value changes
             _vrcCamera.Zoom.OnValueChanged += OnZoomChanged;
@@ -51,290 +57,6 @@ namespace Astearium.VRChat.Camera
 
             // Send initial values
             Sync();
-        }
-
-        private void OnZoomChanged(Zoom zoom)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new ZoomOscMessage(zoom));
-        }
-
-        private void OnExposureChanged(Exposure exposure)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new ExposureOscMessage(exposure));
-        }
-
-        private void OnFocalDistanceChanged(FocalDistance focalDistance)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new FocalDistanceOscMessage(focalDistance));
-        }
-
-        private void OnApertureChanged(Aperture aperture)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new ApertureOscMessage(aperture));
-        }
-
-        private void OnHueChanged(Hue hue)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new HueOscMessage(hue));
-        }
-
-        private void OnSaturationChanged(Saturation saturation)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new SaturationOscMessage(saturation));
-        }
-
-        private void OnLightnessChanged(Lightness lightness)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new LightnessOscMessage(lightness));
-        }
-
-        private void OnLookAtMeOffsetChanged(LookAtMeOffset lookAtMeOffset)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new LookAtMeXOffsetOscMessage(lookAtMeOffset.X));
-            _transmitter.Send(new LookAtMeYOffsetOscMessage(lookAtMeOffset.Y));
-        }
-
-        private void OnFlySpeedChanged(FlySpeed flySpeed)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new FlySpeedOscMessage(flySpeed));
-        }
-
-        private void OnTurnSpeedChanged(TurnSpeed turnSpeed)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new TurnSpeedOscMessage(turnSpeed));
-        }
-
-        private void OnSmoothingStrengthChanged(SmoothingStrength smoothingStrength)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new SmoothingStrengthOscMessage(smoothingStrength));
-        }
-
-        private void OnPhotoRateChanged(PhotoRate photoRate)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new PhotoRateOscMessage(photoRate));
-        }
-
-        private void OnDurationChanged(Duration duration)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new DurationOscMessage(duration));
-        }
-
-        private void OnShowUIInCameraChanged(bool showUIInCamera)
-        {
-            if (_disposed) return;
-
-            var message = new ShowUIInCameraToggleOscMessage(showUIInCamera);
-            _transmitter.Send(message);
-        }
-
-        private void OnLockChanged(bool lockToggle)
-        {
-            if (_disposed) return;
-
-            var message = new LockToggleOscMessage(lockToggle);
-            _transmitter.Send(message);
-        }
-
-        private void OnLocalPlayerChanged(bool localPlayer)
-        {
-            if (_disposed) return;
-
-            var message = new LocalPlayerToggleOscMessage(localPlayer);
-            _transmitter.Send(message);
-        }
-
-        private void OnRemotePlayerChanged(bool remotePlayer)
-        {
-            if (_disposed) return;
-
-            var message = new RemotePlayerToggleOscMessage(remotePlayer);
-            _transmitter.Send(message);
-        }
-
-        private void OnEnvironmentChanged(bool environment)
-        {
-            if (_disposed) return;
-
-            var message = new EnvironmentToggleOscMessage(environment);
-            _transmitter.Send(message);
-        }
-
-        private void OnGreenScreenChanged(bool greenScreen)
-        {
-            if (_disposed) return;
-
-            var message = new GreenScreenToggleOscMessage(greenScreen);
-            _transmitter.Send(message);
-        }
-
-        private void OnSmoothMovementChanged(bool smoothMovement)
-        {
-            if (_disposed) return;
-
-            var message = new SmoothMovementToggleOscMessage(smoothMovement);
-            _transmitter.Send(message);
-        }
-
-        private void OnLookAtMeChanged(bool lookAtMe)
-        {
-            if (_disposed) return;
-
-            var message = new LookAtMeToggleOscMessage(lookAtMe);
-            _transmitter.Send(message);
-        }
-
-        private void OnAutoLevelRollChanged(bool autoLevelRoll)
-        {
-            if (_disposed) return;
-
-            var message = new AutoLevelRollToggleOscMessage(autoLevelRoll);
-            _transmitter.Send(message);
-        }
-
-        private void OnAutoLevelPitchChanged(bool autoLevelPitch)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new AutoLevelPitchToggleOscMessage(autoLevelPitch));
-        }
-
-        private void OnFlyingChanged(bool flying)
-        {
-            if (_disposed) return;
-
-            var message = new FlyingToggleOscMessage(flying);
-            _transmitter.Send(message);
-        }
-
-        private void OnTriggerTakesPhotosChanged(bool trigger)
-        {
-            if (_disposed) return;
-
-            var message = new TriggerTakesPhotosToggleOscMessage(trigger);
-            _transmitter.Send(message);
-        }
-
-        private void OnDollyPathsStayVisibleChanged(bool dolly)
-        {
-            if (_disposed) return;
-
-            var message = new DollyPathsStayVisibleToggleOscMessage(dolly);
-            _transmitter.Send(message);
-        }
-
-        private void OnCameraEarsChanged(bool cameraEars)
-        {
-            if (_disposed) return;
-
-            var message = new CameraEarsToggleOscMessage(cameraEars);
-            _transmitter.Send(message);
-        }
-
-        private void OnShowFocusChanged(bool showFocus)
-        {
-            if (_disposed) return;
-
-            var message = new ShowFocusToggleOscMessage(showFocus);
-            _transmitter.Send(message);
-        }
-
-        private void OnStreamingChanged(bool streaming)
-        {
-            if (_disposed) return;
-
-            var message = new StreamingToggleOscMessage(streaming);
-            _transmitter.Send(message);
-        }
-
-        private void OnRollWhileFlyingChanged(bool rollWhileFlying)
-        {
-            if (_disposed) return;
-
-            var message = new RollWhileFlyingToggleOscMessage(rollWhileFlying);
-            _transmitter.Send(message);
-        }
-
-        private void OnOrientationChanged(Orientation orientation)
-        {
-            if (_disposed) return;
-
-            bool isLandscape = orientation == Orientation.Landscape;
-            var message = new Message(OSCCameraEndpoints.OrientationIsLandscape,
-                new[] { new Argument(isLandscape) });
-            _transmitter.Send(message);
-        }
-
-        public void Sync()
-        {
-            if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
-
-            // Send all current values directly (used for initial sync)
-            _transmitter.Send(new ZoomOscMessage(_vrcCamera.Zoom.Value));
-            _transmitter.Send(new ExposureOscMessage(_vrcCamera.Exposure.Value));
-            _transmitter.Send(new FocalDistanceOscMessage(_vrcCamera.FocalDistance.Value));
-            _transmitter.Send(new ApertureOscMessage(_vrcCamera.Aperture.Value));
-            _transmitter.Send(new HueOscMessage(_vrcCamera.Hue.Value));
-            _transmitter.Send(new SaturationOscMessage(_vrcCamera.Saturation.Value));
-            _transmitter.Send(new LightnessOscMessage(_vrcCamera.Lightness.Value));
-
-            var lookAtMeOffset = _vrcCamera.LookAtMeOffset.Value;
-            _transmitter.Send(new LookAtMeXOffsetOscMessage(lookAtMeOffset.X));
-            _transmitter.Send(new LookAtMeYOffsetOscMessage(lookAtMeOffset.Y));
-
-            _transmitter.Send(new FlySpeedOscMessage(_vrcCamera.FlySpeed.Value));
-            _transmitter.Send(new TurnSpeedOscMessage(_vrcCamera.TurnSpeed.Value));
-            _transmitter.Send(new SmoothingStrengthOscMessage(_vrcCamera.SmoothingStrength.Value));
-            _transmitter.Send(new PhotoRateOscMessage(_vrcCamera.PhotoRate.Value));
-            _transmitter.Send(new DurationOscMessage(_vrcCamera.Duration.Value));
-            _transmitter.Send(new PoseOscMessage(_vrcCamera.Pose.Value));
-            _transmitter.Send(new ShowUIInCameraToggleOscMessage(_vrcCamera.ShowUIInCamera.Value));
-            _transmitter.Send(new LockToggleOscMessage(_vrcCamera.Lock.Value));
-            _transmitter.Send(new LocalPlayerToggleOscMessage(_vrcCamera.LocalPlayer.Value));
-            _transmitter.Send(new RemotePlayerToggleOscMessage(_vrcCamera.RemotePlayer.Value));
-            _transmitter.Send(new EnvironmentToggleOscMessage(_vrcCamera.Environment.Value));
-            _transmitter.Send(new GreenScreenToggleOscMessage(_vrcCamera.GreenScreen.Value));
-            _transmitter.Send(new SmoothMovementToggleOscMessage(_vrcCamera.SmoothMovement.Value));
-            _transmitter.Send(new LookAtMeToggleOscMessage(_vrcCamera.LookAtMe.Value));
-            _transmitter.Send(new AutoLevelRollToggleOscMessage(_vrcCamera.AutoLevelRoll.Value));
-            _transmitter.Send(new AutoLevelPitchToggleOscMessage(_vrcCamera.AutoLevelPitch.Value));
-            _transmitter.Send(new FlyingToggleOscMessage(_vrcCamera.Flying.Value));
-            _transmitter.Send(new TriggerTakesPhotosToggleOscMessage(_vrcCamera.TriggerTakesPhotos.Value));
-            _transmitter.Send(
-                new DollyPathsStayVisibleToggleOscMessage(_vrcCamera.DollyPathsStayVisible.Value));
-            _transmitter.Send(new CameraEarsToggleOscMessage(_vrcCamera.CameraEars.Value));
-            _transmitter.Send(new ShowFocusToggleOscMessage(_vrcCamera.ShowFocus.Value));
-            _transmitter.Send(new StreamingToggleOscMessage(_vrcCamera.Streaming.Value));
-            _transmitter.Send(new RollWhileFlyingToggleOscMessage(_vrcCamera.RollWhileFlying.Value));
-            _transmitter.Send(new ModeOscMessage(_vrcCamera.Mode.Value));
-            var isLandscape = _vrcCamera.Orientation.Value == Orientation.Landscape;
-            _transmitter.Send(new Message(OSCCameraEndpoints.OrientationIsLandscape,
-                new[] { new Argument(isLandscape) }));
         }
 
         public void Dispose()
@@ -383,6 +105,155 @@ namespace Astearium.VRChat.Camera
             _transmitter?.Dispose();
         }
 
+        public void Sync()
+        {
+            if (_disposed) throw new ObjectDisposedException(nameof(VRCCameraSynchronizer));
+
+            // Send all current values directly (used for initial sync)
+            DispatchMessages(_messageFactory.CreateZoom(_vrcCamera.Zoom.Value));
+            DispatchMessages(_messageFactory.CreateExposure(_vrcCamera.Exposure.Value));
+            DispatchMessages(_messageFactory.CreateFocalDistance(_vrcCamera.FocalDistance.Value));
+            DispatchMessages(_messageFactory.CreateAperture(_vrcCamera.Aperture.Value));
+            DispatchMessages(_messageFactory.CreateHue(_vrcCamera.Hue.Value));
+            DispatchMessages(_messageFactory.CreateSaturation(_vrcCamera.Saturation.Value));
+            DispatchMessages(_messageFactory.CreateLightness(_vrcCamera.Lightness.Value));
+            DispatchMessages(_messageFactory.CreateLookAtMeOffset(_vrcCamera.LookAtMeOffset.Value));
+            DispatchMessages(_messageFactory.CreateFlySpeed(_vrcCamera.FlySpeed.Value));
+            DispatchMessages(_messageFactory.CreateTurnSpeed(_vrcCamera.TurnSpeed.Value));
+            DispatchMessages(_messageFactory.CreateSmoothingStrength(_vrcCamera.SmoothingStrength.Value));
+            DispatchMessages(_messageFactory.CreatePhotoRate(_vrcCamera.PhotoRate.Value));
+            DispatchMessages(_messageFactory.CreateDuration(_vrcCamera.Duration.Value));
+            DispatchMessages(_messageFactory.CreatePose(_vrcCamera.Pose.Value));
+            DispatchMessages(_messageFactory.CreateShowUIInCamera(_vrcCamera.ShowUIInCamera.Value));
+            DispatchMessages(_messageFactory.CreateLock(_vrcCamera.Lock.Value));
+            DispatchMessages(_messageFactory.CreateLocalPlayer(_vrcCamera.LocalPlayer.Value));
+            DispatchMessages(_messageFactory.CreateRemotePlayer(_vrcCamera.RemotePlayer.Value));
+            DispatchMessages(_messageFactory.CreateEnvironment(_vrcCamera.Environment.Value));
+            DispatchMessages(_messageFactory.CreateGreenScreen(_vrcCamera.GreenScreen.Value));
+            DispatchMessages(_messageFactory.CreateSmoothMovement(_vrcCamera.SmoothMovement.Value));
+            DispatchMessages(_messageFactory.CreateLookAtMe(_vrcCamera.LookAtMe.Value));
+            DispatchMessages(_messageFactory.CreateAutoLevelRoll(_vrcCamera.AutoLevelRoll.Value));
+            DispatchMessages(_messageFactory.CreateAutoLevelPitch(_vrcCamera.AutoLevelPitch.Value));
+            DispatchMessages(_messageFactory.CreateFlying(_vrcCamera.Flying.Value));
+            DispatchMessages(_messageFactory.CreateTriggerTakesPhotos(_vrcCamera.TriggerTakesPhotos.Value));
+            DispatchMessages(_messageFactory.CreateDollyPathsStayVisible(_vrcCamera.DollyPathsStayVisible.Value));
+            DispatchMessages(_messageFactory.CreateCameraEars(_vrcCamera.CameraEars.Value));
+            DispatchMessages(_messageFactory.CreateShowFocus(_vrcCamera.ShowFocus.Value));
+            DispatchMessages(_messageFactory.CreateStreaming(_vrcCamera.Streaming.Value));
+            DispatchMessages(_messageFactory.CreateRollWhileFlying(_vrcCamera.RollWhileFlying.Value));
+            DispatchMessages(_messageFactory.CreateMode(_vrcCamera.Mode.Value));
+            DispatchMessages(_messageFactory.CreateOrientation(_vrcCamera.Orientation.Value));
+        }
+
+        private void DispatchMessages(IEnumerable<IOSCMessage> messages)
+        {
+            if (_disposed || messages == null)
+            {
+                return;
+            }
+
+            foreach (var message in messages)
+            {
+                if (message == null)
+                {
+                    continue;
+                }
+
+                _transmitter.Send(message);
+            }
+        }
+
+        private void OnZoomChanged(Zoom zoom) => DispatchMessages(_messageFactory.CreateZoom(zoom));
+
+        private void OnExposureChanged(Exposure exposure) =>
+            DispatchMessages(_messageFactory.CreateExposure(exposure));
+
+        private void OnFocalDistanceChanged(FocalDistance focalDistance) =>
+            DispatchMessages(_messageFactory.CreateFocalDistance(focalDistance));
+
+        private void OnApertureChanged(Aperture aperture) =>
+            DispatchMessages(_messageFactory.CreateAperture(aperture));
+
+        private void OnHueChanged(Hue hue) => DispatchMessages(_messageFactory.CreateHue(hue));
+
+        private void OnSaturationChanged(Saturation saturation) =>
+            DispatchMessages(_messageFactory.CreateSaturation(saturation));
+
+        private void OnLightnessChanged(Lightness lightness) =>
+            DispatchMessages(_messageFactory.CreateLightness(lightness));
+
+        private void OnLookAtMeOffsetChanged(LookAtMeOffset lookAtMeOffset) =>
+            DispatchMessages(_messageFactory.CreateLookAtMeOffset(lookAtMeOffset));
+
+        private void OnFlySpeedChanged(FlySpeed flySpeed) =>
+            DispatchMessages(_messageFactory.CreateFlySpeed(flySpeed));
+
+        private void OnTurnSpeedChanged(TurnSpeed turnSpeed) =>
+            DispatchMessages(_messageFactory.CreateTurnSpeed(turnSpeed));
+
+        private void OnSmoothingStrengthChanged(SmoothingStrength smoothingStrength) =>
+            DispatchMessages(_messageFactory.CreateSmoothingStrength(smoothingStrength));
+
+        private void OnPhotoRateChanged(PhotoRate photoRate) =>
+            DispatchMessages(_messageFactory.CreatePhotoRate(photoRate));
+
+        private void OnDurationChanged(Duration duration) =>
+            DispatchMessages(_messageFactory.CreateDuration(duration));
+
+        private void OnShowUIInCameraChanged(bool showUIInCamera) =>
+            DispatchMessages(_messageFactory.CreateShowUIInCamera(showUIInCamera));
+
+        private void OnLockChanged(bool lockToggle) =>
+            DispatchMessages(_messageFactory.CreateLock(lockToggle));
+
+        private void OnLocalPlayerChanged(bool localPlayer) =>
+            DispatchMessages(_messageFactory.CreateLocalPlayer(localPlayer));
+
+        private void OnRemotePlayerChanged(bool remotePlayer) =>
+            DispatchMessages(_messageFactory.CreateRemotePlayer(remotePlayer));
+
+        private void OnEnvironmentChanged(bool environment) =>
+            DispatchMessages(_messageFactory.CreateEnvironment(environment));
+
+        private void OnGreenScreenChanged(bool greenScreen) =>
+            DispatchMessages(_messageFactory.CreateGreenScreen(greenScreen));
+
+        private void OnSmoothMovementChanged(bool smoothMovement) =>
+            DispatchMessages(_messageFactory.CreateSmoothMovement(smoothMovement));
+
+        private void OnLookAtMeChanged(bool lookAtMe) =>
+            DispatchMessages(_messageFactory.CreateLookAtMe(lookAtMe));
+
+        private void OnAutoLevelRollChanged(bool autoLevelRoll) =>
+            DispatchMessages(_messageFactory.CreateAutoLevelRoll(autoLevelRoll));
+
+        private void OnAutoLevelPitchChanged(bool autoLevelPitch) =>
+            DispatchMessages(_messageFactory.CreateAutoLevelPitch(autoLevelPitch));
+
+        private void OnFlyingChanged(bool flying) =>
+            DispatchMessages(_messageFactory.CreateFlying(flying));
+
+        private void OnTriggerTakesPhotosChanged(bool trigger) =>
+            DispatchMessages(_messageFactory.CreateTriggerTakesPhotos(trigger));
+
+        private void OnDollyPathsStayVisibleChanged(bool dolly) =>
+            DispatchMessages(_messageFactory.CreateDollyPathsStayVisible(dolly));
+
+        private void OnCameraEarsChanged(bool cameraEars) =>
+            DispatchMessages(_messageFactory.CreateCameraEars(cameraEars));
+
+        private void OnShowFocusChanged(bool showFocus) =>
+            DispatchMessages(_messageFactory.CreateShowFocus(showFocus));
+
+        private void OnStreamingChanged(bool streaming) =>
+            DispatchMessages(_messageFactory.CreateStreaming(streaming));
+
+        private void OnRollWhileFlyingChanged(bool rollWhileFlying) =>
+            DispatchMessages(_messageFactory.CreateRollWhileFlying(rollWhileFlying));
+
+        private void OnOrientationChanged(Orientation orientation) =>
+            DispatchMessages(_messageFactory.CreateOrientation(orientation));
+
         public void Close() => SendAction(OSCCameraEndpoints.Close);
 
         public void Capture() => SendAction(OSCCameraEndpoints.Capture);
@@ -395,17 +266,10 @@ namespace Astearium.VRChat.Camera
             _transmitter.Send(new Message(address, Array.Empty<Argument>()));
         }
 
-        private void OnPoseChanged(UnityEngine.Pose pose)
-        {
-            if (_disposed) return;
-            _transmitter.Send(new PoseOscMessage(pose));
-        }
+        private void OnPoseChanged(UnityEngine.Pose pose) =>
+            DispatchMessages(_messageFactory.CreatePose(pose));
 
-        private void OnModeChanged(Mode mode)
-        {
-            if (_disposed) return;
-
-            _transmitter.Send(new ModeOscMessage(mode));
-        }
+        private void OnModeChanged(Mode mode) =>
+            DispatchMessages(_messageFactory.CreateMode(mode));
     }
 }

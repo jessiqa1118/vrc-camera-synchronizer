@@ -251,21 +251,21 @@ namespace Astearium.VRChat.Camera.Editor
                 {
                     serializedObject.ApplyModifiedProperties();
                     var targetComponent = (VRCCameraComponent)target;
-                    targetComponent.Action_CloseCamera();
+                    targetComponent.Close();
                 }
 
                 if (GUILayout.Button("Take Photo"))
                 {
                     serializedObject.ApplyModifiedProperties();
                     var targetComponent = (VRCCameraComponent)target;
-                    targetComponent.Action_Capture();
+                    targetComponent.Capture();
                 }
 
                 if (GUILayout.Button("Timed (5s)"))
                 {
                     serializedObject.ApplyModifiedProperties();
                     var targetComponent = (VRCCameraComponent)target;
-                    targetComponent.Action_CaptureDelayed();
+                    targetComponent.CaptureDelayed();
                 }
             }
 

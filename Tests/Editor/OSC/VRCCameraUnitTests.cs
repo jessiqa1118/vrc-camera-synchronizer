@@ -100,9 +100,9 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             _mockTransmitter.Reset(); // Reset to clear initial sync messages
-            _vrcCamera.SetZoom(new Zoom(50f));
+            _vrcCamera.Zoom.SetValue(new Zoom(50f));
             _mockTransmitter.Reset();
-            _vrcCamera.SetExposure(new Exposure(-2.5f));
+            _vrcCamera.Exposure.SetValue(new Exposure(-2.5f));
             
             // Act
             _synchronizer.Sync();
@@ -118,7 +118,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             _mockTransmitter.Reset(); // Reset to clear initial sync messages
-            _vrcCamera.SetZoom(new Zoom(35f));
+            _vrcCamera.Zoom.SetValue(new Zoom(35f));
             _mockTransmitter.Reset();
             
             // Act
@@ -141,12 +141,12 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             _mockTransmitter.Reset(); // Reset to clear initial sync messages
             
             // Act
-            _vrcCamera.SetZoom(new Zoom(20f));
+            _vrcCamera.Zoom.SetValue(new Zoom(20f));
             _mockTransmitter.Reset();
             _synchronizer.Sync();
             _mockTransmitter.Reset(); // Reset mock state
-            
-            _vrcCamera.SetZoom(new Zoom(80f));
+
+            _vrcCamera.Zoom.SetValue(new Zoom(80f));
             _mockTransmitter.Reset();
             _synchronizer.Sync();
             var secondCallCount = _mockTransmitter.SendCallCount;
@@ -216,7 +216,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             _mockTransmitter.Reset();
 
             // Act
-            _vrcCamera.SetPose(new Pose(new Vector3(1f, 2f, 3f), Quaternion.Euler(10f, 20f, 30f)));
+            _vrcCamera.Pose.SetValue(new Pose(new Vector3(1f, 2f, 3f), Quaternion.Euler(10f, 20f, 30f)));
 
             // Assert
             Assert.AreEqual(1, _mockTransmitter.SendCallCount);
@@ -235,7 +235,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             _mockTransmitter.Reset();
 
             // Act
-            _vrcCamera.SetOrientation(Orientation.Portrait);
+            _vrcCamera.Orientation.SetValue(Orientation.Portrait);
 
             // Assert
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
@@ -251,11 +251,11 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         {
             // Arrange
             _mockTransmitter.Reset();
-            _vrcCamera.SetOrientation(Orientation.Portrait); // ensure change from default
+            _vrcCamera.Orientation.SetValue(Orientation.Portrait); // ensure change from default
             _mockTransmitter.Reset();
 
             // Act
-            _vrcCamera.SetOrientation(Orientation.Landscape);
+            _vrcCamera.Orientation.SetValue(Orientation.Landscape);
 
             // Assert
             Assert.IsNotNull(_mockTransmitter.LastSentMessage);
@@ -273,7 +273,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             _mockTransmitter.Reset();
             
             // Act - Change camera focal length and update
-            _vrcCamera.SetZoom(new Zoom(85f));
+            _vrcCamera.Zoom.SetValue(new Zoom(85f));
             
             // Assert - Should send only one message for the zoom change
             Assert.AreEqual(1, _mockTransmitter.SendCallCount);
@@ -287,7 +287,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             _mockTransmitter.Reset();
             
             // Act
-            _vrcCamera.SetExposure(new Exposure(-5f));
+            _vrcCamera.Exposure.SetValue(new Exposure(-5f));
             
             // Assert - Should send only one message for the exposure change
             Assert.AreEqual(1, _mockTransmitter.SendCallCount);
@@ -302,7 +302,7 @@ namespace Astearium.VRChat.Camera.Tests.Unit
             var currentExposure = _vrcCamera.Exposure.Value;
             
             // Act - Set same value
-            _vrcCamera.SetExposure(currentExposure);
+            _vrcCamera.Exposure.SetValue(currentExposure);
             
             // Assert - Should not send any message
             Assert.AreEqual(0, _mockTransmitter.SendCallCount);
