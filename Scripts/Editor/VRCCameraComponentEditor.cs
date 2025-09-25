@@ -11,6 +11,9 @@ namespace Astearium.VRChat.Camera.Editor
         private SerializedProperty _portValue;
         private int _lastValidPort;
 
+        private SerializedProperty _mode;
+        private SerializedProperty _pose;
+
         private SerializedProperty _exposure;
         private SerializedProperty _hue;
         private SerializedProperty _saturation;
@@ -40,68 +43,127 @@ namespace Astearium.VRChat.Camera.Editor
         private SerializedProperty _showFocus;
         private SerializedProperty _streaming;
         private SerializedProperty _rollWhileFlying;
-        private SerializedProperty _orientation;
-        private SerializedProperty _mode;
+        private SerializedProperty _orientationIsLandscape;
         private SerializedProperty _poseTransform;
         private SerializedProperty _syncPoseFromTransform;
-        private SerializedProperty _posePosition;
-        private SerializedProperty _poseEuler;
         private SerializedProperty _syncUnityCamera;
         private SerializedProperty _unityCameraOverride;
-        private SerializedProperty _zoomValue;
-        private SerializedProperty _focalDistanceValue;
-        private SerializedProperty _apertureValue;
+        private SerializedProperty _zoom;
+        private SerializedProperty _focalDistance;
+        private SerializedProperty _aperture;
 
         private void OnEnable()
         {
             serializedObject.Update();
 
-            _destination = serializedObject.FindProperty("destination");
-            _port = serializedObject.FindProperty("port");
+            _destination = serializedObject.FindProperty(VRCCameraComponent.DestinationFieldName);
+            _port = serializedObject.FindProperty(VRCCameraComponent.PortFieldName);
             _portValue = _port?.FindPropertyRelative("value");
 
-            _exposure = serializedObject.FindProperty("exposure");
-            _hue = serializedObject.FindProperty("hue");
-            _saturation = serializedObject.FindProperty("saturation");
-            _lightness = serializedObject.FindProperty("lightness");
-            _lookAtMeXOffset = serializedObject.FindProperty("lookAtMeXOffset");
-            _lookAtMeYOffset = serializedObject.FindProperty("lookAtMeYOffset");
-            _flySpeed = serializedObject.FindProperty("flySpeed");
-            _turnSpeed = serializedObject.FindProperty("turnSpeed");
-            _smoothingStrength = serializedObject.FindProperty("smoothingStrength");
-            _photoRate = serializedObject.FindProperty("photoRate");
-            _duration = serializedObject.FindProperty("duration");
-            _showUIInCamera = serializedObject.FindProperty("showUIInCamera");
-            _lockCamera = serializedObject.FindProperty("lockCamera");
-            _localPlayer = serializedObject.FindProperty("localPlayer");
-            _remotePlayer = serializedObject.FindProperty("remotePlayer");
-            _environment = serializedObject.FindProperty("environment");
-            _greenScreen = serializedObject.FindProperty("greenScreen");
-            _items = serializedObject.FindProperty("items");
-            _smoothMovement = serializedObject.FindProperty("smoothMovement");
-            _lookAtMe = serializedObject.FindProperty("lookAtMe");
-            _autoLevelRoll = serializedObject.FindProperty("autoLevelRoll");
-            _autoLevelPitch = serializedObject.FindProperty("autoLevelPitch");
-            _flying = serializedObject.FindProperty("flying");
-            _triggerTakesPhotos = serializedObject.FindProperty("triggerTakesPhotos");
-            _dollyPathsStayVisible = serializedObject.FindProperty("dollyPathsStayVisible");
-            _cameraEars = serializedObject.FindProperty("cameraEars");
-            _showFocus = serializedObject.FindProperty("showFocus");
-            _streaming = serializedObject.FindProperty("streaming");
-            _rollWhileFlying = serializedObject.FindProperty("rollWhileFlying");
-            _orientation = serializedObject.FindProperty("orientation");
-            _mode = serializedObject.FindProperty("mode");
-            _poseTransform = serializedObject.FindProperty("poseSource");
-            _syncPoseFromTransform = serializedObject.FindProperty("syncPoseFromTransform");
-            _posePosition = serializedObject.FindProperty("posePosition");
-            _poseEuler = serializedObject.FindProperty("poseEuler");
-            _syncUnityCamera = serializedObject.FindProperty("syncUnityCamera");
-            _unityCameraOverride = serializedObject.FindProperty("unityCamera");
-            _zoomValue = serializedObject.FindProperty("zoom");
-            _focalDistanceValue = serializedObject.FindProperty("focalDistance");
-            _apertureValue = serializedObject.FindProperty("aperture");
+            _mode = serializedObject.FindProperty(VRCCameraComponent.ModeFieldName);
+            _pose = serializedObject.FindProperty(VRCCameraComponent.PoseFieldName);
+
+            _exposure = serializedObject.FindProperty(VRCCameraComponent.ExposureFieldName);
+            _hue = serializedObject.FindProperty(VRCCameraComponent.HueFieldName);
+            _saturation = serializedObject.FindProperty(VRCCameraComponent.SaturationFieldName);
+            _lightness = serializedObject.FindProperty(VRCCameraComponent.LightnessFieldName);
+            _lookAtMeXOffset = serializedObject.FindProperty(VRCCameraComponent.LookAtMeXOffsetFieldName);
+            _lookAtMeYOffset = serializedObject.FindProperty(VRCCameraComponent.LookAtMeYOffsetFieldName);
+            _flySpeed = serializedObject.FindProperty(VRCCameraComponent.FlySpeedFieldName);
+            _turnSpeed = serializedObject.FindProperty(VRCCameraComponent.TurnSpeedFieldName);
+            _smoothingStrength = serializedObject.FindProperty(VRCCameraComponent.SmoothingStrengthFieldName);
+            _photoRate = serializedObject.FindProperty(VRCCameraComponent.PhotoRateFieldName);
+            _duration = serializedObject.FindProperty(VRCCameraComponent.DurationFieldName);
+            _showUIInCamera = serializedObject.FindProperty(VRCCameraComponent.ShowUIInCameraFieldName);
+            _lockCamera = serializedObject.FindProperty(VRCCameraComponent.LockCameraFieldName);
+            _localPlayer = serializedObject.FindProperty(VRCCameraComponent.LocalPlayerFieldName);
+            _remotePlayer = serializedObject.FindProperty(VRCCameraComponent.RemotePlayerFieldName);
+            _environment = serializedObject.FindProperty(VRCCameraComponent.EnvironmentFieldName);
+            _greenScreen = serializedObject.FindProperty(VRCCameraComponent.GreenScreenFieldName);
+            _items = serializedObject.FindProperty(VRCCameraComponent.ItemsFieldName);
+            _smoothMovement = serializedObject.FindProperty(VRCCameraComponent.SmoothMovementFieldName);
+            _lookAtMe = serializedObject.FindProperty(VRCCameraComponent.LookAtMeFieldName);
+            _autoLevelRoll = serializedObject.FindProperty(VRCCameraComponent.AutoLevelRollFieldName);
+            _autoLevelPitch = serializedObject.FindProperty(VRCCameraComponent.AutoLevelPitchFieldName);
+            _flying = serializedObject.FindProperty(VRCCameraComponent.FlyingFieldName);
+            _triggerTakesPhotos = serializedObject.FindProperty(VRCCameraComponent.TriggerTakesPhotosFieldName);
+            _dollyPathsStayVisible = serializedObject.FindProperty(VRCCameraComponent.DollyPathsStayVisibleFieldName);
+            _cameraEars = serializedObject.FindProperty(VRCCameraComponent.CameraEarsFieldName);
+            _showFocus = serializedObject.FindProperty(VRCCameraComponent.ShowFocusFieldName);
+            _streaming = serializedObject.FindProperty(VRCCameraComponent.StreamingFieldName);
+            _rollWhileFlying = serializedObject.FindProperty(VRCCameraComponent.RollWhileFlyingFieldName);
+            _orientationIsLandscape = serializedObject.FindProperty(VRCCameraComponent.OrientationFieldName);
+            _poseTransform = serializedObject.FindProperty(VRCCameraComponent.PoseSourceFieldName);
+            _syncPoseFromTransform = serializedObject.FindProperty(VRCCameraComponent.SyncPoseFromTransformFieldName);
+            _syncUnityCamera = serializedObject.FindProperty(VRCCameraComponent.SyncUnityCameraFieldName);
+            _unityCameraOverride = serializedObject.FindProperty(VRCCameraComponent.UnityCameraFieldName);
+            _zoom = serializedObject.FindProperty(VRCCameraComponent.ZoomFieldName);
+            _focalDistance = serializedObject.FindProperty(VRCCameraComponent.FocalDistanceFieldName);
+            _aperture = serializedObject.FindProperty(VRCCameraComponent.ApertureFieldName);
 
             InitializePortDefaults();
+
+            ApplyEditorDefaults();
+        }
+
+        private void ApplyEditorDefaults()
+        {
+            var changed = false;
+
+            if (_mode != null && _mode.intValue == (int)Mode.Off)
+            {
+                _mode.intValue = (int)Mode.Photo;
+                changed = true;
+            }
+
+            if (_localPlayer != null && !_localPlayer.boolValue)
+            {
+                _localPlayer.boolValue = true;
+                changed = true;
+            }
+
+            if (_remotePlayer != null && !_remotePlayer.boolValue)
+            {
+                _remotePlayer.boolValue = true;
+                changed = true;
+            }
+
+            if (_environment != null && !_environment.boolValue)
+            {
+                _environment.boolValue = true;
+                changed = true;
+            }
+
+            if (_items != null && !_items.boolValue)
+            {
+                _items.boolValue = true;
+                changed = true;
+            }
+
+            // Default greenscreen color to RGB 00FF00 (Hue 120, Saturation 100, Lightness 100)
+            if (_hue != null && Mathf.Approximately(_hue.floatValue, Hue.DefaultValue))
+            {
+                _hue.floatValue = 120f;
+                changed = true;
+            }
+
+            if (_saturation != null && Mathf.Approximately(_saturation.floatValue, Saturation.DefaultValue))
+            {
+                _saturation.floatValue = 100f;
+                changed = true;
+            }
+
+            if (_lightness != null && Mathf.Approximately(_lightness.floatValue, Lightness.DefaultValue))
+            {
+                _lightness.floatValue = 100f;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                serializedObject.ApplyModifiedPropertiesWithoutUndo();
+                serializedObject.Update();
+            }
         }
 
         public override void OnInspectorGUI()
@@ -138,20 +200,43 @@ namespace Astearium.VRChat.Camera.Editor
 
                 EditorGUILayout.PropertyField(_poseTransform, new GUIContent("Source"));
 
+                var posePosition = _pose?.FindPropertyRelative("position");
+                var poseRotation = _pose?.FindPropertyRelative("rotation");
+
                 if (_syncPoseFromTransform.boolValue)
                 {
                     var src = _poseTransform.objectReferenceValue as Transform;
                     if (src != null)
                     {
-                        _posePosition.vector3Value = src.position;
-                        _poseEuler.vector3Value = src.rotation.eulerAngles;
+                        if (posePosition != null)
+                        {
+                            posePosition.vector3Value = src.position;
+                        }
+
+                        if (poseRotation != null)
+                        {
+                            poseRotation.quaternionValue = src.rotation;
+                        }
                     }
                 }
 
                 using (new EditorGUI.DisabledScope(_syncPoseFromTransform.boolValue))
                 {
-                    EditorGUILayout.PropertyField(_posePosition, new GUIContent("Position"));
-                    EditorGUILayout.PropertyField(_poseEuler, new GUIContent("Rotation (Euler, degrees)"));
+                    if (posePosition != null)
+                    {
+                        EditorGUILayout.PropertyField(posePosition, new GUIContent("Position"));
+                    }
+
+                    if (poseRotation != null)
+                    {
+                        var currentEuler = poseRotation.quaternionValue.eulerAngles;
+                        EditorGUI.BeginChangeCheck();
+                        var newEuler = EditorGUILayout.Vector3Field("Rotation (Euler, degrees)", currentEuler);
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            poseRotation.quaternionValue = Quaternion.Euler(newEuler);
+                        }
+                    }
                 }
             }
 
@@ -190,7 +275,7 @@ namespace Astearium.VRChat.Camera.Editor
             EditorGUILayout.LabelField("General", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
-                var modeOrder = new Mode[]
+                var modeOrder = new[]
                 {
                     Mode.Off,
                     Mode.Photo,
@@ -216,33 +301,36 @@ namespace Astearium.VRChat.Camera.Editor
                     _mode.intValue = (int)modeOrder[newIndex];
                 }
 
-                EditorGUILayout.PropertyField(_orientation, new GUIContent("Orientation"));
+                var currentOrientation = _orientationIsLandscape.boolValue ? Orientation.Landscape : Orientation.Portrait;
+                EditorGUI.BeginChangeCheck();
+                var newOrientation = (Orientation)EditorGUILayout.EnumPopup("Orientation", currentOrientation);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    _orientationIsLandscape.boolValue = newOrientation == Orientation.Landscape;
+                }
                 EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
 
-                var targetComponent = (VRCCameraComponent)target;
-                var sourceCamera = (_unityCameraOverride != null ? _unityCameraOverride.objectReferenceValue : null) as UnityEngine.Camera;
-                if (sourceCamera == null)
-                {
-                    sourceCamera = targetComponent != null ? targetComponent.GetComponent<UnityEngine.Camera>() : null;
-                }
+                var sourceCamera = (_unityCameraOverride != null
+                        ? _unityCameraOverride.objectReferenceValue
+                        : null) as UnityEngine.Camera;
 
                 var isSyncing = _syncUnityCamera != null && _syncUnityCamera.boolValue;
-                if (isSyncing && sourceCamera != null)
+                using (new EditorGUI.DisabledScope(isSyncing))
                 {
-                    var syncedZoom = Mathf.Clamp(sourceCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
-                    if (!Mathf.Approximately(_zoomValue.floatValue, syncedZoom))
+                    if (isSyncing && sourceCamera != null)
                     {
-                        _zoomValue.floatValue = syncedZoom;
-                    }
+                        var syncedZoom = Mathf.Clamp(sourceCamera.focalLength, Zoom.MinValue, Zoom.MaxValue);
+                        if (!Mathf.Approximately(_zoom.floatValue, syncedZoom))
+                        {
+                            _zoom.floatValue = syncedZoom;
+                        }
 
-                    using (new EditorGUI.DisabledScope(true))
-                    {
                         EditorGUILayout.Slider("Zoom (Focal Length)", syncedZoom, Zoom.MinValue, Zoom.MaxValue);
                     }
-                }
-                else
-                {
-                    EditorGUILayout.Slider(_zoomValue, Zoom.MinValue, Zoom.MaxValue, "Zoom (Focal Length)");
+                    else
+                    {
+                        EditorGUILayout.Slider(_zoom, Zoom.MinValue, Zoom.MaxValue, "Zoom (Focal Length)");
+                    }
                 }
             }
 
@@ -292,14 +380,17 @@ namespace Astearium.VRChat.Camera.Editor
                 EditorGUILayout.PropertyField(_smoothMovement, new GUIContent("Smoothed"));
                 using (new EditorGUI.IndentLevelScope())
                 {
-                    EditorGUILayout.Slider(_smoothingStrength, SmoothingStrength.MinValue, SmoothingStrength.MaxValue, "Smoothing Strength");
+                    EditorGUILayout.Slider(_smoothingStrength, SmoothingStrength.MinValue, SmoothingStrength.MaxValue,
+                        "Smoothing Strength");
                 }
 
                 EditorGUILayout.PropertyField(_lookAtMe, new GUIContent("Look-At-Me"));
                 using (new EditorGUI.IndentLevelScope())
                 {
-                    EditorGUILayout.Slider(_lookAtMeXOffset, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue, "Horizontal Offset");
-                    EditorGUILayout.Slider(_lookAtMeYOffset, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue, "Vertical Offset");
+                    EditorGUILayout.Slider(_lookAtMeXOffset, LookAtMeXOffset.MinValue, LookAtMeXOffset.MaxValue,
+                        "Horizontal Offset");
+                    EditorGUILayout.Slider(_lookAtMeYOffset, LookAtMeYOffset.MinValue, LookAtMeYOffset.MaxValue,
+                        "Vertical Offset");
                 }
 
                 EditorGUILayout.PropertyField(_autoLevelPitch, new GUIContent("Auto Level Pitch"));
@@ -312,39 +403,37 @@ namespace Astearium.VRChat.Camera.Editor
             EditorGUILayout.LabelField("Focus", EditorStyles.boldLabel);
             using (new EditorGUI.IndentLevelScope())
             {
-                var targetComponent = (VRCCameraComponent)target;
-                var sourceCamera = (_unityCameraOverride != null ? _unityCameraOverride.objectReferenceValue : null) as UnityEngine.Camera;
-                if (sourceCamera == null && targetComponent != null)
-                {
-                    sourceCamera = targetComponent.GetComponent<UnityEngine.Camera>();
-                }
+                var sourceCamera =
+                    (_unityCameraOverride != null ? _unityCameraOverride.objectReferenceValue : null) as
+                    UnityEngine.Camera;
 
 #if UNITY_2021_2_OR_NEWER
                 var isSyncing = _syncUnityCamera != null && _syncUnityCamera.boolValue;
-                if (isSyncing && sourceCamera != null)
+                using (new EditorGUI.DisabledScope(isSyncing))
                 {
-                    var focal = Mathf.Clamp(sourceCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
-                    if (!Mathf.Approximately(_focalDistanceValue.floatValue, focal))
+                    if (isSyncing && sourceCamera != null)
                     {
-                        _focalDistanceValue.floatValue = focal;
-                    }
+                        var focal = Mathf.Clamp(sourceCamera.focusDistance, FocalDistance.MinValue, FocalDistance.MaxValue);
+                        if (!Mathf.Approximately(_focalDistance.floatValue, focal))
+                        {
+                            _focalDistance.floatValue = focal;
+                        }
 
-                    var aperture = Mathf.Clamp(sourceCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
-                    if (!Mathf.Approximately(_apertureValue.floatValue, aperture))
-                    {
-                        _apertureValue.floatValue = aperture;
-                    }
+                        var aperture = Mathf.Clamp(sourceCamera.aperture, Aperture.MinValue, Aperture.MaxValue);
+                        if (!Mathf.Approximately(_aperture.floatValue, aperture))
+                        {
+                            _aperture.floatValue = aperture;
+                        }
 
-                    using (new EditorGUI.DisabledScope(true))
-                    {
                         EditorGUILayout.Slider("Focal Distance", focal, FocalDistance.MinValue, FocalDistance.MaxValue);
                         EditorGUILayout.Slider("Aperture", aperture, Aperture.MinValue, Aperture.MaxValue);
                     }
-                }
-                else
-                {
-                    EditorGUILayout.Slider(_focalDistanceValue, FocalDistance.MinValue, FocalDistance.MaxValue, "Focal Distance");
-                    EditorGUILayout.Slider(_apertureValue, Aperture.MinValue, Aperture.MaxValue, "Aperture");
+                    else
+                    {
+                        EditorGUILayout.Slider(_focalDistance, FocalDistance.MinValue, FocalDistance.MaxValue,
+                            "Focal Distance");
+                        EditorGUILayout.Slider(_aperture, Aperture.MinValue, Aperture.MaxValue, "Aperture");
+                    }
                 }
 #else
                 using (new EditorGUI.DisabledScope(true))
@@ -407,6 +496,7 @@ namespace Astearium.VRChat.Camera.Editor
             {
                 EditorGUILayout.Slider(_duration, Duration.MinValue, Duration.MaxValue, "Duration");
                 EditorGUILayout.Slider(_photoRate, PhotoRate.MinValue, PhotoRate.MaxValue, "Photo Rate");
+                EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Show Paths"));
             }
 
             EditorGUILayout.Space();
@@ -417,7 +507,6 @@ namespace Astearium.VRChat.Camera.Editor
             {
                 EditorGUILayout.PropertyField(_lockCamera, new GUIContent("Lock"));
                 EditorGUILayout.PropertyField(_triggerTakesPhotos, new GUIContent("Trigger Takes Photos"));
-                EditorGUILayout.PropertyField(_dollyPathsStayVisible, new GUIContent("Dolly Paths Stay Visible"));
             }
 
             EditorGUILayout.Space();
@@ -464,7 +553,8 @@ namespace Astearium.VRChat.Camera.Editor
                 if (newValue < PortNumber.MinValue || newValue > PortNumber.MaxValue)
                 {
                     _portValue.intValue = _lastValidPort;
-                    Debug.LogWarning($"[{nameof(VRCCameraComponent)}] Port must be between {PortNumber.MinValue} and {PortNumber.MaxValue}. Reverting to {_lastValidPort}.");
+                    Debug.LogWarning(
+                        $"[{nameof(VRCCameraComponent)}] Port must be between {PortNumber.MinValue} and {PortNumber.MaxValue}. Reverting to {_lastValidPort}.");
                 }
                 else
                 {

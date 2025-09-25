@@ -4,13 +4,13 @@ namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents camera saturation value for VRChat OSC control
-    /// Range: 0 to 2, Default: 1
+    /// Range: 0 to 100, Default: 100
     /// </summary>
     public readonly struct Saturation : IEquatable<Saturation>
     {
         public const float MinValue = 0f;
-        public const float MaxValue = 2f;
-        public const float DefaultValue = 1f;
+        public const float MaxValue = 100f;
+        public const float DefaultValue = 100f;
 
         private readonly float _value;
 

@@ -10,9 +10,9 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
-            var smoothingStrength = new SmoothingStrength(0.5f);
+            var smoothingStrength = new SmoothingStrength(5f);
 
-            Assert.AreEqual(0.5f, (float)smoothingStrength);
+            Assert.AreEqual(5f, (float)smoothingStrength);
         }
 
         [Test]
@@ -46,8 +46,8 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Equality_SameValues_AreEqual()
         {
-            var left = new SmoothingStrength(0.25f);
-            var right = new SmoothingStrength(0.25f);
+            var left = new SmoothingStrength(3f);
+            var right = new SmoothingStrength(3f);
 
             Assert.IsTrue(left == right);
             Assert.IsFalse(left != right);
@@ -58,8 +58,8 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Equality_DifferentValues_AreNotEqual()
         {
-            var left = new SmoothingStrength(0.25f);
-            var right = new SmoothingStrength(0.75f);
+            var left = new SmoothingStrength(2f);
+            var right = new SmoothingStrength(6f);
 
             Assert.IsFalse(left == right);
             Assert.IsTrue(left != right);
@@ -69,11 +69,11 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            var smoothingStrength = new SmoothingStrength(0.9f);
+            var smoothingStrength = new SmoothingStrength(4.5f);
 
             float value = smoothingStrength;
 
-            Assert.AreEqual(0.9f, value);
+            Assert.AreEqual(4.5f, value);
         }
     }
 }

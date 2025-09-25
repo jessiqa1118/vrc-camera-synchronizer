@@ -46,8 +46,8 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Equality_SameValues_AreEqual()
         {
-            var left = new TurnSpeed(4f);
-            var right = new TurnSpeed(4f);
+            var left = new TurnSpeed(2.5f);
+            var right = new TurnSpeed(2.5f);
 
             Assert.IsTrue(left == right);
             Assert.IsFalse(left != right);
@@ -58,8 +58,8 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Equality_DifferentValues_AreNotEqual()
         {
-            var left = new TurnSpeed(4f);
-            var right = new TurnSpeed(5f);
+            var left = new TurnSpeed(1f);
+            var right = new TurnSpeed(4f);
 
             Assert.IsFalse(left == right);
             Assert.IsTrue(left != right);
@@ -69,11 +69,11 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            var turnSpeed = new TurnSpeed(6f);
+            var turnSpeed = new TurnSpeed(1.5f);
 
             float value = turnSpeed;
 
-            Assert.AreEqual(6f, value);
+            Assert.AreEqual(1.5f, value);
         }
     }
 }

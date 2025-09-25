@@ -4,13 +4,13 @@ namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents camera photo rate value for VRChat OSC control
-    /// Range: 0.1-3, Default: 0.5
+    /// Range: 0.1-2, Default: 1
     /// </summary>
     public readonly struct PhotoRate : IEquatable<PhotoRate>
     {
         public const float MinValue = 0.1f;
-        public const float MaxValue = 3f;
-        public const float DefaultValue = 0.5f;
+        public const float MaxValue = 2f;
+        public const float DefaultValue = 1f;
 
         private readonly float _value;
 

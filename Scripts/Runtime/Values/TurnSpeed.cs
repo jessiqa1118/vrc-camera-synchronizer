@@ -4,13 +4,13 @@ namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents camera turn speed value for VRChat OSC control
-    /// Range: 0.1-15, Default: 3
+    /// Range: 0.1-5, Default: 1
     /// </summary>
     public readonly struct TurnSpeed : IEquatable<TurnSpeed>
     {
         public const float MinValue = 0.1f;
-        public const float MaxValue = 15f;
-        public const float DefaultValue = 3f;
+        public const float MaxValue = 5f;
+        public const float DefaultValue = 1f;
 
         private readonly float _value;
 

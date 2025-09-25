@@ -4,12 +4,12 @@ namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents camera duration value for VRChat OSC control
-    /// Range: 0-10, Default: 2
+    /// Range: 0.1-60, Default: 2
     /// </summary>
     public readonly struct Duration : IEquatable<Duration>
     {
-        public const float MinValue = 0f;
-        public const float MaxValue = 10f;
+        public const float MinValue = 0.1f;
+        public const float MaxValue = 60f;
         public const float DefaultValue = 2f;
 
         private readonly float _value;

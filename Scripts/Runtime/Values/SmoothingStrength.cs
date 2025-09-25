@@ -4,13 +4,13 @@ namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents camera smoothing strength value for VRChat OSC control
-    /// Range: 0-1, Default: 0.25
+    /// Range: 0.1-10, Default: 5
     /// </summary>
     public readonly struct SmoothingStrength : IEquatable<SmoothingStrength>
     {
-        public const float MinValue = 0f;
-        public const float MaxValue = 1f;
-        public const float DefaultValue = 0.25f;
+        public const float MinValue = 0.1f;
+        public const float MaxValue = 10f;
+        public const float DefaultValue = 5f;
 
         private readonly float _value;
 

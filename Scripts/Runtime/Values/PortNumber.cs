@@ -16,10 +16,10 @@ namespace Astearium.VRChat.Camera
 
         public PortNumber(int value)
         {
-            if (value < MinValue || value > MaxValue)
+            if (value is < MinValue or > MaxValue)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value,
-                    $"Port number must be between {MinValue} and {MaxValue}.");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, $"Port number must be between {MinValue} and {MaxValue}.");
             }
 
             this.value = value;

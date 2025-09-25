@@ -46,8 +46,8 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Equality_SameValues_AreEqual()
         {
-            var left = new PhotoRate(0.5f);
-            var right = new PhotoRate(0.5f);
+            var left = new PhotoRate(1f);
+            var right = new PhotoRate(1f);
 
             Assert.IsTrue(left == right);
             Assert.IsFalse(left != right);

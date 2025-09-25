@@ -10,9 +10,9 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Constructor_WithValidValue_StoresValue()
         {
-            var saturation = new Saturation(1.2f);
+            var saturation = new Saturation(80f);
 
-            Assert.AreEqual(1.2f, (float)saturation);
+            Assert.AreEqual(80f, (float)saturation);
         }
 
         [Test]
@@ -34,20 +34,20 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Constructor_WithValueBelowMin_Throws()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Saturation(Saturation.MinValue - 0.1f));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Saturation(Saturation.MinValue - 1f));
         }
 
         [Test]
         public void Constructor_WithValueAboveMax_Throws()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Saturation(Saturation.MaxValue + 0.1f));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Saturation(Saturation.MaxValue + 1f));
         }
 
         [Test]
         public void Equality_SameValues_AreEqual()
         {
-            var left = new Saturation(0.5f);
-            var right = new Saturation(0.5f);
+            var left = new Saturation(50f);
+            var right = new Saturation(50f);
 
             Assert.IsTrue(left == right);
             Assert.IsFalse(left != right);
@@ -58,8 +58,8 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void Equality_DifferentValues_AreNotEqual()
         {
-            var left = new Saturation(0.5f);
-            var right = new Saturation(1.5f);
+            var left = new Saturation(40f);
+            var right = new Saturation(60f);
 
             Assert.IsFalse(left == right);
             Assert.IsTrue(left != right);
@@ -69,11 +69,11 @@ namespace Astearium.VRChat.Camera.Tests.Unit
         [Test]
         public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            var saturation = new Saturation(0.75f);
+            var saturation = new Saturation(25f);
 
             float value = saturation;
 
-            Assert.AreEqual(0.75f, value);
+            Assert.AreEqual(25f, value);
         }
     }
 }

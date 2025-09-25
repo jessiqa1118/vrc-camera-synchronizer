@@ -4,13 +4,13 @@ namespace Astearium.VRChat.Camera
 {
     /// <summary>
     /// Represents camera lightness value for VRChat OSC control
-    /// Range: -1 to 1, Default: 0
+    /// Range: 0 to 100, Default: 60
     /// </summary>
     public readonly struct Lightness : IEquatable<Lightness>
     {
-        public const float MinValue = -1f;
-        public const float MaxValue = 1f;
-        public const float DefaultValue = 0f;
+        public const float MinValue = 0f;
+        public const float MaxValue = 100f;
+        public const float DefaultValue = 60f;
 
         private readonly float _value;
 
