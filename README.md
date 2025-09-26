@@ -18,32 +18,46 @@ A Unity package for synchronizing VRChat camera parameters over OSC (Open Sound 
 
 ## Installation
 
-1. Import OscJack into your Unity project
-2. Copy the `VRCCameraSynchronizer` folder to your `Assets` directory
-3. Add the VRC Camera Synchronizer component to your camera
+### Option 1: Clone into `Assets`
+
+1. In your Unity project root, open a terminal or command prompt.
+2. Navigate to the `Assets` directory (e.g., `cd <ProjectRoot>/Assets`).
+3. Clone this repository: `git clone https://github.com/jessiqa1118/vrc-camera-synchronizer.git`.
+4. Verify the folder is located at `Assets/VRCCameraSynchronizer`.
+
+### Option 2: Import the `.unitypackage`
+
+1. Download the latest `VRCCameraSynchronizer.unitypackage` from the releases page or the provided distribution link.
+2. In Unity, select `Assets > Import Package > Custom Package...` and choose the downloaded file.
+3. Import all assets when prompted.
 
 ## Usage
 
+1. Add the **VRC Camera** component to the camera you want to synchronize.
+2. Configure the OSC settings as described below.
+
 ### Basic Setup
 
-1. Select the camera GameObject you want to synchronize
-2. Add Component → VRCCamera → VRC Camera Synchronizer
-3. Configure the OSC settings:
-   - **Destination**: IP address of the OSC receiver (default: `127.0.0.1`)
+1. Add Component -> Astearium -> VRChat -> VRC Camera
+2. Configure the OSC settings:
+   - **Destination**: IP address of the VRChat application host (default: `127.0.0.1`)
    - **Port**: OSC port number (default: `9000`)
-4. (Optional) Enable **Sync Unity Camera** and assign a **Source** camera. When enabled, the Zoom/Focal Distance/Aperture sliders become read-only and mirror the assigned camera.
+   - (Optional) Enable **Sync Unity Camera** and assign a **Source** camera. When enabled, the Zoom/Focal Distance/Aperture sliders become read-only and mirror the assigned camera.
+3. Enter Play Mode in the Unity Editor to start broadcasting OSC messages.
+4. Adjust the VRC Camera parameters in the Inspector; changes synchronize to VRChat immediately.
 
 ### VRChat Configuration
 
 1. Enable OSC in VRChat:
    - Open the Action Menu (R on desktop)
-   - Navigate to Options → OSC → Enabled
-
+   - Navigate to Options -> OSC -> Enabled
 2. The synchronizer will automatically send camera parameters via OSC
 
 ## OSC Endpoints
 
 Based on VRChat's OSC documentation ([VRChat 2025.3.3](https://docs.vrchat.com/docs/vrchat-202533)), the synchronizer emits the following endpoints:
+
+The component exposes API properties whose names match the trailing parameter segment of each OSC address, allowing external scripts to control the camera programmatically via the `VRC Camera` component.
 
 ### Slider Parameters
 
@@ -88,7 +102,6 @@ Based on VRChat's OSC documentation ([VRChat 2025.3.3](https://docs.vrchat.com/d
 | `/usercamera/OrientationIsLandscape` | Bool | Landscape orientation flag |
 | `/usercamera/Mode` | Int | Camera mode (enum index) |
 | `/usercamera/Pose` | Float[6] | Position (XYZ) + rotation (XYZ Euler) |
-
 
 ## License
 
