@@ -55,7 +55,7 @@ namespace Astearium.Network.Osc
                         break;
 
                     case Argument.ValueType.Float32:
-                        WriteFloat32BE(ms, arg.AsFloat32());
+                        WriteFloat32(ms, arg.AsFloat32());
                         break;
 
                     case Argument.ValueType.String:
@@ -92,6 +92,7 @@ namespace Astearium.Network.Osc
         private static void WriteOscString(Stream s, string value)
         {
             var bytes = Encoding.UTF8.GetBytes(value ?? string.Empty);
+
             s.Write(bytes, 0, bytes.Length);
             s.WriteByte(0);
             PadTo4(s);
@@ -100,6 +101,7 @@ namespace Astearium.Network.Osc
         private static void WriteBlob(Stream s, byte[] blob)
         {
             var data = blob ?? Array.Empty<byte>();
+
             WriteInt32(s, data.Length);
             s.Write(data, 0, data.Length);
             PadTo4(s);
@@ -107,15 +109,25 @@ namespace Astearium.Network.Osc
 
         private static void WriteInt32(Stream s, int value)
         {
-            // VRChat OSC endpoints expect 32-bit integers encoded in little-endian order.
             var bytes = BitConverter.GetBytes(value);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+
             s.Write(bytes, 0, bytes.Length);
         }
 
-        private static void WriteFloat32BE(Stream s, float value)
+        private static void WriteFloat32(Stream s, float value)
         {
             var bytes = BitConverter.GetBytes(value);
-            if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+
             s.Write(bytes, 0, 4);
         }
 
