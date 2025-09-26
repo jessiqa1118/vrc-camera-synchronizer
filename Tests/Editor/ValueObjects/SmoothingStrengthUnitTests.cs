@@ -1,149 +1,79 @@
+using System;
+using Astearium.VRChat.Camera;
 using NUnit.Framework;
-using Parameters;
-using OSC;
-using UnityEngine;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class SmoothingStrengthUnitTests
     {
         [Test]
-        public void Constructor_WithDefaultValue_UsesSmoothingStrengthDefaultValue()
+        public void Constructor_WithValidValue_StoresValue()
         {
-            // Act
-            var smoothingStrength = new SmoothingStrength(SmoothingStrength.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(SmoothingStrength.DefaultValue, smoothingStrength.Value);
+            var smoothingStrength = new SmoothingStrength(5f);
+
+            Assert.AreEqual(5f, (float)smoothingStrength);
         }
-        
+
         [Test]
-        public void Constructor_WithValue_StoresValue()
+        public void Constructor_WithMinValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 7.5f;
-            
-            // Act
-            var smoothingStrength = new SmoothingStrength(testValue);
-            
-            // Assert
-            Assert.AreEqual(testValue, smoothingStrength.Value);
+            var smoothingStrength = new SmoothingStrength(SmoothingStrength.MinValue);
+
+            Assert.AreEqual(SmoothingStrength.MinValue, (float)smoothingStrength);
         }
-        
+
         [Test]
-        public void Constructor_WithValueBelowMin_ClampsToMin()
+        public void Constructor_WithMaxValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 0.05f;
-            
-            // Act
-            var smoothingStrength = new SmoothingStrength(testValue);
-            
-            // Assert
-            Assert.AreEqual(SmoothingStrength.MinValue, smoothingStrength.Value);
+            var smoothingStrength = new SmoothingStrength(SmoothingStrength.MaxValue);
+
+            Assert.AreEqual(SmoothingStrength.MaxValue, (float)smoothingStrength);
         }
-        
+
         [Test]
-        public void Constructor_WithValueAboveMax_ClampsToMax()
+        public void Constructor_WithValueBelowMin_Throws()
         {
-            // Arrange
-            const float testValue = 15f;
-            
-            // Act
-            var smoothingStrength = new SmoothingStrength(testValue);
-            
-            // Assert
-            Assert.AreEqual(SmoothingStrength.MaxValue, smoothingStrength.Value);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new SmoothingStrength(SmoothingStrength.MinValue - 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithSameValue_ReturnsTrue()
+        public void Constructor_WithValueAboveMax_Throws()
         {
-            // Arrange
-            var smoothingStrength1 = new SmoothingStrength(6f);
-            var smoothingStrength2 = new SmoothingStrength(6f);
-            
-            // Act & Assert
-            Assert.IsTrue(smoothingStrength1.Equals(smoothingStrength2));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new SmoothingStrength(SmoothingStrength.MaxValue + 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithDifferentValue_ReturnsFalse()
+        public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var smoothingStrength1 = new SmoothingStrength(6f);
-            var smoothingStrength2 = new SmoothingStrength(8f);
-            
-            // Act & Assert
-            Assert.IsFalse(smoothingStrength1.Equals(smoothingStrength2));
+            var left = new SmoothingStrength(3f);
+            var right = new SmoothingStrength(3f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
-        public void EqualsOperator_WithSameValue_ReturnsTrue()
+        public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var smoothingStrength1 = new SmoothingStrength(6f);
-            var smoothingStrength2 = new SmoothingStrength(6f);
-            
-            // Act & Assert
-            Assert.IsTrue(smoothingStrength1 == smoothingStrength2);
+            var left = new SmoothingStrength(2f);
+            var right = new SmoothingStrength(6f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void NotEqualsOperator_WithDifferentValue_ReturnsTrue()
+        public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            // Arrange
-            var smoothingStrength1 = new SmoothingStrength(6f);
-            var smoothingStrength2 = new SmoothingStrength(8f);
-            
-            // Act & Assert
-            Assert.IsTrue(smoothingStrength1 != smoothingStrength2);
-        }
-        
-        [Test]
-        public void ImplicitOperator_ToFloat_ReturnsValue()
-        {
-            // Arrange
             var smoothingStrength = new SmoothingStrength(4.5f);
-            
-            // Act
+
             float value = smoothingStrength;
-            
-            // Assert
+
             Assert.AreEqual(4.5f, value);
-        }
-        
-        [Test]
-        public void GetHashCode_WithSameValue_ReturnsSameHash()
-        {
-            // Arrange
-            var smoothingStrength1 = new SmoothingStrength(3f);
-            var smoothingStrength2 = new SmoothingStrength(3f);
-            
-            // Act & Assert
-            Assert.AreEqual(smoothingStrength1.GetHashCode(), smoothingStrength2.GetHashCode());
-        }
-        
-        [Test]
-        public void MinValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(0.1f, SmoothingStrength.MinValue);
-        }
-        
-        [Test]
-        public void MaxValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(10f, SmoothingStrength.MaxValue);
-        }
-        
-        [Test]
-        public void DefaultValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(5f, SmoothingStrength.DefaultValue);
         }
     }
 }

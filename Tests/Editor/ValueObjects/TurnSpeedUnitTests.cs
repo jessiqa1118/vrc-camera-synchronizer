@@ -1,149 +1,79 @@
+using System;
+using Astearium.VRChat.Camera;
 using NUnit.Framework;
-using Parameters;
-using OSC;
-using UnityEngine;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class TurnSpeedUnitTests
     {
         [Test]
-        public void Constructor_WithDefaultValue_UsesTurnSpeedDefaultValue()
+        public void Constructor_WithValidValue_StoresValue()
         {
-            // Act
-            var turnSpeed = new TurnSpeed(TurnSpeed.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(TurnSpeed.DefaultValue, turnSpeed.Value);
+            var turnSpeed = new TurnSpeed(3f);
+
+            Assert.AreEqual(3f, (float)turnSpeed);
         }
-        
+
         [Test]
-        public void Constructor_WithValue_StoresValue()
+        public void Constructor_WithMinValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 2.5f;
-            
-            // Act
-            var turnSpeed = new TurnSpeed(testValue);
-            
-            // Assert
-            Assert.AreEqual(testValue, turnSpeed.Value);
+            var turnSpeed = new TurnSpeed(TurnSpeed.MinValue);
+
+            Assert.AreEqual(TurnSpeed.MinValue, (float)turnSpeed);
         }
-        
+
         [Test]
-        public void Constructor_WithValueBelowMin_ClampsToMin()
+        public void Constructor_WithMaxValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 0.05f;
-            
-            // Act
-            var turnSpeed = new TurnSpeed(testValue);
-            
-            // Assert
-            Assert.AreEqual(TurnSpeed.MinValue, turnSpeed.Value);
+            var turnSpeed = new TurnSpeed(TurnSpeed.MaxValue);
+
+            Assert.AreEqual(TurnSpeed.MaxValue, (float)turnSpeed);
         }
-        
+
         [Test]
-        public void Constructor_WithValueAboveMax_ClampsToMax()
+        public void Constructor_WithValueBelowMin_Throws()
         {
-            // Arrange
-            const float testValue = 10f;
-            
-            // Act
-            var turnSpeed = new TurnSpeed(testValue);
-            
-            // Assert
-            Assert.AreEqual(TurnSpeed.MaxValue, turnSpeed.Value);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new TurnSpeed(TurnSpeed.MinValue - 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithSameValue_ReturnsTrue()
+        public void Constructor_WithValueAboveMax_Throws()
         {
-            // Arrange
-            var turnSpeed1 = new TurnSpeed(2.5f);
-            var turnSpeed2 = new TurnSpeed(2.5f);
-            
-            // Act & Assert
-            Assert.IsTrue(turnSpeed1.Equals(turnSpeed2));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new TurnSpeed(TurnSpeed.MaxValue + 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithDifferentValue_ReturnsFalse()
+        public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var turnSpeed1 = new TurnSpeed(2.5f);
-            var turnSpeed2 = new TurnSpeed(3f);
-            
-            // Act & Assert
-            Assert.IsFalse(turnSpeed1.Equals(turnSpeed2));
+            var left = new TurnSpeed(2.5f);
+            var right = new TurnSpeed(2.5f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
-        public void EqualsOperator_WithSameValue_ReturnsTrue()
+        public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var turnSpeed1 = new TurnSpeed(2.5f);
-            var turnSpeed2 = new TurnSpeed(2.5f);
-            
-            // Act & Assert
-            Assert.IsTrue(turnSpeed1 == turnSpeed2);
+            var left = new TurnSpeed(1f);
+            var right = new TurnSpeed(4f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void NotEqualsOperator_WithDifferentValue_ReturnsTrue()
+        public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            // Arrange
-            var turnSpeed1 = new TurnSpeed(2.5f);
-            var turnSpeed2 = new TurnSpeed(3f);
-            
-            // Act & Assert
-            Assert.IsTrue(turnSpeed1 != turnSpeed2);
-        }
-        
-        [Test]
-        public void ImplicitOperator_ToFloat_ReturnsValue()
-        {
-            // Arrange
-            var turnSpeed = new TurnSpeed(3.5f);
-            
-            // Act
+            var turnSpeed = new TurnSpeed(1.5f);
+
             float value = turnSpeed;
-            
-            // Assert
-            Assert.AreEqual(3.5f, value);
-        }
-        
-        [Test]
-        public void GetHashCode_WithSameValue_ReturnsSameHash()
-        {
-            // Arrange
-            var turnSpeed1 = new TurnSpeed(2f);
-            var turnSpeed2 = new TurnSpeed(2f);
-            
-            // Act & Assert
-            Assert.AreEqual(turnSpeed1.GetHashCode(), turnSpeed2.GetHashCode());
-        }
-        
-        [Test]
-        public void MinValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(0.1f, TurnSpeed.MinValue);
-        }
-        
-        [Test]
-        public void MaxValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(5f, TurnSpeed.MaxValue);
-        }
-        
-        [Test]
-        public void DefaultValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(1f, TurnSpeed.DefaultValue);
+
+            Assert.AreEqual(1.5f, value);
         }
     }
 }

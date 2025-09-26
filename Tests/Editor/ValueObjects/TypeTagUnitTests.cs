@@ -1,20 +1,12 @@
 using System;
-using Parameters;
-using OSC;
+using Astearium.Network.Osc;
 using NUnit.Framework;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class TypeTagUnitTests
     {
-        [Test]
-        public void Constructor_WithNullArguments_ThrowsException()
-        {
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _ = new TypeTag(null));
-        }
-
         [Test]
         public void Constructor_WithEmptyArguments_GeneratesEmptyString()
         {

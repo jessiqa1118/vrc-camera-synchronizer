@@ -1,9 +1,9 @@
+using System;
+using Astearium.VRChat.Camera;
 using NUnit.Framework;
-using Parameters;
-using OSC;
 using UnityEngine;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class LookAtMeOffsetUnitTests
@@ -11,154 +11,87 @@ namespace VRCCamera.Tests.Unit
         [Test]
         public void Constructor_WithFloatXAndY_StoresValues()
         {
-            // Arrange
-            const float testX = 10f;
-            const float testY = -15f;
-            
-            // Act
-            var offset = new LookAtMeOffset(testX, testY);
-            
-            // Assert
-            Assert.AreEqual(testX, offset.X.Value);
-            Assert.AreEqual(testY, offset.Y.Value);
+            var offset = new LookAtMeOffset(10f, -15f);
+
+            Assert.AreEqual(10f, (float)offset.X);
+            Assert.AreEqual(-15f, (float)offset.Y);
         }
-        
+
         [Test]
         public void Constructor_WithLookAtMeOffsets_StoresValues()
         {
-            // Arrange
-            var testX = new LookAtMeXOffset(10f);
-            var testY = new LookAtMeYOffset(-15f);
-            
-            // Act
-            var offset = new LookAtMeOffset(testX, testY);
-            
-            // Assert
-            Assert.AreEqual(testX, offset.X);
-            Assert.AreEqual(testY, offset.Y);
+            var x = new LookAtMeXOffset(8f);
+            var y = new LookAtMeYOffset(-6f);
+
+            var offset = new LookAtMeOffset(x, y);
+
+            Assert.AreEqual(x, offset.X);
+            Assert.AreEqual(y, offset.Y);
         }
-        
+
         [Test]
         public void Constructor_WithVector2_StoresValues()
         {
-            // Arrange
-            var testVector = new Vector2(5f, -10f);
-            
-            // Act
-            var offset = new LookAtMeOffset(testVector);
-            
-            // Assert
-            Assert.AreEqual(testVector.x, offset.X.Value);
-            Assert.AreEqual(testVector.y, offset.Y.Value);
+            var vector = new Vector2(5f, -3f);
+
+            var offset = new LookAtMeOffset(vector);
+
+            Assert.AreEqual(vector.x, (float)offset.X);
+            Assert.AreEqual(vector.y, (float)offset.Y);
         }
-        
+
         [Test]
-        public void ToVector2_ReturnsCorrectVector()
+        public void Constructor_WithFloatValuesOutsideRange_Throws()
         {
-            // Arrange
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new LookAtMeOffset(30f, 0f));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new LookAtMeOffset(0f, 30f));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new LookAtMeOffset(-30f, 0f));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new LookAtMeOffset(0f, -30f));
+        }
+
+        [Test]
+        public void ToVector2_ReturnsExpectedVector()
+        {
             var offset = new LookAtMeOffset(3f, -7f);
-            
-            // Act
+
             var vector = offset.ToVector2();
-            
-            // Assert
+
             Assert.AreEqual(3f, vector.x);
             Assert.AreEqual(-7f, vector.y);
         }
-        
+
         [Test]
-        public void Equals_WithSameValues_ReturnsTrue()
+        public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var offset1 = new LookAtMeOffset(5f, 10f);
-            var offset2 = new LookAtMeOffset(5f, 10f);
-            
-            // Act & Assert
-            Assert.IsTrue(offset1.Equals(offset2));
+            var left = new LookAtMeOffset(5f, 10f);
+            var right = new LookAtMeOffset(5f, 10f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
-        public void Equals_WithDifferentValues_ReturnsFalse()
+        public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var offset1 = new LookAtMeOffset(5f, 10f);
-            var offset2 = new LookAtMeOffset(5f, 15f);
-            
-            // Act & Assert
-            Assert.IsFalse(offset1.Equals(offset2));
+            var left = new LookAtMeOffset(5f, 10f);
+            var right = new LookAtMeOffset(5f, 12f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void EqualsOperator_WithSameValues_ReturnsTrue()
+        public void ImplicitConversion_ReturnsVector2()
         {
-            // Arrange
-            var offset1 = new LookAtMeOffset(5f, 10f);
-            var offset2 = new LookAtMeOffset(5f, 10f);
-            
-            // Act & Assert
-            Assert.IsTrue(offset1 == offset2);
-        }
-        
-        [Test]
-        public void NotEqualsOperator_WithDifferentValues_ReturnsTrue()
-        {
-            // Arrange
-            var offset1 = new LookAtMeOffset(5f, 10f);
-            var offset2 = new LookAtMeOffset(5f, 15f);
-            
-            // Act & Assert
-            Assert.IsTrue(offset1 != offset2);
-        }
-        
-        [Test]
-        public void ImplicitOperator_ToVector2_ReturnsCorrectVector()
-        {
-            // Arrange
             var offset = new LookAtMeOffset(12f, -8f);
-            
-            // Act
+
             Vector2 vector = offset;
-            
-            // Assert
+
             Assert.AreEqual(12f, vector.x);
             Assert.AreEqual(-8f, vector.y);
-        }
-        
-        [Test]
-        public void GetHashCode_WithSameValues_ReturnsSameHash()
-        {
-            // Arrange
-            var offset1 = new LookAtMeOffset(2f, 3f);
-            var offset2 = new LookAtMeOffset(2f, 3f);
-            
-            // Act & Assert
-            Assert.AreEqual(offset1.GetHashCode(), offset2.GetHashCode());
-        }
-        
-        [Test]
-        public void GetHashCode_WithDifferentValues_UsuallyReturnsDifferentHash()
-        {
-            // Arrange
-            var offset1 = new LookAtMeOffset(2f, 3f);
-            var offset2 = new LookAtMeOffset(3f, 2f);
-            
-            // Act & Assert
-            // Hash codes might collide but should usually be different
-            Assert.AreNotEqual(offset1.GetHashCode(), offset2.GetHashCode());
-        }
-        
-        [Test]
-        public void Constructor_WithFloatValues_ClampsToValidRange()
-        {
-            // Arrange & Act
-            var offsetAboveMax = new LookAtMeOffset(30f, 30f);
-            var offsetBelowMin = new LookAtMeOffset(-30f, -30f);
-            
-            // Assert
-            Assert.AreEqual(LookAtMeXOffset.MaxValue, offsetAboveMax.X.Value);
-            Assert.AreEqual(LookAtMeYOffset.MaxValue, offsetAboveMax.Y.Value);
-            Assert.AreEqual(LookAtMeXOffset.MinValue, offsetBelowMin.X.Value);
-            Assert.AreEqual(LookAtMeYOffset.MinValue, offsetBelowMin.Y.Value);
         }
     }
 }

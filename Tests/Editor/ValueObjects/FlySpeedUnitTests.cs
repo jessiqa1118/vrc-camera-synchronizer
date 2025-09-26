@@ -1,149 +1,79 @@
+using System;
+using Astearium.VRChat.Camera;
 using NUnit.Framework;
-using Parameters;
-using OSC;
-using UnityEngine;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class FlySpeedUnitTests
     {
         [Test]
-        public void Constructor_WithDefaultValue_UsesFlySpeedDefaultValue()
+        public void Constructor_WithValidValue_StoresValue()
         {
-            // Act
-            var flySpeed = new FlySpeed(FlySpeed.DefaultValue);
-            
-            // Assert
-            Assert.AreEqual(FlySpeed.DefaultValue, flySpeed.Value);
+            var flySpeed = new FlySpeed(3f);
+
+            Assert.AreEqual(3f, (float)flySpeed);
         }
-        
+
         [Test]
-        public void Constructor_WithValue_StoresValue()
+        public void Constructor_WithMinValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 5f;
-            
-            // Act
-            var flySpeed = new FlySpeed(testValue);
-            
-            // Assert
-            Assert.AreEqual(testValue, flySpeed.Value);
+            var flySpeed = new FlySpeed(FlySpeed.MinValue);
+
+            Assert.AreEqual(FlySpeed.MinValue, (float)flySpeed);
         }
-        
+
         [Test]
-        public void Constructor_WithValueBelowMin_ClampsToMin()
+        public void Constructor_WithMaxValue_AllowsValue()
         {
-            // Arrange
-            const float testValue = 0.05f;
-            
-            // Act
-            var flySpeed = new FlySpeed(testValue);
-            
-            // Assert
-            Assert.AreEqual(FlySpeed.MinValue, flySpeed.Value);
+            var flySpeed = new FlySpeed(FlySpeed.MaxValue);
+
+            Assert.AreEqual(FlySpeed.MaxValue, (float)flySpeed);
         }
-        
+
         [Test]
-        public void Constructor_WithValueAboveMax_ClampsToMax()
+        public void Constructor_WithValueBelowMin_Throws()
         {
-            // Arrange
-            const float testValue = 20f;
-            
-            // Act
-            var flySpeed = new FlySpeed(testValue);
-            
-            // Assert
-            Assert.AreEqual(FlySpeed.MaxValue, flySpeed.Value);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new FlySpeed(FlySpeed.MinValue - 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithSameValue_ReturnsTrue()
+        public void Constructor_WithValueAboveMax_Throws()
         {
-            // Arrange
-            var flySpeed1 = new FlySpeed(7.5f);
-            var flySpeed2 = new FlySpeed(7.5f);
-            
-            // Act & Assert
-            Assert.IsTrue(flySpeed1.Equals(flySpeed2));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new FlySpeed(FlySpeed.MaxValue + 0.01f));
         }
-        
+
         [Test]
-        public void Equals_WithDifferentValue_ReturnsFalse()
+        public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var flySpeed1 = new FlySpeed(7.5f);
-            var flySpeed2 = new FlySpeed(10f);
-            
-            // Act & Assert
-            Assert.IsFalse(flySpeed1.Equals(flySpeed2));
+            var left = new FlySpeed(4f);
+            var right = new FlySpeed(4f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
-        public void EqualsOperator_WithSameValue_ReturnsTrue()
+        public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var flySpeed1 = new FlySpeed(7.5f);
-            var flySpeed2 = new FlySpeed(7.5f);
-            
-            // Act & Assert
-            Assert.IsTrue(flySpeed1 == flySpeed2);
+            var left = new FlySpeed(4f);
+            var right = new FlySpeed(5f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void NotEqualsOperator_WithDifferentValue_ReturnsTrue()
+        public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            // Arrange
-            var flySpeed1 = new FlySpeed(7.5f);
-            var flySpeed2 = new FlySpeed(10f);
-            
-            // Act & Assert
-            Assert.IsTrue(flySpeed1 != flySpeed2);
-        }
-        
-        [Test]
-        public void ImplicitOperator_ToFloat_ReturnsValue()
-        {
-            // Arrange
-            var flySpeed = new FlySpeed(8f);
-            
-            // Act
+            var flySpeed = new FlySpeed(6f);
+
             float value = flySpeed;
-            
-            // Assert
-            Assert.AreEqual(8f, value);
-        }
-        
-        [Test]
-        public void GetHashCode_WithSameValue_ReturnsSameHash()
-        {
-            // Arrange
-            var flySpeed1 = new FlySpeed(5f);
-            var flySpeed2 = new FlySpeed(5f);
-            
-            // Act & Assert
-            Assert.AreEqual(flySpeed1.GetHashCode(), flySpeed2.GetHashCode());
-        }
-        
-        [Test]
-        public void MinValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(0.1f, FlySpeed.MinValue);
-        }
-        
-        [Test]
-        public void MaxValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(15f, FlySpeed.MaxValue);
-        }
-        
-        [Test]
-        public void DefaultValue_IsCorrect()
-        {
-            // Assert
-            Assert.AreEqual(3f, FlySpeed.DefaultValue);
+
+            Assert.AreEqual(6f, value);
         }
     }
 }

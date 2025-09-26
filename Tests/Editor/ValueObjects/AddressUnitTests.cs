@@ -1,9 +1,9 @@
 using System;
-using Parameters;
-using OSC;
+using Astearium.VRChat.Camera;
+using Astearium.Network.Osc;
 using NUnit.Framework;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class AddressUnitTests

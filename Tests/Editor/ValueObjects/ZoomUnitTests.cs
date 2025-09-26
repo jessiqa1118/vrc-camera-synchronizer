@@ -1,189 +1,97 @@
+using System;
+using Astearium.VRChat.Camera;
 using NUnit.Framework;
-using Parameters;
-using OSC;
 
-namespace VRCCamera.Tests.Unit
+namespace Astearium.VRChat.Camera.Tests.Unit
 {
     [TestFixture]
     public class ZoomUnitTests
     {
         [Test]
-        public void Constructor_WithDefaultValue_UsesZoomDefaultValue()
+        public void Constructor_WithValueInsideRange_StoresValue()
         {
-            // Act
-            var zoom = new Zoom(Zoom.DefaultValue, true);
-            
-            // Assert
-            Assert.AreEqual(Zoom.DefaultValue, zoom.Value);
+            var zoom = new Zoom(75f);
+
+            Assert.AreEqual(75f, (float)zoom);
         }
-        
+
         [Test]
-        public void Constructor_WithValidValue_StoresValue()
+        public void Constructor_WithMinValue_AllowsValue()
         {
-            // Arrange
-            const float expectedValue = 45f;
-            
-            // Act
-            var zoom = new Zoom(expectedValue, true);
-            
-            // Assert
-            Assert.AreEqual(expectedValue, zoom.Value);
+            var zoom = new Zoom(Zoom.MinValue);
+
+            Assert.AreEqual(Zoom.MinValue, (float)zoom);
         }
-        
+
         [Test]
-        public void Constructor_WithValueBelowMin_ClampsToMinValue()
+        public void Constructor_WithMaxValue_AllowsValue()
         {
-            // Arrange
-            const float inputValue = 10f;
-            
-            // Act
-            var zoom = new Zoom(inputValue, true);
-            
-            // Assert
-            Assert.AreEqual(Zoom.MinValue, zoom.Value);
+            var zoom = new Zoom(Zoom.MaxValue);
+
+            Assert.AreEqual(Zoom.MaxValue, (float)zoom);
         }
-        
+
         [Test]
-        public void Constructor_WithValueAboveMax_ClampsToMaxValue()
+        public void Constructor_WithValueBelowMin_Throws()
         {
-            // Arrange
-            const float inputValue = 200f;
-            
-            // Act
-            var zoom = new Zoom(inputValue, true);
-            
-            // Assert
-            Assert.AreEqual(Zoom.MaxValue, zoom.Value);
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Zoom(Zoom.MinValue - 0.01f));
         }
-        
+
         [Test]
-        public void Constructor_WithClampFalse_AndInvalidValue_ThrowsException()
+        public void Constructor_WithValueAboveMax_Throws()
         {
-            // Arrange
-            const float invalidValue = 10f;
-            
-            // Act & Assert
-            Assert.Throws<System.ArgumentOutOfRangeException>(() => _ = new Zoom(invalidValue, clamp: false));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Zoom(Zoom.MaxValue + 0.01f));
         }
-        
+
         [Test]
-        public void Constructor_WithClampFalse_AndValidValue_StoresValue()
+        public void DefaultValue_IsFortyFive()
         {
-            // Arrange
-            const float validValue = 50f;
-            
-            // Act
-            var zoom = new Zoom(validValue, clamp: false);
-            
-            // Assert
-            Assert.AreEqual(validValue, zoom.Value);
-        }
-        
-        [TestCase(20f)]
-        [TestCase(85f)]
-        [TestCase(150f)]
-        public void Constructor_WithBoundaryValues_StoresCorrectly(float value)
-        {
-            // Act
-            var zoom = new Zoom(value, true);
-            
-            // Assert
-            Assert.AreEqual(value, zoom.Value);
-        }
-        
-        [Test]
-        public void DefaultValue_Is_FortyFive()
-        {
-            // Assert
             Assert.AreEqual(45f, Zoom.DefaultValue);
         }
-        
+
         [Test]
-        public void MinMaxValues_AreCorrect()
+        public void MinValue_IsTwenty()
         {
-            // Assert
             Assert.AreEqual(20f, Zoom.MinValue);
+        }
+
+        [Test]
+        public void MaxValue_IsOneHundredFifty()
+        {
             Assert.AreEqual(150f, Zoom.MaxValue);
         }
-        
+
         [Test]
         public void Equality_SameValues_AreEqual()
         {
-            // Arrange
-            var zoom1 = new Zoom(45f, true);
-            var zoom2 = new Zoom(45f, true);
-            
-            // Act & Assert
-            Assert.AreEqual(zoom1, zoom2);
-            Assert.IsTrue(zoom1.Equals(zoom2));
-            Assert.IsTrue(zoom1 == zoom2);
-            Assert.IsFalse(zoom1 != zoom2);
-            Assert.AreEqual(zoom1.GetHashCode(), zoom2.GetHashCode());
+            var left = new Zoom(80f);
+            var right = new Zoom(80f);
+
+            Assert.IsTrue(left == right);
+            Assert.IsFalse(left != right);
+            Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
-        
+
         [Test]
         public void Equality_DifferentValues_AreNotEqual()
         {
-            // Arrange
-            var zoom1 = new Zoom(45f, true);
-            var zoom2 = new Zoom(90f, true);
-            
-            // Act & Assert
-            Assert.AreNotEqual(zoom1, zoom2);
-            Assert.IsFalse(zoom1.Equals(zoom2));
-            Assert.IsFalse(zoom1 == zoom2);
-            Assert.IsTrue(zoom1 != zoom2);
+            var left = new Zoom(80f);
+            var right = new Zoom(90f);
+
+            Assert.IsFalse(left == right);
+            Assert.IsTrue(left != right);
+            Assert.AreNotEqual(left, right);
         }
-        
+
         [Test]
-        public void Equality_WithSmallDifference_AreEqual()
+        public void ImplicitConversion_ReturnsUnderlyingFloat()
         {
-            // Arrange
-            var zoom1 = new Zoom(45.0f, true);
-            var zoom2 = new Zoom(45.0f + UnityEngine.Mathf.Epsilon, true);
-            
-            // Act & Assert
-            Assert.AreEqual(zoom1, zoom2);
-            Assert.IsTrue(zoom1 == zoom2);
-        }
-        
-        [Test]
-        public void Equality_WithLargerDifference_AreNotEqual()
-        {
-            // Arrange
-            var zoom1 = new Zoom(45.0f, true);
-            var zoom2 = new Zoom(45.01f, true);
-            
-            // Act & Assert
-            Assert.AreNotEqual(zoom1, zoom2);
-            Assert.IsTrue(zoom1 != zoom2);
-        }
-        
-        [Test]
-        public void ImplicitFloatConversion_ReturnsValue()
-        {
-            // Arrange
-            var zoom = new Zoom(75f, true);
-            
-            // Act
+            var zoom = new Zoom(60f);
+
             float value = zoom;
-            
-            // Assert
-            Assert.AreEqual(75f, value);
-        }
-        
-        [Test]
-        public void Equality_WithBoxedObject_WorksCorrectly()
-        {
-            // Arrange
-            var zoom = new Zoom(50f, true);
-            object boxedZoom = new Zoom(50f, true);
-            object differentObject = "not a zoom";
-            
-            // Act & Assert
-            Assert.IsTrue(zoom.Equals(boxedZoom));
-            Assert.IsFalse(zoom.Equals(differentObject));
-            Assert.IsFalse(zoom.Equals(null));
+
+            Assert.AreEqual(60f, value);
         }
     }
 }
