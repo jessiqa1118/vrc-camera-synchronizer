@@ -43,7 +43,7 @@ namespace Astearium.VRChat.Camera.Editor
         private SerializedProperty _showFocus;
         private SerializedProperty _streaming;
         private SerializedProperty _rollWhileFlying;
-        private SerializedProperty _orientationIsLandscape;
+        private SerializedProperty _orientation;
         private SerializedProperty _poseTransform;
         private SerializedProperty _syncPoseFromTransform;
         private SerializedProperty _syncUnityCamera;
@@ -92,7 +92,7 @@ namespace Astearium.VRChat.Camera.Editor
             _showFocus = serializedObject.FindProperty(VRCCameraComponent.ShowFocusFieldName);
             _streaming = serializedObject.FindProperty(VRCCameraComponent.StreamingFieldName);
             _rollWhileFlying = serializedObject.FindProperty(VRCCameraComponent.RollWhileFlyingFieldName);
-            _orientationIsLandscape = serializedObject.FindProperty(VRCCameraComponent.OrientationFieldName);
+            _orientation = serializedObject.FindProperty(VRCCameraComponent.OrientationFieldName);
             _poseTransform = serializedObject.FindProperty(VRCCameraComponent.PoseSourceFieldName);
             _syncPoseFromTransform = serializedObject.FindProperty(VRCCameraComponent.SyncPoseFromTransformFieldName);
             _syncUnityCamera = serializedObject.FindProperty(VRCCameraComponent.SyncUnityCameraFieldName);
@@ -301,13 +301,12 @@ namespace Astearium.VRChat.Camera.Editor
                     _mode.intValue = (int)modeOrder[newIndex];
                 }
 
-                var currentOrientation =
-                    _orientationIsLandscape.boolValue ? Orientation.Landscape : Orientation.Portrait;
+                var currentOrientation = (Orientation)_orientation.enumValueIndex;
                 EditorGUI.BeginChangeCheck();
                 var newOrientation = (Orientation)EditorGUILayout.EnumPopup("Orientation", currentOrientation);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    _orientationIsLandscape.boolValue = newOrientation == Orientation.Landscape;
+                    _orientation.enumValueIndex = (int)newOrientation;
                 }
 
                 EditorGUILayout.Slider(_exposure, Exposure.MinValue, Exposure.MaxValue, "Exposure");
